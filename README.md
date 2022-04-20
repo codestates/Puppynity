@@ -7,7 +7,7 @@ aDOGtion은 입양하다의 뜻을 가진 adoption과 강아지의 dog를 합쳐
 
 
 ---
-주요기능: 
+# 주요기능: 
 
 1. 나의 라이프 스타일과 성향에 맞는 견종 추천을 간단한 설문조사를 통해 알려드립니다! (Demo기능)
 
@@ -39,7 +39,7 @@ aDOGtion은 입양하다의 뜻을 가진 adoption과 강아지의 dog를 합쳐
   
   
   ---
-## ✨Team Members✨
+# ✨Team Members✨
   
  정태영:
   
@@ -51,7 +51,7 @@ aDOGtion은 입양하다의 뜻을 가진 adoption과 강아지의 dog를 합쳐
   
 ---
   
-  ## 배포링크:
+  # 배포링크:
   "Url"
   
   
