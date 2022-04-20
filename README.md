@@ -39,7 +39,7 @@ aDOGtion은 입양하다의 뜻을 가진 adoption과 강아지의 dog를 합쳐
   
   
   ---
-Team Members:
+## ✨Team Members✨
   
  정태영:
   
