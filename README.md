@@ -34,13 +34,27 @@ aDOGtion은 입양하다의 뜻을 가진 adoption과 강아지의 dog를 합쳐
 ---
 # 사용스택
   
-  ![image](https://user-images.githubusercontent.com/91799861/164232689-7f3221fd-e3a8-42dc-8baa-30d23a39276c.png)
+  <img src=https://user-images.githubusercontent.com/91799861/164232689-7f3221fd-e3a8-42dc-8baa-30d23a39276c.png width=600px height=700px>
 
   
   
   ---
 Team Members:
   
- 
+ 정태영:
+  
+ 박지웅:
+  
+ 김상욱:
+  
+ 신동윤:
+  
+---
+  
+  ## 배포링크:
+  "Url"
+  
+  
+  
   
 
