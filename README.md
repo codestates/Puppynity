@@ -1,6 +1,6 @@
-# aDOGtion
+# new project name: DOGly Life
 
-> 'aDOGtion'은 'adoption(입양하다)' + 'dog(강아지)' 의미를 가진 서비스 이름입니다.  
+> ~~'aDOGtion'은 'adoption(입양하다)' + 'dog(강아지)' 의미를 가진 서비스 이름입니다.  ~~
   
   
 '대중적인 48 가지 견종 데이터[^1]'에 기반한 추천 알고리즘을 통해, 라이프스타일과 성향에 맞는 견종을 참고할 수 있습니다.  
