@@ -1,8 +1,8 @@
-# new project name: DOG Go
+Puppynity
   
 ## About
 
-**'DOG Go'는 강아지 반려 일상과 정보를 공유하고, 실시간 채팅이 가능하며,  
+**'Puppynity'는 강아지 반려 일상과 정보를 공유하고, 실시간 채팅이 가능하며,  
 애견 관련 시설의 정보와 위치도 확인하실 수 있는 커뮤니티 서비스입니다.**
 
 ## Feature
