@@ -1,14 +1,18 @@
 import React, { useState } from 'react';
 import './App.css';
 import { BrowserRouter, Routes, Route } from 'react-router-dom';
+import { useSelector } from 'react-redux';
+import { selectUser } from './Redux/userSlice';
 import dummyContents from './static/dummyContents';
 import Main from './Pages/Main';
 import Login from './Pages/Login';
 import Nav from './Components/Nav';
-import Count from './Count';
+// import Count from './Count';
 import UploadContent from './Components/UploadContent';
 /* eslint-disable */
 function App() {
+  const user = useSelector(selectUser);
+
   const images = [
     { pic: dummyContents[0].picture, id: 1 },
     { pic: dummyContents[1].picture, id: 2 },
@@ -60,7 +64,7 @@ function App() {
             element={<UploadContent handleImgChange={handleImgChange} uploadFile={uploadFile} />}
           />
           <Route path="/login" element={<Login />} />
-          <Route path="/count" element={<Count />} />
+          {/* <Route path="/count" element={<Count />} /> */}
         </Routes>
       </BrowserRouter>
     </div>
