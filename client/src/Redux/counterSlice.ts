@@ -1,4 +1,6 @@
-import { createSlice } from '@reduxjs/toolkit';
+import { createSlice, PayloadAction } from '@reduxjs/toolkit';
+/* eslint-disable */
+import configureStore from './configureStore';
 
 export const counterSlice = createSlice({
   // something that comprises of my state, reducers, and actions in the reducers!
@@ -14,7 +16,7 @@ export const counterSlice = createSlice({
     decrement: (state) => {
       state.count -= 1;
     },
-    incrementByAmount: (state, action) => {
+    incrementByAmount: (state, action: PayloadAction<number>) => {
       // also passes an action, where you can increment by specific amount
       // and the amount is going to be pass in our btn.
       state.count += action.payload;
@@ -28,3 +30,7 @@ export const { increment, decrement, incrementByAmount } = counterSlice.actions;
 // u need to export all your actions so that u can call them in your application
 
 export default counterSlice.reducer;
+
+type RootState = ReturnType<typeof configureStore.getState>;
+
+export const CountType = (state: RootState) => state.counter.count;

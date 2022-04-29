@@ -1,6 +1,5 @@
 import React, { useState } from 'react';
 // import dummyContents from 'static/dummyContents';
-import Content from './Components/Content';
 
 function Contents() {
   // const [contentList, setContentList] = useState([...dummyContents]);

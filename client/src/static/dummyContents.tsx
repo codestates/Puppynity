@@ -10,7 +10,7 @@ const dummyContents = [
   {
     id: 2,
     username: 'sangnamja',
-    picture: `https://www.google.com/imgres?imgurl=https%3A%2F%2Ft1.daumcdn.net%2Fliveboard%2Fpetnu%2F0e2171df4b3d4f0897129471bb21ae3b.JPG&imgrefurl=https%3A%2F%2F1boon.kakao.com%2Fpetnu%2Fpetnu273&tbnid=3rb75coLvOZSvM&vet=12ahUKEwi2_dSIvbP3AhU6xIsBHcyRCEAQMyg1egQIARA8..i&docid=qVQMDElp7rYDhM&w=700&h=639&q=%ED%97%88%EC%8A%A4%ED%82%A4&ved=2ahUKEwi2_dSIvbP3AhU6xIsBHcyRCEAQMyg1egQIARA8`,
+    picture: `https://post-phinf.pstatic.net/MjAxNzA5MjFfMTc5/MDAxNTA1OTc1OTM4NzM1.-0bVvabur7-1a02qZBcJjIhh20SIWDJdcNT3FlvS5ekg.AEA7muBhxXosmrF-gfjTdfhvxFIAW_FRCYRNRSFg_3Mg.PNG/20170921_152754.png?type=w1200`,
     text: '솔직히 늠-름한 우리집 바둑이가 최고죠..',
     createdAt: '2022-04-25T16:17:47.000Z',
     updatedAt: '2022-04-25T16:17:47.000Z',
