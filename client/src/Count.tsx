@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
+/* eslint-disable */
 import { decrement, increment, incrementByAmount } from 'Redux/counterSlice';
 
 function Count(): JSX.Element {

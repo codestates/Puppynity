@@ -5,7 +5,6 @@ import dummyContents from './static/dummyContents';
 import Main from './Pages/Main';
 import Login from './Pages/Login';
 import Nav from './Components/Nav';
-import Slider from './Components/Slider';
 import Count from './Count';
 import UploadContent from './Components/UploadContent';
 /* eslint-disable */
