@@ -16,9 +16,12 @@ export class Chat_message {
   @CreateDateColumn({ name: 'createdAt' })
   createdAt!: Date;
 
+  /* 관계 설정 */
+  // Chat_message(N) <-> User(1)
   @ManyToOne((type) => User, (writer) => writer.messages)
   writer!: User;
 
+  // Chat_message(N) <-> Chatroom(1)
   @ManyToOne((type) => Chatroom, (chatroom) => chatroom.messages)
   chatroom!: Chatroom;
 }

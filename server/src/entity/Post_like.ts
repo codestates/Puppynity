@@ -9,15 +9,18 @@ export class Post_like {
   @PrimaryGeneratedColumn()
   id!: number;
 
-  // @ManyToOne((type) => User, (user) => user.liker, {
-  //   nullable: false,
-  //   onDelete: "CASCADE",
-  // })
-  // user!: User;
+  /* 관계 설정 */
+  // Post_like(N) <-> User(1)
+  @ManyToOne((type) => User, (liker) => liker.post_likes, {
+    nullable: false,
+    onDelete: 'CASCADE',
+  })
+  liker!: User;
 
-  // @ManyToOne((type) => Post, (post) => post.whoLikes, {
-  //   nullable: false,
-  //   onDelete: "CASCADE",
-  // })
-  // post!: Post;
+  // Post_like(N) <-> Post(1)
+  @ManyToOne((type) => Post, (post) => post.post_likes, {
+    nullable: false,
+    onDelete: 'CASCADE',
+  })
+  post!: Post;
 }

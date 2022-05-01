@@ -1,10 +1,9 @@
-import { type } from 'os';
 import { Entity, Column, PrimaryGeneratedColumn, CreateDateColumn, UpdateDateColumn, OneToMany } from 'typeorm';
 
 import { Post } from './Post';
 import { Post_comment } from './Post_comment';
 import { Chat_message } from './Chat_message';
-import { Post_like } from './Post_Like';
+import { Post_like } from './Post_like';
 
 @Entity()
 export class User {
@@ -49,6 +48,6 @@ export class User {
   messages!: Chat_message[];
 
   //! User(1) <-> Post_like(N)
-  // @OneToMany(type => Post_like, (liker => liker.user))
-  // liker!: Post_like[]
+  @OneToMany((type) => Post_like, (post_likes) => post_likes.liker)
+  post_likes!: Post_like[];
 }

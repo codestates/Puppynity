@@ -1,4 +1,3 @@
-import { type } from 'os';
 import {
   Entity,
   Column,
@@ -10,7 +9,7 @@ import {
 } from 'typeorm';
 
 import { User } from './User';
-import { Post_like } from './Post_Like';
+import { Post_like } from './Post_like';
 import { Post_comment } from './Post_comment';
 
 @Entity()
@@ -57,6 +56,6 @@ export class Post {
   comments!: Post_comment;
 
   //! Post(1) <-> Post_like(N)
-  // @OneToMany((type) => Post_like, () => whoLikes.post)
-  // whoLikes
+  @OneToMany((type) => Post_like, (post_likes) => post_likes.post)
+  post_likes!: Post_like[];
 }
