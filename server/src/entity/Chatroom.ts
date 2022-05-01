@@ -31,6 +31,7 @@ export class Chatroom {
   @OneToMany((type) => Chat_message, (messages) => messages.chatroom)
   messages!: Chat_message;
 
+  // Chatroom(N) <-> User(M)
   @ManyToMany(() => User)
   @JoinTable()
   users!: User[];
