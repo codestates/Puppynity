@@ -2,7 +2,6 @@ import 'reflect-metadata';
 import express, { Request, Response } from 'express';
 import * as bodyParser from 'body-parser';
 import { AppDataSource } from './data-source';
-import { User } from './entity/User';
 
 AppDataSource.initialize()
   .then(async () => {

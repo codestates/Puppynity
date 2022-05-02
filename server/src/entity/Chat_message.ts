@@ -1,10 +1,10 @@
-import { Entity, Column, PrimaryGeneratedColumn, CreateDateColumn, ManyToOne } from 'typeorm';
+import { BaseEntity, Entity, Column, PrimaryGeneratedColumn, CreateDateColumn, ManyToOne } from 'typeorm';
 
 import { User } from './User';
 import { Chatroom } from './Chatroom';
 
 @Entity()
-export class Chat_message {
+export class Chat_message extends BaseEntity {
   @PrimaryGeneratedColumn()
   id!: number;
 

@@ -1,4 +1,5 @@
 import {
+  BaseEntity,
   Entity,
   Column,
   PrimaryGeneratedColumn,
@@ -13,7 +14,7 @@ import { Post_like } from './Post_like';
 import { Post_comment } from './Post_comment';
 
 @Entity()
-export class Post {
+export class Post extends BaseEntity {
   @PrimaryGeneratedColumn()
   id!: number;
 
