@@ -4,12 +4,14 @@ import counterReducer from './counterSlice';
 import userReducer from './userSlice';
 // import todosReducer from './todoSlice';
 // import loginReducer from './loginSlice';
+import contentReducer from './contentSlice';
 
 export default configureStore({
   reducer: {
     counter: counterReducer,
     user: userReducer,
-    // todos: todosReducer,
+    content: contentReducer,
+    // userContent: userContentReducer,
     // login: loginReducer,
   }, // where we put all of our reducers
 });
