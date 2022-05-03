@@ -4,7 +4,9 @@ import { BrowserRouter, Routes, Route } from 'react-router-dom';
 import dummyContents from './static/dummyContents';
 import Main from './Pages/Main';
 import Login from './Pages/Login';
+import Signup from './Pages/Signup';
 import Nav from './Components/Nav';
+import Footer from './Components/Footer';
 import Count from './Count';
 import UploadContent from './Components/UploadContent';
 /* eslint-disable */
@@ -53,6 +55,7 @@ function App() {
       {/* <Slider /> */}
       {/* <UploadContent handleImgChange={handleImgChange} uploadFile={uploadFile} /> */}
       <BrowserRouter>
+        <Nav />
         <Routes>
           <Route path="/" element={<Main />} />
           <Route
@@ -61,7 +64,9 @@ function App() {
           />
           <Route path="/login" element={<Login />} />
           <Route path="/count" element={<Count />} />
+          <Route path="/signup" element={<Signup />} />
         </Routes>
+        <Footer />
       </BrowserRouter>
     </div>
   );

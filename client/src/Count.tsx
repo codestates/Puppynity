@@ -6,7 +6,7 @@ import { decrement, increment, incrementByAmount } from 'Redux/counterSlice';
 function Count(): JSX.Element {
   // useSelector to read variables from reducers.
   // we need "count" variable from the counterSlice!
-  const { count } = useSelector((state) => state.counter);
+  const { count } = useSelector((state: any) => state.counter);
   // remember: in configureStore, we call counterReducer as "counter"
   // another way: const count = useSelector((state) => state.counter.count);
 
