@@ -6,8 +6,10 @@ import { selectUser } from './Redux/userSlice';
 import dummyContents from './static/dummyContents';
 import Main from './Pages/Main';
 import Login from './Pages/Login';
+import Signup from './Pages/Signup';
 import Nav from './Components/Nav';
-// import Count from './Count';
+import Footer from './Components/Footer';
+import Community from './Pages/Community';
 import UploadContent from './Components/UploadContent';
 /* eslint-disable */
 function App() {
@@ -37,35 +39,20 @@ function App() {
     }
   };
 
-  const [files, setFiles] = React.useState<File>();
-  const handleImgChange = function (e: React.ChangeEvent<HTMLInputElement>) {
-    // eslint-disable-next-line
-    const files = e.target.files;
-    console.log('onChange function');
-    if (!files) return;
-    setFiles(files[0]);
-  };
-  const uploadFile = function (e: React.MouseEvent<HTMLSpanElement, MouseEvent>) {
-    if (files) {
-      const formData = new FormData();
-      formData.append('image', files);
-    }
-  };
-
   return (
     <div className="App">
       {/* <Slider /> */}
       {/* <UploadContent handleImgChange={handleImgChange} uploadFile={uploadFile} /> */}
       <BrowserRouter>
+        <Nav />
         <Routes>
           <Route path="/" element={<Main />} />
-          <Route
-            path="/uploadcontent"
-            element={<UploadContent handleImgChange={handleImgChange} uploadFile={uploadFile} />}
-          />
+          <Route path="/uploadcontent" element={<UploadContent />} />
           <Route path="/login" element={<Login />} />
-          {/* <Route path="/count" element={<Count />} /> */}
+          <Route path="/signup" element={<Signup />} />
+          <Route path="/community" element={<Community />} />
         </Routes>
+        <Footer />
       </BrowserRouter>
     </div>
   );
