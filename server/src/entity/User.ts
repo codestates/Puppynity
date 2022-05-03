@@ -33,6 +33,9 @@ export class User extends BaseEntity {
   @Column()
   mobile!: string;
 
+  @Column()
+  loginType!: string;
+
   @Column({ nullable: true })
   avatarRef!: string;
 
