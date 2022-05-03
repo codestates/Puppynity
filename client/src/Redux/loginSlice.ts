@@ -1,5 +1,4 @@
 import { createSlice, createAsyncThunk } from '@reduxjs/toolkit';
-import { RootStateOrAny } from 'react-redux';
 import axios from 'axios';
 
 export interface loginRequestType {
@@ -36,5 +35,3 @@ export const loginSlice = createSlice({
   initialState,
   reducers: {},
 });
-
-export const loginSelector = (state: RootStateOrAny): loginDataType => state.loginSlice;

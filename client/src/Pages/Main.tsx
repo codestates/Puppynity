@@ -8,7 +8,6 @@ export default function Main() {
   // 슬라이드를 이용한 배너가 있어야합니다.
   return (
     <div>
-      <Nav />
       <Slider />
       <Link to="/uploadcontent">upload content</Link>
     </div>
