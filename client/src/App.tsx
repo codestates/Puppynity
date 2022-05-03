@@ -1,16 +1,20 @@
 import React, { useState } from 'react';
 import './App.css';
 import { BrowserRouter, Routes, Route } from 'react-router-dom';
+import { useSelector } from 'react-redux';
+import { selectUser } from './Redux/userSlice';
 import dummyContents from './static/dummyContents';
 import Main from './Pages/Main';
 import Login from './Pages/Login';
 import Signup from './Pages/Signup';
 import Nav from './Components/Nav';
 import Footer from './Components/Footer';
-import Count from './Count';
+import Community from './Pages/Community';
 import UploadContent from './Components/UploadContent';
 /* eslint-disable */
 function App() {
+  const user = useSelector(selectUser);
+
   const images = [
     { pic: dummyContents[0].picture, id: 1 },
     { pic: dummyContents[1].picture, id: 2 },
@@ -35,21 +39,6 @@ function App() {
     }
   };
 
-  const [files, setFiles] = React.useState<File>();
-  const handleImgChange = function (e: React.ChangeEvent<HTMLInputElement>) {
-    // eslint-disable-next-line
-    const files = e.target.files;
-    console.log('onChange function');
-    if (!files) return;
-    setFiles(files[0]);
-  };
-  const uploadFile = function (e: React.MouseEvent<HTMLSpanElement, MouseEvent>) {
-    if (files) {
-      const formData = new FormData();
-      formData.append('image', files);
-    }
-  };
-
   return (
     <div className="App">
       {/* <Slider /> */}
@@ -58,13 +47,10 @@ function App() {
         <Nav />
         <Routes>
           <Route path="/" element={<Main />} />
-          <Route
-            path="/uploadcontent"
-            element={<UploadContent handleImgChange={handleImgChange} uploadFile={uploadFile} />}
-          />
+          <Route path="/uploadcontent" element={<UploadContent />} />
           <Route path="/login" element={<Login />} />
-          <Route path="/count" element={<Count />} />
           <Route path="/signup" element={<Signup />} />
+          <Route path="/community" element={<Community />} />
         </Routes>
         <Footer />
       </BrowserRouter>
