@@ -24,8 +24,7 @@ export const userSlice = createSlice({
         console.log(state.user);
         return axios({
           method: 'post',
-          //url: 'https://server.puppnity.gq/auth/login',
-          url: 'http://localhost:4000/auth/login',
+          url: 'https://localhost3000/auth/login',
         }).then((req) => req.data);
         console.log('이거 뜨면 요청 간거임');
       });
