@@ -52,7 +52,7 @@ export const contentSlice = createSlice({
       // state.content = action.payload;
       state.push(action.payload); // RTK uses immerJS, let you code like js.
       // 이제 axios 요청 보내야함
-      axios.post('https://localhost4000/upload');
+      axios.post('https://server.puppnity.gq/upload');
     },
   },
 });
