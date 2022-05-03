@@ -1,29 +1,12 @@
-import 'reflect-metadata';
-import express, { Request, Response } from 'express';
-import * as bodyParser from 'body-parser';
-import { AppDataSource } from './data-source';
+// import app from './app';
+// import dotenv from 'dotenv';
+// dotenv.config();
 
-AppDataSource.initialize()
-  .then(async () => {
-    // create express app
-    const app = express();
-    app.use(bodyParser.json());
+// const http = require('http');
 
-    // setup express app here
-    // ...
+// const server = http.createSever(app);
+// const PORT = process.env.DATABASE_PORT;
 
-    // start express server
-    app.listen(3000);
-
-    // insert new users for test
-    // await AppDataSource.manager.save(
-    //   AppDataSource.manager.create(User, {
-    //     firstName: 'Timber',
-    //     lastName: 'Saw',
-    //     age: 27,
-    //   }),
-    // );
-
-    console.log('Express server has started on port 3000. Open http://localhost:3000/users to see results');
-  })
-  .catch((error) => console.log(error));
+// server.listen(PORT, () => {
+//   console.log(`server listening on ${PORT}`);
+// });
