@@ -17,7 +17,8 @@ export interface loginDataType {
 export const loginReq = createAsyncThunk(
   'loginReq',
   async ({ data, endpoint }: { data: loginRequestType; endpoint: string }) => {
-    const res = await axios.post(`https://localhost/${endpoint}`, data);
+    // const res = await axios.post(`https://server.puppnity.gq/${endpoint}`, data);
+    const res = await axios.post(`http://localhost:4000/${endpoint}`, data);
     return res.data;
   },
 );
