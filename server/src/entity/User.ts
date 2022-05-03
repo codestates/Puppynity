@@ -33,7 +33,7 @@ export class User extends BaseEntity {
   @Column()
   mobile!: string;
 
-  @Column()
+  @Column({ nullable: true })
   avatarRef!: string;
 
   @CreateDateColumn({ name: 'createdAt' })
