@@ -1,7 +1,8 @@
-import React, { ReactText, useState } from 'react';
+import React, { useState } from 'react';
 import styled from 'styled-components';
 import { useDispatch, useSelector } from 'react-redux';
 import { nanoid } from '@reduxjs/toolkit';
+import { useNavigate } from 'react-router-dom';
 import { uploadContent } from '../Redux/contentSlice';
 
 /* eslint-disable */
@@ -38,14 +39,39 @@ const ImageFill = styled.img`
 const Textarea = styled.textarea`
   width: 400px;
   height: 200px;
+  border: solid 5px;
+  border-color: peachpuff;
+  border-radius: 5%;
 `;
 
 const Button = styled.button`
   width: 60px;
   height: 30px;
-  border-radius: 30%;
-  background-color: peachpuff;
-  color: black;
+  border-radius: 5%;
+  background-color: orange;
+  color: white;
+  border: none;
+  &:hover {
+    transition: all 0.2s ease-in-out;
+    color: orange;
+    background-color: white;
+  }
+`;
+
+const Selector = styled.select`
+  height: 35px;
+  background: white;
+  color: gray;
+  padding: 5px;
+  border: solid;
+  border-radius: 30px;
+  width: 400px;
+  margin: 20px;
+  option {
+    color: black;
+    background: white;
+    display: flex;
+  }
 `;
 
 // 컨텐츠를 업로드하려면 필요한 건?
@@ -58,12 +84,19 @@ function UploadContent(): JSX.Element {
   const [text, setText] = useState<string>('');
   const [fileUrl, setFileUrl] = useState<string>('');
   const [file, setFile] = useState<File>();
-
+  const [category, setCategory] = useState<string>('');
+  const navigate = useNavigate();
   const handleTitleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     setTitle(e.target.value);
     // console.log('title change' + e.target.value);
   };
   const handleTextChange = (e: React.ChangeEvent<HTMLTextAreaElement>) => setText(e.target.value);
+
+  const handleCategoryChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
+    e.preventDefault();
+    setCategory(e.target.value);
+    console.log('현재 선택된 카테고리: ' + e.target.value);
+  };
 
   const formData = new FormData();
   const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -73,7 +106,7 @@ function UploadContent(): JSX.Element {
     if (!e.target.files) {
       return;
     }
-    setFile(e.target.files[0]!);
+    setFile(e.target.files[0]);
     formData.append('file', e.target.files[0]); //formdata에 선택된 파일을 담아준다. 근데 얘 필요없을수도..?
 
     if (e.target.files[0]) {
@@ -109,6 +142,7 @@ function UploadContent(): JSX.Element {
           title,
           file,
           text,
+          category,
           // createdAt,
         }),
       );
@@ -116,6 +150,9 @@ function UploadContent(): JSX.Element {
       setTitle(''); //로컬 상태들은 다시 빈 값으로 돌려준다.
       setText('');
       setFile(undefined);
+      setCategory('');
+      formData.delete('file'); // formdata도 초기화를 시켜줘야겟지?
+      // navigate('/community'); //나중에 완성되면 활성화
     }
   };
 
@@ -144,6 +181,16 @@ function UploadContent(): JSX.Element {
             alt="conditional"
           />
         </ImgContainer>
+        <Selector onChange={handleCategoryChange}>
+          <option value="" hidden>
+            카테고리를 선택해주세요
+          </option>
+          <option value="tip">팁/노하우</option>
+          <option value="brag">댕댕이자랑</option>
+          <option value="question">질문</option>
+          <option value="daily-talk">일상공유&수다</option>
+        </Selector>
+        <br />
         <Textarea onChange={handleTextChange} className="text-content" />
         <br />
         <Button onClick={handleContentChange} type="button" disabled={!canUpload}>

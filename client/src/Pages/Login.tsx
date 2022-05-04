@@ -1,9 +1,9 @@
-import React, { useState } from 'react';
-import styled from 'styled-components';
+import React, { useEffect, useState } from 'react';
 import { Link, Routes, Route, useNavigate } from 'react-router-dom';
+import styled from 'styled-components';
 import { useSelector, useDispatch } from 'react-redux'; // store에있는 상태 꺼내오기가능
 /* eslint-disable */
-import { login } from '../Redux/userSlice';
+import { loginReq } from '../Redux/authSlice';
 import LogoImg from '../Assets/puppynityLogo.svg';
 import KakaoLogin from '../Assets/kakao_login_medium.png';
 
@@ -28,19 +28,20 @@ const Button = styled.button`
   cursor: 'pointer';
 `;
 
+// ==============================style=================================
 export default function Login() {
-  // const { login } = useSelector((state) => state.);
   const [email, setEmail] = useState<string>('');
   const [password, setPassword] = useState('');
   const dispatch = useDispatch();
+  const navigate = useNavigate();
+  // const { user, isLoading, isError, isSuccess, message } = useSelector((state) => state.auth);
 
   const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     dispatch(
-      login({
-        email: email,
-        password: password,
-        loggedIn: true,
+      loginReq({
+        email,
+        password,
       }),
     );
   };

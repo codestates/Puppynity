@@ -1,7 +1,8 @@
 import React, { useState, useEffect, JSXElementConstructor, useCallback } from 'react';
 import styled from 'styled-components';
+import { useSelector } from 'react-redux';
+/* eslint-disable */
 import { AiOutlineArrowLeft, AiOutlineArrowRight } from 'react-icons/ai';
-import dummyContents from '../static/dummyContents';
 
 const Container = styled.div`
   width: 70%;
@@ -50,12 +51,14 @@ function Slider(): JSX.Element {
   const [pickIndex, setPickIndex] = useState<number>(0);
   // 기본으로 0번째 인덱스에 위치한 사진을 렌더링
 
+  const pictures = useSelector((state: any) => state.content);
+
   // 왼쪽 화살표 클릭
   const handlePrevClick = useCallback((): void => {
     if (pickIndex <= 0) {
       // state 업데이트 전, 해당 변수의 값이 0이라면
 
-      setPickIndex(dummyContents.length - 1);
+      setPickIndex(pictures.length - 1);
       // length의 -1로 지정하여 가장 마지막으로 이동한다.
 
       return;
@@ -67,7 +70,7 @@ function Slider(): JSX.Element {
 
   // 오른쪽 화살표 클릭
   const handleNextClick = useCallback((): void => {
-    if (pickIndex + 1 === dummyContents.length) {
+    if (pickIndex + 1 === pictures.length) {
       // +1 했을 때, 배열의 인덱스를 벗어난다면
 
       setPickIndex(0);
@@ -81,7 +84,7 @@ function Slider(): JSX.Element {
   }, [pickIndex]);
   return (
     <Container>
-      <FillImage src={dummyContents[pickIndex].picture} />
+      <FillImage src={pictures[pickIndex].picture} />
       {/* pickIndex라는 state 변수를 이용하여 그에 맞는 이미지 렌더링 */}
 
       <Arrow isRight onClick={handlePrevClick}>

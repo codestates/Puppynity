@@ -31,6 +31,6 @@ export const { increment, decrement, incrementByAmount } = counterSlice.actions;
 
 export default counterSlice.reducer;
 
-type RootState = ReturnType<typeof configureStore.getState>;
+// type RootState = ReturnType<typeof configureStore.getState>;
 
-export const CountType = (state: RootState) => state.counter.count;
+//export const CountType = (state: RootState) => state.counter.count;
