@@ -7,7 +7,7 @@ export const checkDuplicateEmails = async (req: Request, res: Response) => {
 
   try {
     const userInfo = await User.findOne({ email });
-    console.log('이메일중복체크유저정보', userInfo);
+
     if (!userInfo) {
       return res.status(200).json({ message: '사용 가능한 이메일입니다.' });
     }

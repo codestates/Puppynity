@@ -72,5 +72,5 @@ export const createUserInfo = async (req: Request, res: Response) => {
       sameSite: 'none',
     })
     .status(201)
-    .json({ id: savedUserInfo.id, accesToken, message: '회원가입 성공' });
+    .json({ userId: savedUserInfo.id, accesToken, message: '회원가입 성공' });
 };

@@ -28,7 +28,7 @@ const isValidPassword: CustomValidator = (value: string) => {
 };
 
 // 회원 상세 정보 확인
-usersRouter.get('/', authentication, getUserIinfo);
+usersRouter.get('/:userId', authentication, getUserIinfo);
 // 회원 정보 생성(회원가입)
 usersRouter.post(
   '/',
@@ -78,7 +78,7 @@ usersRouter.post(
 );
 // 회원 정보 변경
 usersRouter.patch(
-  '/',
+  '/:userId',
   authentication,
   [
     body('password').optional({ checkFalsy: true }).trim().custom(isValidPassword),
@@ -101,7 +101,7 @@ usersRouter.patch(
   updateUserInfo,
 );
 // 회원 탈퇴
-usersRouter.delete('/', authentication, deleteUserInfo);
+usersRouter.delete('/:userId', authentication, deleteUserInfo);
 
 // 이메일 중복 체크
 usersRouter.post(

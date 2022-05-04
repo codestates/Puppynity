@@ -8,25 +8,25 @@ export const updateUserInfo = async (req: Request, res: Response) => {
 
   //! 정보 수정 전 이메일 본인 인증 필요
 
+  //! 추후 업로드 구현시 수정 필요
+  const { password, name, nickname, mobile } = req.body;
+
+  // 바디에 아무 값도 없을 경우 early return
+  if (!password && !name && !nickname && !mobile) {
+    return res.sendStatus(200);
+  }
+
   // req.id에 저장된 값을 이용하여 유저정보 find
   const userId = req.userId;
   const userInfo = await User.findOne({
     where: { id: userId },
   });
 
-  // 바디에 아무 값도 없을 경우
-  if (!req.body.password && !req.body.name && !req.body.nickname && !req.body.mobile) {
-    return res.sendStatus(200);
-  }
-
   if (userInfo === undefined) {
     // 요청한 회원 정보가 없는 경우 404
     console.log('회원 상세 조회할 유저 데이터가 없음!');
     return res.status(404).json({ message: '유저 정보가 없습니다.' });
   }
-
-  //! 추후 업로드 구현시 수정 필요
-  const { password, name, nickname, mobile } = req.body;
 
   if (password) {
     // 비밀번호 해쉬
@@ -46,10 +46,7 @@ export const updateUserInfo = async (req: Request, res: Response) => {
   }
 
   const savedUserInfo = await userInfo.save();
-  const updatedUserInfo = await User.findOne({
-    select: ['id', 'email', 'name', 'nickname', 'mobile', 'mobile', 'avatarRef', 'createdAt'],
-    where: { id: userId },
-  });
+  savedUserInfo.password = '';
 
-  res.status(200).json({ updatedUserInfo, message: 'ok' });
+  res.status(200).json({ userInfo: savedUserInfo, message: 'ok' });
 };

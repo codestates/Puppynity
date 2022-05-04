@@ -1,5 +1,5 @@
 import express from 'express';
-import { body, CustomValidator } from 'express-validator';
+import { body } from 'express-validator';
 
 import { validation } from '../middlewares/valdation';
 import { authentication } from '../middlewares/authentcation';
@@ -9,13 +9,18 @@ import { updatePost } from '../controllers/posts/updatePost';
 import { deletePost } from '../controllers/posts/deletePost';
 import { getPostDetail } from '../controllers/posts/getPostDetail';
 
+import { createComment } from '../controllers/post_comments/createComment';
+import { updateComment } from '../controllers/post_comments/updateComment';
+import { deleteComment } from '../controllers/post_comments/deleteComment';
+import { getCommentsAndCount } from '../controllers/post_comments/getCommentsAndCount';
+
 const postsRouter = express.Router();
 
 // 게시물 목록 조회 페이지네이션, 검색 쿼리 받을 수 있도록
 // postsRouter.get('/', )
 
 // 개시물 상세 조회
-postsRouter.get('/:id', getPostDetail);
+postsRouter.get('/:postId', getPostDetail);
 
 // 게시물 생성
 postsRouter.post(
@@ -57,7 +62,8 @@ postsRouter.post(
 
 // 게시물 수정
 postsRouter.patch(
-  '/:id',
+  '/:postId',
+  authentication,
   [
     body('title')
       .optional({ checkFalsy: true })
@@ -76,10 +82,42 @@ postsRouter.patch(
       .withMessage('본문 내용을 한 글자 이상 입력해야합니다'),
   ],
   validation,
-  authentication,
   updatePost,
 );
 // 게시물 삭제
-postsRouter.delete('/:id', authentication, deletePost);
+postsRouter.delete('/:postId', authentication, deletePost);
+
+//* ---
+// 댓글 전체 조회
+postsRouter.get('/:postId/comments', getCommentsAndCount);
+
+// 댓글 생성
+postsRouter.post(
+  '/:postId/comments',
+  authentication,
+  body('content')
+    .exists()
+    .withMessage('body에 content field가 없음!')
+    .trim()
+    .notEmpty()
+    .withMessage('댓글 내용을 입력해주세요'),
+  validation,
+  createComment,
+);
+
+// 댓글 수정
+postsRouter.patch(
+  '/:postId/comments/:commentId',
+  authentication,
+  body('content')
+    .optional({ checkFalsy: true })
+    .trim()
+    .isLength({ min: 1 })
+    .withMessage('수정할 댓글 내용을 한 글자 이상 입력해야합니다'),
+  validation,
+  updateComment,
+);
+// 댓글 삭제
+postsRouter.delete('/:postId/comments/:commentId', authentication, deleteComment);
 
 module.exports = postsRouter;
