@@ -8,6 +8,7 @@ import { createUserInfo } from '../controllers/users/createUserInfo';
 import { getUserIinfo } from '../controllers/users/getUserInfo';
 import { updateUserInfo } from '../controllers/users/updateUserInfo';
 import { deleteUserInfo } from '../controllers/users/deleteUserInfo';
+import { checkDuplicateEmails } from '../controllers/users/checkDuplicateEmails';
 
 const usersRouter = express.Router();
 //! 이름, 닉네임, 모바일 valdation 강화 필요
@@ -102,4 +103,20 @@ usersRouter.patch(
 // 회원 탈퇴
 usersRouter.delete('/', authentication, deleteUserInfo);
 
+// 이메일 중복 체크
+usersRouter.post(
+  '/email-check',
+  [
+    body('email')
+      .exists()
+      .withMessage('body에 email field가 없음!')
+      .notEmpty()
+      .withMessage('email이 입력 되지 않았습니다.')
+      .trim()
+      .isEmail()
+      .withMessage('올바른 이메일 형식이 아닙니다.'),
+  ],
+  validation,
+  checkDuplicateEmails,
+);
 module.exports = usersRouter;
