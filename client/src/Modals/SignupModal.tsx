@@ -1,6 +1,7 @@
 import React, { Dispatch, SetStateAction, useEffect, useState, useRef } from 'react';
 import styled from 'styled-components';
 import { useDispatch, useSelector } from 'react-redux';
+import axios from 'axios';
 import { CLOSE_MODAL } from '../Redux/signupSlice';
 
 const Body = styled.div`
@@ -53,6 +54,8 @@ function SignupModal(props: any) {
   // const {verification} = useSelector((state: RootState)) => state.auth)
   // const {expireAt} = verification.OTP
   // ==========================상태===============================
+
+  // 타이머 useEffect hook
   useEffect(() => {
     if (time > 0) {
       const Counter = setInterval(() => {
@@ -71,9 +74,35 @@ function SignupModal(props: any) {
     return `남은시간 : ${m}:${s}`;
   };
 
+  // const handleAxios = () => {
+  //   axios({
+  //     method: 'post',
+  //     url: 'http://localhost:8080/users',
+  //     data,
+  //     headers: {
+  //       'Content-Type': `application/json`,
+  //       withCredentials: true,
+  //     },
+  //   })
+  //     .then((res: any) => {
+  //       console.log(res);
+  //     })
+  //     .catch((err) => {
+  //       if (err.message === 'Request failed with status code 409') {
+  //         console.log(err);
+  //       }
+  //     });
+  // };
+
+  // const state = true;
+  // const changeState = (event :) => {
+  // !state;
+  // };
+
   // ==========================구현===============================
   return (
     <Body>
+      {/* {state === true ? ( */}
       <Container>
         <AuthBox>
           <Title>이메일 인증</Title>
@@ -96,6 +125,9 @@ function SignupModal(props: any) {
           <Title>이메일 인증</Title>
         </AuthBox>
       </Container>
+      {/* ) : (
+        <div>hello</div>
+      )} */}
     </Body>
   );
 }
