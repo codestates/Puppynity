@@ -3,8 +3,10 @@ import bcrypt from 'bcrypt';
 
 import { User } from '../../entity/User';
 
-export const editMyIinfo = async (req: Request, res: Response) => {
+export const updateUserInfo = async (req: Request, res: Response) => {
   console.log('내 회원 정보 수정 🕹');
+
+  //! 정보 수정 전 이메일 본인 인증 필요
 
   // req.id에 저장된 값을 이용하여 유저정보 find
   const userId = req.userId;
@@ -26,20 +28,20 @@ export const editMyIinfo = async (req: Request, res: Response) => {
   //! 추후 업로드 구현시 수정 필요
   const { password, name, nickname, mobile } = req.body;
 
-  if (password !== undefined) {
+  if (password) {
     // 비밀번호 해쉬
     const hashedPassword = await bcrypt
       .hash(password, Number(process.env.SALT_ROUNDS))
       .catch((err) => console.log(err));
     userInfo.password = hashedPassword as string;
   }
-  if (name !== undefined) {
+  if (name) {
     userInfo.name = name;
   }
-  if (nickname !== undefined) {
+  if (nickname) {
     userInfo.nickname = nickname;
   }
-  if (mobile !== undefined) {
+  if (mobile) {
     userInfo.mobile = mobile;
   }
 
