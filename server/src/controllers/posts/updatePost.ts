@@ -8,7 +8,17 @@ export const updatePost = async (req: Request, res: Response) => {
 
   //? 왜 POST psts/:id 요청 body에 userId를 담으라는지 당최 이해가 되지 않는다.
   const userId = req.userId;
+  const postId = Number(req.params.postId);
   const { title, content, category, img } = req.body;
+
+  // 바디에 아무 값도 없을 경우 early return
+  if (!title && !content && !category) {
+    return res.sendStatus(200);
+  }
+
+  if (!postId) {
+    return res.status(400).json({ message: '게시물의 id(pk)를 path에 담아주세요.' });
+  }
 
   const userInfo = await User.findOne({ id: userId });
 
@@ -16,16 +26,10 @@ export const updatePost = async (req: Request, res: Response) => {
     return res.status(403).json({ message: '작성자의 회원 정보가 없습니다' });
   }
 
-  const { id: postId } = req.params;
-
-  if (!postId) {
-    return res.status(400).json({ message: '게시물의 id(pk)를 path에 담아주세요.' });
-  }
-
-  const foundPost = await Post.findOne({ where: { id: Number(postId) }, relations: ['writer'] });
+  const foundPost = await Post.findOne({ where: { id: postId }, relations: ['writer'] });
 
   if (!foundPost) {
-    return res.status(404).json({ message: '쿼리 id에 해당하는 게시물이 존재하지 않습니다' });
+    return res.status(404).json({ message: '수정하려는 게시물이 존재하지 않습니다' });
   }
 
   if (foundPost.writer.id !== userId) {
@@ -43,7 +47,7 @@ export const updatePost = async (req: Request, res: Response) => {
     foundPost.category = category;
   }
 
-  foundPost.save();
+  await foundPost.save();
   foundPost.writer.password = '';
-  res.status(200).json({ foundPost, messgage: '게시물이 수정되었습니다.' });
+  res.status(200).json({ post: foundPost, messgage: '게시물이 수정되었습니다.' });
 };

@@ -20,7 +20,7 @@ export const createPost = async (req: Request, res: Response) => {
   const savedPost = await createdPost.save();
 
   savedPost.writer.password = '';
-  res.status(201).json({ savedPost, messgage: '게시물이 등록되었습니다.' });
+  res.status(201).json({ post: savedPost, messgage: '게시물이 등록되었습니다.' });
 
   //* 중복 게시물 등록 방지
 };
