@@ -1,6 +1,7 @@
-import React, { Dispatch, SetStateAction, useEffect, useState, useRef } from 'react';
+import React, { useEffect, useState } from 'react';
 import styled from 'styled-components';
 import { useDispatch, useSelector } from 'react-redux';
+import axios from 'axios';
 import { CLOSE_MODAL } from '../Redux/signupSlice';
 
 const Body = styled.div`
@@ -20,10 +21,10 @@ const Body = styled.div`
 `;
 
 const Container = styled.div`
-  background-color: red;
+  /* background-color: red; */
   display: flex;
   flex-wrap: wrap;
-  justify-content: space-between;
+  justify-content: center;
   align-items: center;
   width: 300px;
   height: 300px;
@@ -38,21 +39,63 @@ const Title = styled.div`
 `;
 
 const AuthBox = styled.div`
-  background-color: yellow;
+  /* background-color: yellow; */
+  display: flex;
+  justify-content: center;
+  align-items: center;
 `;
 
-const CloseBtn = styled.button``;
+const CloseBtn = styled.button`
+  position: absolute;
+  margin-left: 300px;
+  margin-bottom: 300px;
+`;
+
+const AuthInput = styled.input``;
+
+const Detail = styled.div`
+  color: #ffa224;
+`;
+
+const AuthSubmit = styled.button`
+  color: #ffa224;
+`;
 
 // ==========================여기까지 스타일===========================
 
 function SignupModal(props: any) {
   const { email } = props;
+  console.log(email);
   const dispatch = useDispatch();
   const isOpen = useSelector((state: any) => state.signup.isModalOpen);
   const [time, setTime] = useState(179);
   // const {verification} = useSelector((state: RootState)) => state.auth)
   // const {expireAt} = verification.OTP
   // ==========================상태===============================
+
+  // useEffect 인증메일 post 요청
+  useEffect(() => {
+    if (email !== '') {
+      axios({
+        method: 'post',
+        url: 'http://localhost:8080/auth/email-auth',
+        data: {
+          email,
+        },
+        headers: {
+          'Content-Type': `application/json`,
+          withCredentials: true,
+        },
+      })
+        .then((res: any) => {
+          console.log(res);
+        })
+        .catch((err) => {
+          console.log(err);
+        });
+    }
+  });
+  // 타이머 useEffect hook
   useEffect(() => {
     if (time > 0) {
       const Counter = setInterval(() => {
@@ -77,23 +120,26 @@ function SignupModal(props: any) {
       <Container>
         <AuthBox>
           <Title>이메일 인증</Title>
-          <CloseBtn
-            onClick={() => {
-              dispatch(CLOSE_MODAL(false));
-            }}
-            type="button"
-          >
-            X
-          </CloseBtn>
         </AuthBox>
+        <CloseBtn
+          onClick={() => {
+            dispatch(CLOSE_MODAL(false));
+          }}
+          type="button"
+        >
+          X
+        </CloseBtn>
         <AuthBox>
-          <div>{`${email}로 인증번호가 발송되었습니다. 이메일로 전달받은 인증번호를 입력해주세요.`}</div>
+          <Detail>{`${email}로 인증번호가 발송되었습니다. 이메일로 전달받은 인증번호를 입력해주세요.`}</Detail>
         </AuthBox>
         <AuthBox>
           <Title>{timeFormat(time)}</Title>
         </AuthBox>
         <AuthBox>
-          <Title>이메일 인증</Title>
+          <AuthInput />
+        </AuthBox>
+        <AuthBox>
+          <AuthSubmit>Submit</AuthSubmit>
         </AuthBox>
       </Container>
     </Body>
