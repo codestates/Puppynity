@@ -4,6 +4,7 @@ import { body } from 'express-validator';
 import { validation } from '../middlewares/valdation';
 import { authentication } from '../middlewares/authentcation';
 
+import { getPostsAndCountBy } from '../controllers/posts/getPostAndCountBy';
 import { createPost } from '../controllers/posts/createPost';
 import { updatePost } from '../controllers/posts/updatePost';
 import { deletePost } from '../controllers/posts/deletePost';
@@ -17,7 +18,7 @@ import { getCommentsAndCount } from '../controllers/post_comments/getCommentsAnd
 const postsRouter = express.Router();
 
 // 게시물 목록 조회 페이지네이션, 검색 쿼리 받을 수 있도록
-// postsRouter.get('/', )
+postsRouter.get('/');
 
 // 개시물 상세 조회
 postsRouter.get('/:postId', getPostDetail);
