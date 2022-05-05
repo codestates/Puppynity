@@ -34,6 +34,9 @@ export default function Login() {
   const [password, setPassword] = useState('');
   const dispatch = useDispatch();
 
+  //! 카카오 oauth 요청 url
+  const KAKAO_AUTH_URL = `https://kauth.kakao.com/oauth/authorize?client_id=${process.env.REACT_APP_KAKAO_REST_API_KEY}&redirect_uri=${process.env.REACT_APP_KAKAO_REDIRECT_URI}&response_type=code`;
+
   const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     dispatch(
@@ -71,12 +74,13 @@ export default function Login() {
               Login
             </button>
             <br />
-            <img
-              src={KakaoLogin}
-              className="kakao-login"
-              onClick={() => alert('준비중입니다')}
-              style={{ width: '80px', height: '40px', margin: '20px', cursor: 'pointer' }}
-            />
+            <a href={KAKAO_AUTH_URL}>
+              <img
+                src={KakaoLogin}
+                className="kakao-login"
+                style={{ width: '80px', height: '40px', margin: '20px', cursor: 'pointer' }}
+              />
+            </a>
           </form>
         </div>
       </InputContainer>
