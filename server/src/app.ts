@@ -1,5 +1,5 @@
 import express, { Request, Response } from 'express';
-import { createConnection } from 'typeorm';
+import { createConnection, useContainer } from 'typeorm';
 import connectionOptions from '../ormconfig';
 
 import cors from 'cors';
@@ -8,7 +8,9 @@ import * as dotenv from 'dotenv';
 
 // import { Socket } from 'socket.io';
 import { Message } from './middlewares/message';
-
+import { User } from './entity/User';
+import { Post } from './entity/Post';
+import { Post_comment } from './entity/Post_comment';
 // router 이름 복수로?
 const authRouter = require('./routes/auth');
 const usersRouter = require('./routes/users');
@@ -17,8 +19,33 @@ const postsRouter = require('./routes/posts');
 
 // establish database connection
 createConnection(connectionOptions)
-  .then(() => {
+  .then(async () => {
     console.log('DB CONNECTION!');
+
+    // test 계정 삽입
+    const user = new User();
+    user.email = 'test@test.com';
+    user.password = 'asdf1234!';
+    user.name = 'test';
+    user.nickname = 'test';
+    user.mobile = '01012345678';
+    user.signupType = 'email';
+    await user.save();
+
+    // test post 삽입
+    const post = new Post();
+    post.title = '테스트 게시글 제목';
+    post.content = '테시트 게시글 본문';
+    post.category = 'Q&A';
+    post.writer = user;
+    await post.save();
+
+    // test comment 삽입
+    const comment = new Post_comment();
+    comment.content = '테스트 댓글 1';
+    comment.writer = user;
+    comment.post = post;
+    await comment.save();
   })
   .catch((error) => {
     console.log(error);
@@ -56,8 +83,8 @@ app.get('/', (req, res) => {
   res.status(200).send('Hello Puppynity');
 });
 
-app.listen(8080, () => {
-  console.log(`server listening on 8080`);
+app.listen(4000, () => {
+  console.log(`server listening on 4000`);
 });
 
 // export default app;
