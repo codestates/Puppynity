@@ -1,10 +1,9 @@
 import React, { useState } from 'react';
 import styled from 'styled-components';
 import { useDispatch, useSelector } from 'react-redux';
-import { nanoid } from '@reduxjs/toolkit';
 import { useNavigate } from 'react-router-dom';
+import axios from 'axios';
 import { uploadContent } from '../Redux/contentSlice';
-
 /* eslint-disable */
 
 // export interface IImageProps {
@@ -56,6 +55,9 @@ const Button = styled.button`
     color: orange;
     background-color: white;
   }
+  &:disabled {
+    background-color: lightgray;
+  }
 `;
 
 const Selector = styled.select`
@@ -83,7 +85,7 @@ function UploadContent(): JSX.Element {
   const [title, setTitle] = useState<string>('');
   const [text, setText] = useState<string>('');
   const [fileUrl, setFileUrl] = useState<string>('');
-  const [file, setFile] = useState<File>();
+  const [file, setFile] = useState<string | Blob>('');
   const [category, setCategory] = useState<string>('');
   const navigate = useNavigate();
   const handleTitleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -99,15 +101,18 @@ function UploadContent(): JSX.Element {
   };
 
   const formData = new FormData();
+  formData.append('img', file);
+  // 이미지만 폼데이터로 보내고, 나머지는 스트링타입으로 보내줘야한다.
+
   const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    //const files = e.target.files;
+    // const fileList = e.target.files;
 
     const reader = new FileReader();
     if (!e.target.files) {
       return;
     }
     setFile(e.target.files[0]);
-    formData.append('file', e.target.files[0]); //formdata에 선택된 파일을 담아준다. 근데 얘 필요없을수도..?
+    //formData.append('file', e.target.files[0]); //formdata에 선택된 파일을 담아준다. 근데 얘 필요없을수도..?
 
     if (e.target.files[0]) {
       reader.readAsDataURL(e.target.files[0]);
@@ -133,26 +138,49 @@ function UploadContent(): JSX.Element {
   //   }
   // };
 
-  const handleContentChange = () => {
+  const handleContentChange = (e: React.FormEvent<HTMLFormElement>) => {
+    e.preventDefault();
     if (title && text) {
       // 사진은 없어도 게시물을 올려도되기때문
-      dispatch(
-        uploadContent({
-          id: nanoid(),
-          title,
-          file,
-          text,
-          category,
-          // createdAt,
-        }),
-      );
-      console.log(file); // 성공적으로 파일을 불러온다.
+      // dispatch(
+      //   uploadContent({
+      //     id: nanoid(), // userId
+      //     title,
+      //     file,
+      //     text,
+      //     category,
+      //     // createdAt,
+      //   }),
+      // );
+      axios
+        .post(
+          'http://localhost:8080/posts',
+          {
+            title: title,
+            img: formData,
+            category: category,
+            content: text,
+          },
+          {
+            // formData
+            headers: {
+              Authorization: `Bearer ${localStorage.getItem('token')}`, //undefined
+              'Content-Type': 'application/json',
+            },
+            withCredentials: true,
+          },
+        )
+        .then((res) => {
+          console.log('컨텐츠 업로드 완료');
+          console.log(res.data);
+        });
+      console.log('==============================');
+      console.log(formData.get('img'));
       setTitle(''); //로컬 상태들은 다시 빈 값으로 돌려준다.
       setText('');
-      setFile(undefined);
-      setCategory('');
-      formData.delete('file'); // formdata도 초기화를 시켜줘야겟지?
-      // navigate('/community'); //나중에 완성되면 활성화
+      setFile('');
+      formData.delete('file'); // formdata 초기화
+      navigate('/community');
     }
   };
 
@@ -163,7 +191,7 @@ function UploadContent(): JSX.Element {
   return (
     <div>
       <h2> 게시물을 올려보세요! </h2>
-      <form>
+      <form onSubmit={handleContentChange}>
         <InputStyle
           onChange={handleTitleChange}
           type="input"
@@ -185,15 +213,15 @@ function UploadContent(): JSX.Element {
           <option value="" hidden>
             카테고리를 선택해주세요
           </option>
-          <option value="tip">팁/노하우</option>
+          <option value="informational">팁/노하우</option>
           <option value="brag">댕댕이자랑</option>
-          <option value="question">질문</option>
-          <option value="daily-talk">일상공유&수다</option>
+          <option value="Q&A">질문</option>
+          <option value="dailyLog">일상공유&수다</option>
         </Selector>
         <br />
         <Textarea onChange={handleTextChange} className="text-content" />
         <br />
-        <Button onClick={handleContentChange} type="button" disabled={!canUpload}>
+        <Button type="submit" disabled={!canUpload}>
           업로드!!
         </Button>
       </form>

@@ -1,7 +1,9 @@
 import React from 'react';
 import { NavLink as Link } from 'react-router-dom';
 import styled from 'styled-components';
+// import { useSelector } from 'react-redux';
 import LogoImg from '../Assets/puppynityLogo.svg';
+// import LoginType from '../Redux/authSlice';
 
 const Nav = styled.div`
   background: #fff;
@@ -99,6 +101,7 @@ const NavLogo = styled(Link)`
 // ==========================여기까지 스타일===========================
 
 function NavBar() {
+  // const loginStatus = useSelector((state) => state.isLogin);
   return (
     <Nav>
       <NavLogo to="/" className={({ isActive }) => (isActive ? 'active' : 'inactive')}>

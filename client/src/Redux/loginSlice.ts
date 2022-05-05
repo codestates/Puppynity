@@ -32,7 +32,7 @@ export interface IUserData {
 // };
 
 export const loginReq = createAsyncThunk('loginRequest', async ({ data }: { data: loginReqType }) => {
-  const res = await axios.post(`https://localhost4000/auth/login`, data);
+  const res = await axios.post(`https://localhost8080/auth/login`, data);
   return res.data;
 });
 

@@ -48,13 +48,13 @@ const initialState = [
 
 export const postContents = createAsyncThunk('POST/CONTENTS', async () => {
   // ajax를 요청하고 promise객체를 리턴받는 함수를 여기에 사용.
-  return axios({
+  await axios({
     method: 'post',
-    url: 'https://localhost3000/posts',
+    url: 'http://localhost:8080/posts',
     headers: {
       'Content-Type': 'multipart/form-data',
     },
-  }).then((res) => res.data);
+  }).then((res) => console.log(res));
 });
 
 export const contentSlice = createSlice({

@@ -22,13 +22,27 @@ const CategoryBtn = styled.button`
     background-color: #a1dffb;
   }
 `;
+const StyledSelect = styled.select`
+  width: 100px;
+  height: 60px;
+  background-color: #f9de59;
+  color: white;
+  border: #f9de59;
+  border-radius: 5%;
+  :option {
+    background: black;
+    color: #fff;
+    padding: 3px 0;
+  }
+`;
 
 export default function Category(): JSX.Element {
   const dispatch = useDispatch();
   const content = useSelector((state: any) => state.content);
   const [activeCategory, setActiveCategory] = useState('');
   const [isClicked, setIsClicked] = useState<boolean>(false);
-  const setCategory = (e: React.MouseEvent<HTMLButtonElement>) => {
+
+  const setCategory = (e: React.ChangeEvent<HTMLSelectElement>) => {
     setIsClicked(true);
     setActiveCategory(e.currentTarget.value);
     console.log(activeCategory);
@@ -41,29 +55,32 @@ export default function Category(): JSX.Element {
 
   return (
     <div className="category">
-      <CategoryList>
+      <div className="option-form">
+        <StyledSelect onChange={setCategory}>
+          {activeCategory || '전체 게시물'}
+          <option value="all"> 전체 게시글</option>
+          <option value="informational"> 팁/노하우 </option>
+          <option value="dailyLog"> 일상공유&수다 </option>
+          <option value="Q&A"> 질문 </option>
+        </StyledSelect>
+      </div>
+      {/* <CategoryList>
         <CategoryBtn onMouseDown={setCategory} value="all">
           전체 게시글
         </CategoryBtn>
-      </CategoryList>
-      <CategoryList>
-        <CategoryBtn onMouseDown={setCategory} value="tips">
+        <CategoryBtn onMouseDown={setCategory} value="informational">
           팁/노하우
         </CategoryBtn>
-      </CategoryList>
-      <CategoryList>
-        <CategoryBtn onMouseDown={setCategory} value="question">
+        <CategoryBtn onMouseDown={setCategory} value="Q&A">
           질문
         </CategoryBtn>
-      </CategoryList>
-      <CategoryList>
-        <CategoryBtn onMouseDown={setCategory} value="brag">
+        {/* <CategoryBtn onMouseDown={setCategory} value="">
           댕댕이자랑
-        </CategoryBtn>
-        <CategoryBtn onMouseDown={setCategory} value="daily-talk">
+        </CategoryBtn> */}
+      {/* <CategoryBtn onMouseDown={setCategory} value="dailyLog">
           일상공유&수다
         </CategoryBtn>
-      </CategoryList>
+      </CategoryList> */}
     </div>
   );
 }

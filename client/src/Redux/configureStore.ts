@@ -17,5 +17,5 @@ export default configureStore({
   }, // where we put all of our reducers
 });
 
-// export type RootState = ReturnType<typeof configureStore.getState>;
+// export type RootState = ReturnType<typeof authReducer>;
 // export type AppDispatch = typeof configureStore.dispatch;
