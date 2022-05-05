@@ -7,10 +7,10 @@ import { AiOutlineArrowLeft, AiOutlineArrowRight } from 'react-icons/ai';
 const Container = styled.div`
   width: 70%;
   height: 40%;
-  position: fixed;
-  top: 50%;
-  left: 50%;
-  transform: translate(-50%, -50%);
+  /* position: fixed; */
+  /* top: 50%; */
+  /* left: 50%; */
+  /* transform: translate(-50%, -50%); */
 `;
 
 const FillImage = styled.img`

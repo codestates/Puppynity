@@ -9,6 +9,9 @@ function Content() {
   // const contents = useSelector();
   const dispatch = useDispatch();
 
+  // TODO: 만약 content가 없으면 나올 배경을 설정해준다.
+  // TODO:
+
   return (
     <div className="content-container">
       <li className="content">
