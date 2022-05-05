@@ -148,7 +148,7 @@ function SignupPage() {
   const [mobileMsg, setMobileMsg] = useState('전화번호는 최소 11자 이상이어야 합니다.');
   const [emailMsg, setEmailMsg] = useState('올바른 이메일 형식이 아닙니다.');
   const [confirmMsg, setConfirmMsg] = useState('비밀번호가 일치하지 않습니다.');
-
+  const [emailDbCheck, setEmailDbCheck] = useState(true);
   // const isValidEmail = email.includes('@') && email.includes('.');
   const isValidEmail = email.match(/^[0-9a-zA-Z]([-_.]?[0-9a-zA-Z])*@[0-9a-zA-Z]([-_.]?[0-9a-zA-Z])*.[a-zA-Z]{2,3}$/i);
   const specialLetter = password.search(/[`~!@@#$%^&*|₩₩₩'₩";:₩/?]/gi);
@@ -214,6 +214,26 @@ function SignupPage() {
     } else {
       setConfirmMsg('비밀번호가 일치하지 않습니다.');
     }
+  }, [inputValue]);
+
+  useEffect(() => {
+    axios({
+      method: 'post',
+      url: 'http://localhost:8080/users/email-check',
+      data: {
+        email,
+      },
+      headers: {
+        'Content-Type': `application/json`,
+        withCredentials: true,
+      },
+    })
+      .then((res: any) => {
+        console.log(res.data.message);
+      })
+      .catch((err) => {
+        console.log(`${err} err 입니다.`);
+      });
   }, [inputValue]);
 
   // axios 로 post 요청 핸들러
@@ -294,7 +314,7 @@ function SignupPage() {
 
   return (
     <Body>
-      {isOpen && <Modal email={email} />}
+      {isOpen && <Modal email={email} check={emailDbCheck} />}
       <Container>
         <Form>
           <InputBox>

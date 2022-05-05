@@ -47,7 +47,7 @@ const CloseBtn = styled.button``;
 // ==========================여기까지 스타일===========================
 
 function SignupModal(props: any) {
-  const { email } = props;
+  const { email, check } = props;
   const dispatch = useDispatch();
   const isOpen = useSelector((state: any) => state.signup.isModalOpen);
   const [time, setTime] = useState(179);
@@ -73,31 +73,6 @@ function SignupModal(props: any) {
     if (s.length === 1) s = `0${s}`;
     return `남은시간 : ${m}:${s}`;
   };
-
-  // const handleAxios = () => {
-  //   axios({
-  //     method: 'post',
-  //     url: 'http://localhost:8080/users',
-  //     data,
-  //     headers: {
-  //       'Content-Type': `application/json`,
-  //       withCredentials: true,
-  //     },
-  //   })
-  //     .then((res: any) => {
-  //       console.log(res);
-  //     })
-  //     .catch((err) => {
-  //       if (err.message === 'Request failed with status code 409') {
-  //         console.log(err);
-  //       }
-  //     });
-  // };
-
-  // const state = true;
-  // const changeState = (event :) => {
-  // !state;
-  // };
 
   // ==========================구현===============================
   return (
