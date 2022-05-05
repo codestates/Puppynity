@@ -29,16 +29,16 @@ export class Post extends BaseEntity {
   @Column()
   category!: string;
 
-  @Column()
+  @Column({ nullable: true })
   imgRef!: string;
 
-  @Column()
+  @Column({ default: 0 })
   totalViews!: number;
 
-  @Column()
+  @Column({ default: 0 })
   totalLikes!: number;
 
-  @Column()
+  @Column({ default: 0 })
   totalComments!: number;
 
   @CreateDateColumn({ name: 'createdAt' })

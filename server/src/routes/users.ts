@@ -1,16 +1,17 @@
-import express, { NextFunction, Request, Response } from 'express';
+import express from 'express';
 import { body, CustomValidator } from 'express-validator';
 
 import { validation } from '../middlewares/valdation';
 import { authentication } from '../middlewares/authentcation';
 
 import { createUserInfo } from '../controllers/users/createUserInfo';
-import { getMyIinfo } from '../controllers/users/getMyInfo';
-import { editMyIinfo } from '../controllers/users/editMyInfo';
-import { deleteMyInfo } from '../controllers/users/deleteMyInfo';
+import { getUserIinfo } from '../controllers/users/getUserInfo';
+import { updateUserInfo } from '../controllers/users/updateUserInfo';
+import { deleteUserInfo } from '../controllers/users/deleteUserInfo';
+import { checkDuplicateEmails } from '../controllers/users/checkDuplicateEmails';
 
-const userRouter = express.Router();
-
+const usersRouter = express.Router();
+//! 이름, 닉네임, 모바일 valdation 강화 필요
 // 비밀번호 validator
 const isValidPassword: CustomValidator = (value: string) => {
   const pwValidator = (pw: string): boolean => {
@@ -27,9 +28,9 @@ const isValidPassword: CustomValidator = (value: string) => {
 };
 
 // 회원 상세 정보 확인
-userRouter.get('/', authentication, getMyIinfo);
+usersRouter.get('/:userId', authentication, getUserIinfo);
 // 회원 정보 생성(회원가입)
-userRouter.post(
+usersRouter.post(
   '/',
   [
     body('email')
@@ -76,22 +77,46 @@ userRouter.post(
   createUserInfo,
 );
 // 회원 정보 변경
-userRouter.patch(
-  '/',
+usersRouter.patch(
+  '/:userId',
   authentication,
   [
-    body('password').optional().custom(isValidPassword),
-    body('name').optional().isLength({ min: 2 }).withMessage('이름은 최소 2자 이상 입력해야 합니다.'),
+    body('password').optional({ checkFalsy: true }).trim().custom(isValidPassword),
+    body('name')
+      .optional({ checkFalsy: true })
+      .trim()
+      .isLength({ min: 2 })
+      .withMessage('이름은 최소 2자 이상 입력해야 합니다.'),
     body('nickname')
-      .optional()
+      .optional({ checkFalsy: true })
       .isLength({ min: 3, max: 12 })
       .withMessage('닉네임은 최소 3자 이상 12자 이하 여야 합니다.'),
-    body('mobile').optional().isLength({ min: 11 }).withMessage('핸드폰 번호는 최소 11자 이상 이어야 합니다.'),
+    body('mobile')
+      .optional({ checkFalsy: true })
+      .trim()
+      .isLength({ min: 11 })
+      .withMessage('핸드폰 번호는 최소 11자 이상 이어야 합니다.'),
   ],
   validation,
-  editMyIinfo,
+  updateUserInfo,
 );
 // 회원 탈퇴
-userRouter.delete('/', authentication, deleteMyInfo);
+usersRouter.delete('/:userId', authentication, deleteUserInfo);
 
-module.exports = userRouter;
+// 이메일 중복 체크
+usersRouter.post(
+  '/email-check',
+  [
+    body('email')
+      .exists()
+      .withMessage('body에 email field가 없음!')
+      .notEmpty()
+      .withMessage('email이 입력 되지 않았습니다.')
+      .trim()
+      .isEmail()
+      .withMessage('올바른 이메일 형식이 아닙니다.'),
+  ],
+  validation,
+  checkDuplicateEmails,
+);
+module.exports = usersRouter;
