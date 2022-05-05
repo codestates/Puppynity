@@ -2,8 +2,9 @@ import React, { Dispatch, SetStateAction, useEffect, useState, useRef } from 're
 import styled from 'styled-components';
 import { useDispatch, useSelector } from 'react-redux';
 import axios from 'axios';
-import { OPEN_MODAL } from '../Redux/signupSlice';
+import { OPEN_MODAL, OPEN_SUCCESS_MODAL } from '../Redux/signupSlice';
 import Modal from '../Modals/SignupModal';
+import Modal2 from '../Modals/SignupSuccessModal';
 
 const Body = styled.div`
   margin: 0;
@@ -82,14 +83,79 @@ const SignInputE = styled.input`
   border-bottom: 1px solid lightgrey;
 `;
 
-const AuthBtn = styled.button`
+interface IDisabled {
+  emailDbCheck: boolean;
+}
+
+const AuthBtn = styled.button<IDisabled>`
   height: 34px;
   margin-left: 20px;
+  border-radius: 4px;
+  color: #fff;
+  border: none;
+  outline: none;
+  transition: all 0.2s ease-in-out;
+  text-decoration: none;
+  font-weight: bold;
+
+  ${(props) =>
+    props.emailDbCheck === false &&
+    `
+    background-color: lightgrey;
+    cursor: default;
+    `};
+
+  ${(props) =>
+    props.emailDbCheck === true &&
+    `
+    background-color: #ffa224;
+    cursor: pointer;
+
+    &:hover {
+    transition: all 0.2s ease-in-out;
+    background: #fff;
+    color: #ffa224;
+    }
+
+    `};
 `;
 
-const Btn = styled.button`
+interface IIsValidSignup {
+  isValidSignup: boolean;
+}
+
+const Btn = styled.button<IIsValidSignup>`
   width: 300px;
   margin-top: 20px;
+  height: 34px;
+  border-radius: 4px;
+  color: #fff;
+  border: none;
+  outline: none;
+  transition: all 0.2s ease-in-out;
+  text-decoration: none;
+  font-weight: bold;
+
+  ${(props) =>
+    props.isValidSignup === false &&
+    `
+    background-color: lightgrey;
+    cursor: default;
+    `};
+
+  ${(props) =>
+    props.isValidSignup === true &&
+    `
+    background-color: #ffa224;
+    cursor: pointer;
+
+    &:hover {
+    transition: all 0.2s ease-in-out;
+    background: #fff;
+    color: #ffa224;
+    }
+
+    `};
 `;
 
 const WrapAvater = styled.div`
@@ -109,14 +175,18 @@ const UploadBtn = styled.input`
   display: none;
 `;
 
-const ValidMsg = styled.p`
-  color: #ff7b8f;
+interface IValidProps {
+  validProps: boolean;
+}
+
+const ValidMsg = styled.p<IValidProps>`
   font-size: 10px;
   white-space: pre-line;
   display: flex;
   text-align: left;
   max-width: 240px;
   margin-left: 200px;
+  color: ${(props) => (props.validProps === false ? '#ff7b8f' : '#32B34B')};
 `;
 
 // ==========================여기까지 스타일===========================
@@ -137,6 +207,7 @@ function SignupPage() {
   const [files, setFiles] = React.useState<File>();
   const dispatch = useDispatch();
   const isOpen = useSelector((state: any) => state.signup.isModalOpen);
+  const isSuccessOpen = useSelector((state: any) => state.signup.isSuccessModalOpen);
 
   // ==========================여기까지 상태===========================
 
@@ -148,7 +219,8 @@ function SignupPage() {
   const [mobileMsg, setMobileMsg] = useState('전화번호는 최소 11자 이상이어야 합니다.');
   const [emailMsg, setEmailMsg] = useState('올바른 이메일 형식이 아닙니다.');
   const [confirmMsg, setConfirmMsg] = useState('비밀번호가 일치하지 않습니다.');
-  const [emailDbCheck, setEmailDbCheck] = useState(true);
+  const [emailDbCheck, setEmailDbCheck] = useState(false);
+  const [isValidSignup, setIsValidSignup] = useState(false);
   // const isValidEmail = email.includes('@') && email.includes('.');
   const isValidEmail = email.match(/^[0-9a-zA-Z]([-_.]?[0-9a-zA-Z])*@[0-9a-zA-Z]([-_.]?[0-9a-zA-Z])*.[a-zA-Z]{2,3}$/i);
   const specialLetter = password.search(/[`~!@@#$%^&*|₩₩₩'₩";:₩/?]/gi);
@@ -189,12 +261,6 @@ function SignupPage() {
       setNickMsg('');
     }
 
-    if (isValidEmail) {
-      setEmailMsg('');
-    } else {
-      setEmailMsg('올바른 이메일 형식이 아닙니다.');
-    }
-
     if (isValidMobile) {
       setMobileMsg('');
     } else {
@@ -216,6 +282,7 @@ function SignupPage() {
     }
   }, [inputValue]);
 
+  // 사용가능 이메일 검증 핸들러
   useEffect(() => {
     axios({
       method: 'post',
@@ -229,11 +296,28 @@ function SignupPage() {
       },
     })
       .then((res: any) => {
-        console.log(res.data.message);
+        console.log(res.status);
+        if (res.data.message === '사용 가능한 이메일입니다.' && res.status === 200) {
+          setEmailMsg('사용 가능한 이메일입니다.');
+          setEmailDbCheck(true);
+        } else if (res.data.message === '이미 회원가입한 이메일입니다.') {
+          setEmailMsg('이미 회원가입한 이메일입니다.');
+          setEmailDbCheck(false);
+        }
       })
       .catch((err) => {
-        console.log(`${err} err 입니다.`);
+        setEmailMsg('올바른 이메일 형식이 아닙니다.');
+        setEmailDbCheck(false);
       });
+
+    // useEffect 활용해서 signup button disable 하기
+    if (isValidMobile && isValidPassword && isConfirmPassword) {
+      setIsValidSignup(true);
+    } else {
+      setIsValidSignup(false);
+    }
+
+    console.log(inputValue);
   }, [inputValue]);
 
   // axios 로 post 요청 핸들러
@@ -261,13 +345,16 @@ function SignupPage() {
       },
     })
       .then((res: any) => {
-        console.log(res);
+        console.log(`${res.data.message} ⭐️`);
       })
       .catch((err) => {
         if (err.message === 'Request failed with status code 409') {
           console.log(err);
         }
       });
+
+    // 회원가입 버튼 누를 시 모달 오픈
+    dispatch(OPEN_SUCCESS_MODAL(true));
   };
 
   // 프로필 사진 업로드 useRef
@@ -314,7 +401,8 @@ function SignupPage() {
 
   return (
     <Body>
-      {isOpen && <Modal email={email} check={emailDbCheck} />}
+      {isOpen && <Modal email={email} />}
+      {isSuccessOpen && <Modal2 />}
       <Container>
         <Form>
           <InputBox>
@@ -352,50 +440,57 @@ function SignupPage() {
             <Detail>본명</Detail>
             <SignInput name="username" onChange={handleInput} />
           </InputBox>
-          <ValidMsg>{nameMsg}</ValidMsg>
+          <ValidMsg validProps={false}>{nameMsg}</ValidMsg>
 
           <InputBox>
             <Detail>닉네임</Detail>
             <SignInput name="nickname" onChange={handleInput} />
           </InputBox>
-          <ValidMsg>{nickMsg}</ValidMsg>
+          <ValidMsg validProps={false}>{nickMsg}</ValidMsg>
 
           <InputBox>
             <Detail>이메일</Detail>
             <SignInputE name="email" onChange={handleInput} type="email" autoComplete="off" />
-            {/* <AuthBtn onClick={handleModalBtn} type="button"> */}
             <AuthBtn
               onClick={() => {
                 dispatch(OPEN_MODAL(true));
               }}
               type="button"
+              emailDbCheck={emailDbCheck}
+              disabled={!emailDbCheck}
             >
               인증하기
             </AuthBtn>
           </InputBox>
-          <ValidMsg>{emailMsg}</ValidMsg>
+          <ValidMsg validProps={emailDbCheck}>{emailMsg}</ValidMsg>
 
           <InputBox>
             <Detail>전화번호</Detail>
             <SignInput name="mobile" onChange={handleInput} type="text" onKeyUp={autoHypen} />
           </InputBox>
-          <ValidMsg>{mobileMsg}</ValidMsg>
+          <ValidMsg validProps={false}>{mobileMsg}</ValidMsg>
 
           <InputBox>
             <Detail>비밀번호</Detail>
             <SignInput name="password" onChange={handleInput} type="password" autoComplete="off" />
           </InputBox>
-          <ValidMsg>{passMsg}</ValidMsg>
+          <ValidMsg validProps={false}>{passMsg}</ValidMsg>
 
           {/* type=password 이면 autoComplete 기능을 지정해주어야 한다. 끄거나 켜거나? */}
           <InputBox>
             <Detail>비밀번호확인</Detail>
             <SignInput name="confirmPassword" onChange={handleInput} type="password" autoComplete="off" />
           </InputBox>
-          <ValidMsg>{confirmMsg}</ValidMsg>
+          <ValidMsg validProps={false}>{confirmMsg}</ValidMsg>
 
           <InputBox>
-            <Btn onClick={handleAxios} type="button">
+            <Btn
+              // onClick={handleAxios}
+              type="button"
+              isValidSignup={isValidSignup}
+              onClick={handleAxios}
+              disabled={!isValidSignup}
+            >
               회원가입
             </Btn>
           </InputBox>
