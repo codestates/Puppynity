@@ -11,7 +11,11 @@ import Nav from './Components/Nav';
 import Footer from './Components/Footer';
 import Community from './Pages/Community';
 import UploadContent from './Components/UploadContent';
+
 /* eslint-disable */
+//! 카카오 로그인 처리 컴포넌트
+import KakaoAuthLoading from 'Components/KakaoAuthLoading';
+
 function App() {
   //const user = useSelector(selectUser);
 
@@ -51,6 +55,8 @@ function App() {
           <Route path="/login" element={<Login />} />
           <Route path="/signup" element={<Signup />} />
           <Route path="/community" element={<Community />} />
+          {/* 추후 로딩 컴포넌트 만들어지면 라우팅 페이지로 넣어주세요*/}
+          <Route path="/login/kakao/callback" element={<KakaoAuthLoading />} />
         </Routes>
         <Footer />
       </BrowserRouter>

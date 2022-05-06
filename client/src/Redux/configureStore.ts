@@ -1,6 +1,5 @@
 import { configureStore } from '@reduxjs/toolkit';
 /* eslint-disable */
-//import counterReducer from './counterSlice';
 
 import contentReducer from './contentSlice';
 import authReducer from './authSlice';
