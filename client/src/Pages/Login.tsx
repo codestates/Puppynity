@@ -38,6 +38,9 @@ export default function Login() {
   const navigate = useNavigate();
   // const { user, isLoading, isError, isSuccess, message } = useSelector((state) => state.auth);
 
+  //! 카카오 oauth 요청 url
+  const KAKAO_AUTH_URL = `https://kauth.kakao.com/oauth/authorize?client_id=fd4b88881bd747670e3fe74aab66ce82&redirect_uri=http://localhost:3000/login/kakao/callback&response_type=code`;
+
   const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     // dispatch(
@@ -97,12 +100,13 @@ export default function Login() {
               Login
             </button>
             <br />
-            <img
-              src={KakaoLogin}
-              className="kakao-login"
-              onClick={() => alert('준비중입니다')}
-              style={{ width: '80px', height: '40px', margin: '20px', cursor: 'pointer' }}
-            />
+            <a href={KAKAO_AUTH_URL}>
+              <img
+                src={KakaoLogin}
+                className="kakao-login"
+                style={{ width: '80px', height: '40px', margin: '20px', cursor: 'pointer' }}
+              />
+            </a>
           </form>
         </div>
       </InputContainer>

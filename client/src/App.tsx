@@ -14,7 +14,11 @@ import UploadContent from './Components/UploadContent';
 import Chat from './Pages/Chat';
 import Mypage from './Pages/Mypage';
 import EditUserInfo from './Pages/EditUserInfo';
+
 /* eslint-disable */
+//! 카카오 로그인 처리 컴포넌트
+import KakaoAuthLoading from 'Components/KakaoAuthLoading';
+
 function App() {
   //const user = useSelector(selectUser);
 
@@ -57,6 +61,8 @@ function App() {
           <Route path="/chat" element={<Chat />} />
           <Route path="/edituserinfo" element={<Mypage />} />
           <Route path="/mypage" element={<EditUserInfo />} />
+          {/* 추후 로딩 컴포넌트 만들어지면 라우팅 페이지로 넣어주세요*/}
+          <Route path="/login/kakao/callback" element={<KakaoAuthLoading />} />
         </Routes>
         <Footer />
       </BrowserRouter>
