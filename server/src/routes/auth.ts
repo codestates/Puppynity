@@ -4,9 +4,11 @@ import { body, CustomValidator } from 'express-validator'
 import { validation } from '../middlewares/valdation'
 import { authentication } from '../middlewares/authentcation'
 
+
 import { emailLogin } from '../controllers/auth/emailLogin'
 import { kakaoLogin } from '../controllers/auth/kakaoLogin'
 import { logout } from '../controllers/auth/logout'
+
 
 import dotenv from 'dotenv'
 dotenv.config()
@@ -51,6 +53,7 @@ authRouter.post(
   ],
   validation,
   emailLogin,
+
 )
 // 로그아웃
 authRouter.post('/logout', logout)
@@ -61,3 +64,4 @@ authRouter.post('/logout', logout)
 authRouter.post('/kakao', kakaoLogin)
 
 module.exports = authRouter
+
