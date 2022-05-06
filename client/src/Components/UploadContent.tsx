@@ -125,19 +125,6 @@ function UploadContent(): JSX.Element {
     };
   };
 
-  // const submit = () => {
-  //   const formData = new FormData();
-  //   formData.append('file', file);
-  // };
-
-  // const uploadFile = function (e: React.MouseEvent<HTMLSpanElement, MouseEvent>) {
-  //   // slic로 올라가야함
-  //   if (file) {
-  //     const formData = new FormData();
-  //     formData.append('image', file);
-  //   }
-  // };
-
   const handleContentChange = (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     if (title && text) {

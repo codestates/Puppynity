@@ -56,7 +56,7 @@ export default function Login() {
       )
       .then((res) => {
         if (res.data.accessToken) {
-          localStorage.setItem('user', JSON.stringify(res.data));
+          localStorage.setItem('user', JSON.stringify(res.data)); //! 유저 정보를 로컬 스토리지에 저장
           console.log(res.data);
           localStorage.setItem('token', res.data.accessToken);
         }
