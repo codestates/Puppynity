@@ -2,7 +2,7 @@ import React, { Dispatch, SetStateAction, useEffect, useState, useRef } from 're
 import styled from 'styled-components';
 import { useDispatch, useSelector } from 'react-redux';
 import axios from 'axios';
-import { OPEN_MODAL, OPEN_SUCCESS_MODAL } from '../Redux/signupSlice';
+import { OPEN_MODAL, OPEN_SUCCESS_MODAL, FALSE_INPUT_DISABLE } from '../Redux/signupSlice';
 import Modal from '../Modals/SignupModal';
 import Modal2 from '../Modals/SignupSuccessModal';
 
@@ -208,6 +208,7 @@ function SignupPage() {
   const dispatch = useDispatch();
   const isOpen = useSelector((state: any) => state.signup.isModalOpen);
   const isSuccessOpen = useSelector((state: any) => state.signup.isSuccessModalOpen);
+  const inputDisable = useSelector((state: any) => state.signup.inputDisable);
 
   // ==========================여기까지 상태===========================
 
@@ -242,6 +243,7 @@ function SignupPage() {
   };
 
   useEffect(() => {
+    dispatch(FALSE_INPUT_DISABLE(false));
     // console.log(`첫 렌더링 두번 찍히는건 strict mode 때문이래요 👏`);
   }, []);
 
@@ -286,7 +288,7 @@ function SignupPage() {
   useEffect(() => {
     axios({
       method: 'post',
-      url: 'http://localhost:8080/users/email-check',
+      url: 'http://localhost:4000/users/email-check',
       data: {
         email,
       },
@@ -337,7 +339,7 @@ function SignupPage() {
 
     axios({
       method: 'post',
-      url: 'http://localhost:8080/users',
+      url: 'http://localhost:4000/users',
       data,
       headers: {
         'Content-Type': `application/json`,
@@ -450,7 +452,7 @@ function SignupPage() {
 
           <InputBox>
             <Detail>이메일</Detail>
-            <SignInputE name="email" onChange={handleInput} type="email" autoComplete="off" />
+            <SignInputE name="email" onChange={handleInput} type="email" autoComplete="off" disabled={inputDisable} />
             <AuthBtn
               onClick={() => {
                 dispatch(OPEN_MODAL(true));

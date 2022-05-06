@@ -38,6 +38,8 @@ export default function Login() {
   const navigate = useNavigate();
   // const { user, isLoading, isError, isSuccess, message } = useSelector((state) => state.auth);
 
+  console.log(process.env.REACT_APP_KAKAO_REST_API_KEY);
+  console.log(process.env.REACT_APP_KAKAO_REDIRECT_URI);
   //! 카카오 oauth 요청 url
   const KAKAO_AUTH_URL = `https://kauth.kakao.com/oauth/authorize?client_id=${process.env.REACT_APP_KAKAO_REST_API_KEY}&redirect_uri=${process.env.REACT_APP_KAKAO_REDIRECT_URI}&response_type=code`;
 
@@ -49,10 +51,11 @@ export default function Login() {
     //     password,
     //   }),
     // );
+    // dispatch(setIsLogin);
 
     axios
       .post(
-        'http://localhost:8080/auth/login',
+        'http://localhost:4000/auth/login',
         { email, password },
         { headers: { 'Content-Type': 'application/json' }, withCredentials: true },
       )

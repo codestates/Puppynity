@@ -5,12 +5,14 @@ import { configureStore } from '@reduxjs/toolkit';
 import contentReducer from './contentSlice';
 import authReducer from './authSlice';
 import categoryReducer from './categorySlice';
+import signupReducer from './signupSlice';
 
 export default configureStore({
   reducer: {
     content: contentReducer,
     auth: authReducer,
     category: categoryReducer,
+    signup: signupReducer,
     // login: loginReducer,
   }, // where we put all of our reducers
 });

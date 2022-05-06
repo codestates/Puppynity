@@ -10,8 +10,9 @@ export default function KakaoAuthLoading() {
     // 카카오 콜백 uri로 받은 인가코드를 서버한테 카카오에서 토큰 받아주라고 요청
     try {
       const resp = await axios.post('http://localhost:4000/auth/kakao', { authorizationCode: code });
-      // 잘 토큰 잘 받아왔으면 header에 default로 토큰 설정을해준다
-      axios.defaults.headers.common['Authorization'] = `Bearer resp.accessToken`;
+      // 잘 토큰 잘 받아왔으면 header에 default로 토큰 설정을 해준다
+      console.log(resp.data.accessToken);
+      axios.defaults.headers.common['Authorization'] = `Bearer ${resp.data.accessToken}`;
     } catch (err) {
       console.log(err);
     }
