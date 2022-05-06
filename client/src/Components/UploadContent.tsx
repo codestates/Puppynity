@@ -154,7 +154,7 @@ function UploadContent(): JSX.Element {
       // );
       axios
         .post(
-          'http://localhost:8080/posts',
+          'http://localhost:4000/posts',
           {
             title: title,
             img: formData,

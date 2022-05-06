@@ -38,8 +38,10 @@ export default function Login() {
   const navigate = useNavigate();
   // const { user, isLoading, isError, isSuccess, message } = useSelector((state) => state.auth);
 
+  console.log(process.env.REACT_APP_KAKAO_REST_API_KEY);
+  console.log(process.env.REACT_APP_KAKAO_REDIRECT_URI);
   //! 카카오 oauth 요청 url
-  const KAKAO_AUTH_URL = `https://kauth.kakao.com/oauth/authorize?client_id=fd4b88881bd747670e3fe74aab66ce82&redirect_uri=http://localhost:3000/login/kakao/callback&response_type=code`;
+  const KAKAO_AUTH_URL = `https://kauth.kakao.com/oauth/authorize?client_id=${process.env.REACT_APP_KAKAO_REST_API_KEY}&redirect_uri=${process.env.REACT_APP_KAKAO_REDIRECT_URI}&response_type=code`;
 
   const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
@@ -53,7 +55,7 @@ export default function Login() {
 
     axios
       .post(
-        'http://localhost:8080/auth/login',
+        'http://localhost:4000/auth/login',
         { email, password },
         { headers: { 'Content-Type': 'application/json' }, withCredentials: true },
       )

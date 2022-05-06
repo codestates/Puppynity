@@ -2,7 +2,8 @@ import React, { useEffect, useState } from 'react';
 import styled from 'styled-components';
 import { useDispatch, useSelector } from 'react-redux';
 import axios from 'axios';
-import { CLOSE_MODAL } from '../Redux/signupSlice';
+import jwt from 'jsonwebtoken';
+import { CLOSE_MODAL, TRUE_INPUT_DISABLE } from '../Redux/signupSlice';
 
 const Body = styled.div`
   margin: 0;
@@ -69,16 +70,29 @@ function SignupModal(props: any) {
   const dispatch = useDispatch();
   const isOpen = useSelector((state: any) => state.signup.isModalOpen);
   const [time, setTime] = useState(179);
+  const [inputValue, setInputValue] = useState({ validNum: '' });
+  const [disable, setDisable] = useState(true);
+  const [validMsg, setValidMsg] = useState('');
   // const {verification} = useSelector((state: RootState)) => state.auth)
   // const {expireAt} = verification.OTP
   // ==========================상태===============================
+  const [validNum, setValidNum] = useState();
+  // handleInput 함수
+  const handleInput = (event: React.FormEvent<HTMLInputElement>) => {
+    const { name, value } = event.currentTarget;
+
+    setInputValue({
+      ...inputValue,
+      [name]: value,
+    });
+  };
 
   // useEffect 인증메일 post 요청
   useEffect(() => {
     if (email !== '') {
       axios({
         method: 'post',
-        url: 'http://localhost:8080/auth/email-auth',
+        url: 'http://localhost:4000/auth/email-auth',
         data: {
           email,
         },
@@ -89,12 +103,14 @@ function SignupModal(props: any) {
       })
         .then((res: any) => {
           console.log(res);
+          console.log(res.data.data.number);
+          setValidNum(res.data.data.number);
         })
         .catch((err) => {
           console.log(err);
         });
     }
-  });
+  }, []);
   // 타이머 useEffect hook
   useEffect(() => {
     if (time > 0) {
@@ -112,6 +128,25 @@ function SignupModal(props: any) {
     let s = (e % 60).toString();
     if (s.length === 1) s = `0${s}`;
     return `남은시간 : ${m}:${s}`;
+  };
+
+  useEffect(() => {
+    console.log(inputValue);
+  }, [inputValue]);
+
+  // 인증하기 버튼
+  const handleValid = () => {
+    const validNumNum = Number(inputValue.validNum);
+    if (validNumNum === validNum) {
+      setDisable(false);
+      setValidMsg('');
+      dispatch(CLOSE_MODAL(false));
+      dispatch(TRUE_INPUT_DISABLE(true));
+      // 이메일 인풋 디스에이블 시키는 함수 넣기
+    } else {
+      setDisable(true);
+      setValidMsg('번호가 다릅니다.');
+    }
   };
 
   // ==========================구현===============================
@@ -136,11 +171,12 @@ function SignupModal(props: any) {
           <Title>{timeFormat(time)}</Title>
         </AuthBox>
         <AuthBox>
-          <AuthInput />
+          <AuthInput name="validNum" onChange={handleInput} />
         </AuthBox>
         <AuthBox>
-          <AuthSubmit>Submit</AuthSubmit>
+          <AuthSubmit onClick={handleValid}>Submit</AuthSubmit>
         </AuthBox>
+        <AuthBox>{validMsg}</AuthBox>
       </Container>
     </Body>
   );
