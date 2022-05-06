@@ -1,5 +1,5 @@
 import { createSlice, createAsyncThunk, PayloadAction } from '@reduxjs/toolkit';
-import { RootStateOrAny } from 'react-redux';
+// import { RootStateOrAny } from 'react-redux';
 import axios from 'axios';
 import authService from './authService';
 
@@ -61,6 +61,6 @@ export const loginSlice = createSlice({
   },
 });
 
-export const loginSelector = (state: RootStateOrAny): loginDataType => state.loginSlice;
+// export const loginSelector = (state: RootStateOrAny): loginDataType => state.loginSlice;
 
 export default loginSlice.reducer;

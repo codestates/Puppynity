@@ -11,6 +11,9 @@ import Nav from './Components/Nav';
 import Footer from './Components/Footer';
 import Community from './Pages/Community';
 import UploadContent from './Components/UploadContent';
+import Chat from './Pages/Chat';
+import Mypage from './Pages/Mypage';
+import EditUserInfo from './Pages/EditUserInfo';
 /* eslint-disable */
 function App() {
   //const user = useSelector(selectUser);
@@ -51,6 +54,9 @@ function App() {
           <Route path="/login" element={<Login />} />
           <Route path="/signup" element={<Signup />} />
           <Route path="/community" element={<Community />} />
+          <Route path="/chat" element={<Chat />} />
+          <Route path="/edituserinfo" element={<Mypage />} />
+          <Route path="/mypage" element={<EditUserInfo />} />
         </Routes>
         <Footer />
       </BrowserRouter>
