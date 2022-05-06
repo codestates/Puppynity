@@ -6,6 +6,7 @@ import { authentication } from '../middlewares/authentcation';
 
 import { emailLogin } from '../controllers/auth/emailLogin';
 import { logout } from '../controllers/auth/logout';
+import { sendMail } from '../controllers/auth/email-auth';
 
 const authRouter = express.Router();
 
@@ -48,6 +49,7 @@ authRouter.post(
   validation,
   emailLogin,
 );
+authRouter.post('/email-auth',sendMail);
 // 로그아웃
 authRouter.post('/logout', logout);
 // 회원 정보 변경
@@ -66,5 +68,4 @@ authRouter.post('/logout', logout);
 //   validation,
 //   editMyIinfo,
 // );
-
 module.exports = authRouter;

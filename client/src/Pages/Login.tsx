@@ -46,7 +46,7 @@ export default function Login() {
     //     password,
     //   }),
     // );
-    dispatch(setIsLogin);
+    //dispatch(setIsLogin);
 
     axios
       .post(

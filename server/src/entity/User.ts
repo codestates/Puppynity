@@ -36,6 +36,12 @@ export class User extends BaseEntity {
   @Column()
   signupType!: string;
 
+  @Column({
+    type: 'text',
+    nullable: true
+})
+emailToken!: string | null;
+
   @Column({ nullable: true })
   avatarRef!: string;
 
