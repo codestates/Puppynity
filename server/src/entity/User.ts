@@ -39,6 +39,12 @@ export class User extends BaseEntity {
   @Column({ nullable: true })
   kakaoId!: string
 
+  @Column({
+    type: 'text',
+    nullable: true
+})
+emailToken!: string | null;
+
   @Column({ nullable: true })
   avatarRef!: string
 
