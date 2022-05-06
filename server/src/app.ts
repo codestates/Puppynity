@@ -1,5 +1,5 @@
 import express, { Request, Response } from 'express';
-import { createConnection } from 'typeorm';
+import { createConnection, useContainer } from 'typeorm';
 import connectionOptions from '../ormconfig';
 
 import cors from 'cors';
@@ -83,8 +83,8 @@ app.get('/', (req, res) => {
   res.status(200).send('Hello Puppynity');
 });
 
-app.listen(8080, () => {
-  console.log(`server listening on 8080`);
+app.listen(4000, () => {
+  console.log(`server listening on 4000`);
 });
 
 // export default app;

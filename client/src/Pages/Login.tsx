@@ -46,11 +46,9 @@ export default function Login() {
     //     password,
     //   }),
     // );
-    dispatch(setIsLogin);
-
     axios
       .post(
-        'http://localhost:8080/auth/login',
+        'http://localhost:4000/auth/login',
         { email, password },
         { headers: { 'Content-Type': 'application/json' }, withCredentials: true },
       )
@@ -58,10 +56,12 @@ export default function Login() {
         if (res.data.accessToken) {
           localStorage.setItem('user', JSON.stringify(res.data)); //! 유저 정보를 로컬 스토리지에 저장
           console.log(res.data);
-          localStorage.setItem('token', res.data.accessToken);
+          localStorage.setItem('token', res.data.accessToken); // 토큰 로컬에 저장
+          dispatch(setIsLogin); //? redux 상태 isLogin === true로 설정?
         }
         if (res.data.message === 'email 로그인 성공') {
           axios.defaults.headers.common['Authorization'] = `Bearer ${res.data.accessToken}`;
+          console.log(res.data.accessToken);
           // localStorage.setItem('token', res.data.accessToken);
           navigate('/');
         }
