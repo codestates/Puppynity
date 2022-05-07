@@ -9,10 +9,10 @@ import { useNavigate } from 'react-router-dom';
 
 export default function KakaoAuthLoading() {
   // ---
-  let navigate = useNavigate();
-  let code = new URL(window.location.href).searchParams.get('code'); //인가코드
-  let REDIRECT_URI = 'http://localhost:3000/login/kakao/callback';
-  let REST_API_KEY = 'fd4b88881bd747670e3fe74aab66ce82';
+  const navigate = useNavigate();
+  const code = new URL(window.location.href).searchParams.get('code'); // 인가코드
+  const REDIRECT_URI = 'http://localhost:3000/login/kakao/callback';
+  const REST_API_KEY = 'fd4b88881bd747670e3fe74aab66ce82';
 
   // const getAccessToken = async (code: string) => {
   //   // 카카오 콜백 uri로 받은 인가코드를 서버한테 카카오에서 토큰 받아주라고 요청
@@ -48,7 +48,7 @@ export default function KakaoAuthLoading() {
       grant_type: 'authorization_code',
       client_id: REST_API_KEY,
       redirect_uri: REDIRECT_URI,
-      code: code,
+      code,
       // client_secret:,
     });
     try {
