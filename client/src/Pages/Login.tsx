@@ -36,12 +36,20 @@ export default function Login() {
   const [password, setPassword] = useState('');
   const dispatch = useDispatch();
   const navigate = useNavigate();
+  // const [isLogin, setIsLogin] = useState<boolean>(false);
   // const { user, isLoading, isError, isSuccess, message } = useSelector((state) => state.auth);
 
-  console.log(process.env.REACT_APP_KAKAO_REST_API_KEY);
-  console.log(process.env.REACT_APP_KAKAO_REDIRECT_URI);
+ const { setIsLogin } = useSelector((state: any) => state.auth);
+
   //! 카카오 oauth 요청 url
+  // const KAKAO_AUTH_URL = `https://kauth.kakao.com/oauth/authorize?client_id=${process.env.REACT_APP_KAKAO_REST_API_KEY}&redirect_uri=${process.env.REACT_APP_KAKAO_REDIRECT_URI}&response_type=code`;
   const KAKAO_AUTH_URL = `https://kauth.kakao.com/oauth/authorize?client_id=${process.env.REACT_APP_KAKAO_REST_API_KEY}&redirect_uri=${process.env.REACT_APP_KAKAO_REDIRECT_URI}&response_type=code`;
+  // 여기서 카카오 로그인 페이지로 리다이렉션 시켜준다 => KakaoAuthLoading에서 이후 토큰 발급 로직을 작성해준다.
+
+  const kakaoLoginHandler = () => {
+    // 두번째 방법
+    window.location.assign(KAKAO_AUTH_URL);
+  };
 
   const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
@@ -51,8 +59,6 @@ export default function Login() {
     //     password,
     //   }),
     // );
-    // dispatch(setIsLogin);
-
     axios
       .post(
         'http://localhost:4000/auth/login',
@@ -61,12 +67,14 @@ export default function Login() {
       )
       .then((res) => {
         if (res.data.accessToken) {
-          localStorage.setItem('user', JSON.stringify(res.data));
+          localStorage.setItem('user', JSON.stringify(res.data)); //! 유저 정보를 로컬 스토리지에 저장
           console.log(res.data);
-          localStorage.setItem('token', res.data.accessToken);
+          localStorage.setItem('token', res.data.accessToken); // 토큰 로컬에 저장
         }
         if (res.data.message === 'email 로그인 성공') {
           axios.defaults.headers.common['Authorization'] = `Bearer ${res.data.accessToken}`;
+          console.log(res.data.accessToken);
+          dispatch(setIsLogin(true)); //? redux 상태 isLogin === true로 설정?
           // localStorage.setItem('token', res.data.accessToken);
           navigate('/');
         }
@@ -102,13 +110,14 @@ export default function Login() {
               Login
             </button>
             <br />
-            <a href={KAKAO_AUTH_URL}>
-              <img
-                src={KakaoLogin}
-                className="kakao-login"
-                style={{ width: '80px', height: '40px', margin: '20px', cursor: 'pointer' }}
-              />
-            </a>
+            {/* <a href={KAKAO_AUTH_URL}> */}
+            <img
+              onClick={kakaoLoginHandler}
+              src={KakaoLogin}
+              className="kakao-login"
+              style={{ width: '80px', height: '40px', margin: '20px', cursor: 'pointer' }}
+            />
+            {/* </a> */}
           </form>
         </div>
       </InputContainer>

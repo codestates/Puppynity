@@ -34,7 +34,6 @@ export default function Community() {
 
   return (
     <div>
-      <Nav />
       <section>
         <h2 style={{ padding: '10px', margin: 'auto' }}>
           공지: 악성적인 비난 댓글은 정지사유에 해당합니다.

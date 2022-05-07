@@ -2,7 +2,7 @@ import React, { useEffect, useState } from 'react';
 import styled from 'styled-components';
 import { useDispatch, useSelector } from 'react-redux';
 import axios from 'axios';
-import jwt from 'jsonwebtoken';
+// import jwt from 'jsonwebtoken';
 import { CLOSE_MODAL, TRUE_INPUT_DISABLE } from '../Redux/signupSlice';
 
 const Body = styled.div`

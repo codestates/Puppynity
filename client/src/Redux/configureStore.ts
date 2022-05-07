@@ -1,6 +1,5 @@
 import { configureStore } from '@reduxjs/toolkit';
 /* eslint-disable */
-//import counterReducer from './counterSlice';
 
 import contentReducer from './contentSlice';
 import authReducer from './authSlice';
@@ -13,7 +12,6 @@ export default configureStore({
     auth: authReducer,
     category: categoryReducer,
     signup: signupReducer,
-    // login: loginReducer,
   }, // where we put all of our reducers
 });
 
