@@ -20,7 +20,7 @@ import EditUserInfo from './Pages/EditUserInfo';
 //! 카카오 로그인 처리 컴포넌트
 import KakaoAuthLoading from 'Components/KakaoAuthLoading';
 
-const socket =io.connect('http://localhost:4000',{
+const socket = io('http://localhost:4000',{
   transports:['websocket'],
   withCredentials:true
 })

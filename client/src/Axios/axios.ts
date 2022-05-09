@@ -1,7 +1,7 @@
 import axios, { AxiosRequestConfig, AxiosRequestHeaders } from 'axios';
 
 const instance = axios.create({
-  baseURL: 'http://localhost:4000',
+  baseURL: 'https://www.puppynity.gq',
 });
 const token = localStorage.getItem('token');
 

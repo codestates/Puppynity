@@ -6,7 +6,7 @@ import cors from 'cors';
 import cookieParser from 'cookie-parser';
 import * as dotenv from 'dotenv';
 
-// import { Socket } from 'socket.io';
+import { Socket } from 'socket.io';
 import { Message } from './middlewares/message';
 import { User } from './entity/User';
 import { Post } from './entity/Post';
@@ -83,40 +83,44 @@ app.get('/', (req, res) => {
   res.status(200).send('Hello Puppynity');
 });
 
-app.listen(4000, () => {
-  console.log(`server listening on 4000`);
+// app.listen(4000, () => {
+//   console.log(`server listening on 4000`);
+// });
+
+export default app;
+const http = require('http');
+
+const server = http.createServer(app);
+const socketIO = require('socket.io');
+
+const port = 4000;
+
+const io = socketIO(server, {
+  cors: {
+    //origin:['https://puppynity.gq','https://www.puppynity.gq'],
+    origin: 'http://localhost:3000',
+    methods: ['POST', 'GET'],
+    credentials: true,
+  },
 });
 
-// export default app;
-// const http = require('http');
+io.on('connection', (socket: Socket) => {
+  console.log(`소켓 연결 ${socket.id}`);
 
-// const server = http.createServer(app);
-// const socketIO = require('socket.io');
+  socket.on('join_room', (data) => {
+    socket.join(data);
+    console.log(`user id : ${socket.id} room id ${data}`);
+  });
 
-// const port = 4000;
+  socket.on('message', (message: Message) => {
+    io.emit('message', JSON.stringify(message));
+  });
 
-// const io = socketIO(server, {
-//   cors: {
-//     //origin:['https://puppynity.gq','https://www.puppynity.gq'],
-//     origin: 'http://localhost:3000',
-//     methods: ['POST', 'GET'],
-//     credentials: true,
-//   },
-// });
+  socket.on('disconnect', () => {
+    console.log('disconnected', socket.id);
+  });
+});
 
-// io.on('connection', (socket: Socket) => {
-//   console.log(`소켓 연결 ${socket.id}`);
-
-//   socket.on('join_room', (data) => {
-//     socket.join(data);
-//     console.log(`user id : ${socket.id} room id ${data}`);
-//   });
-
-//   socket.on('message', (message: Message) => {
-//     io.emit('message', JSON.stringify(message));
-//   });
-
-//   socket.on('disconnect', () => {
-//     console.log('disconnected', socket.id);
-//   });
-// });
+server.listen(port,()=>{
+  console.log(`${port}`);
+})
