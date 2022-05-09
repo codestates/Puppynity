@@ -53,6 +53,7 @@ export default function KakaoAuthLoading() {
     });
     try {
       const res = await axios.post('https://kauth.kakao.com/oauth/token', payload);
+      localStorage.setItem('user', res.data.access_token);
       navigate('/');
     } catch (err) {
       console.log(err);
