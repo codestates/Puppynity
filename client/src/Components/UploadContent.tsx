@@ -10,18 +10,21 @@ import { uploadContent } from '../Redux/contentSlice';
 //   handleImgChange: (e: React.ChangeEvent<HTMLInputElement>) => void;
 //   uploadFile: (e: React.MouseEvent<HTMLSpanElement, MouseEvent>) => void;
 // }
+
 const InputStyle = styled.input`
-  padding: 10px;
+  // padding: 10px;
   width: auto;
   height: auto;
-  align-items: center;
+  //align-items: center;
+  margin: auto;
 `;
 
 const ImgContainer = styled.div`
-  width: 300px;
-  height: 400px;
-  position: cemter;
-  // display: center;
+  width: 430px;
+  height: 330px;
+  // position: center;
+  margin: auto;
+  display: center;
   border-width: '10px';
   border-color: orange;
 `;
@@ -30,7 +33,7 @@ const ImageFill = styled.img`
   width: 400px;
   height: 300px;
   object-fit: fill;
-  margin: 20px;
+  margin: 5px;
   border-radius: 10%;
   padding: 10px;
 `;
@@ -100,7 +103,7 @@ function UploadContent(): JSX.Element {
     console.log('현재 선택된 카테고리: ' + e.target.value);
   };
 
-  const formData = new FormData();
+  const formData: any = new FormData();
   formData.append('img', file);
   // 이미지만 폼데이터로 보내고, 나머지는 스트링타입으로 보내줘야한다.
 
@@ -129,16 +132,14 @@ function UploadContent(): JSX.Element {
     e.preventDefault();
     if (title && text) {
       // 사진은 없어도 게시물을 올려도되기때문
-      // dispatch(
-      //   uploadContent({
-      //     id: nanoid(), // userId
-      //     title,
-      //     file,
-      //     text,
-      //     category,
-      //     // createdAt,
-      //   }),
-      // );
+      dispatch(
+        uploadContent({
+          title,
+          file,
+          text,
+          category,
+        }),
+      );
       axios
         .post(
           'http://localhost:4000/posts',
@@ -159,13 +160,14 @@ function UploadContent(): JSX.Element {
         )
         .then((res) => {
           console.log('컨텐츠 업로드 완료');
+          console.log(formData.get('img'));
           console.log(res.data);
         });
       console.log('==============================');
       console.log(formData.get('img'));
       setTitle(''); //로컬 상태들은 다시 빈 값으로 돌려준다.
       setText('');
-      setFile('');
+      //setFile();
       formData.delete('file'); // formdata 초기화
       navigate('/community');
     }
@@ -179,13 +181,13 @@ function UploadContent(): JSX.Element {
     <div>
       <h2> 게시물을 올려보세요! </h2>
       <form onSubmit={handleContentChange}>
-        <InputStyle
+        {/* <InputStyle
           onChange={handleTitleChange}
           type="input"
           className="title-input"
           placeholder="제목을 입력해주세요"
         ></InputStyle>
-        <br />
+        <br /> */}
         <label htmlFor="image"></label>
         <br />
         <InputStyle onChange={handleFileChange} accept="image/*" id="upload-img" type="file" multiple />
@@ -196,6 +198,13 @@ function UploadContent(): JSX.Element {
             alt="conditional"
           />
         </ImgContainer>
+        <InputStyle
+          onChange={handleTitleChange}
+          type="input"
+          className="title-input"
+          placeholder="제목을 입력해주세요"
+        ></InputStyle>
+        <br />
         <Selector onChange={handleCategoryChange}>
           <option value="" hidden>
             카테고리를 선택해주세요

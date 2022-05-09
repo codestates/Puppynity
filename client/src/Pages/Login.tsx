@@ -3,7 +3,7 @@ import { Link, Routes, Route, useNavigate } from 'react-router-dom';
 import styled from 'styled-components';
 import { useSelector, useDispatch } from 'react-redux'; // store에있는 상태 꺼내오기가능
 /* eslint-disable */
-import setIsLogin, { loginReq } from '../Redux/authSlice';
+import { setIsLogin } from '../Redux/authSlice';
 import LogoImg from '../Assets/puppynityLogo.svg';
 import KakaoLogin from '../Assets/kakao_login_medium.png';
 import axios from 'axios';
@@ -42,7 +42,6 @@ export default function Login() {
   const { setIsLogin } = useSelector((state: any) => state.auth);
 
   //! 카카오 oauth 요청 url
-  // const KAKAO_AUTH_URL = `https://kauth.kakao.com/oauth/authorize?client_id=${process.env.REACT_APP_KAKAO_REST_API_KEY}&redirect_uri=${process.env.REACT_APP_KAKAO_REDIRECT_URI}&response_type=code`;
   const KAKAO_AUTH_URL = `https://kauth.kakao.com/oauth/authorize?client_id=${process.env.REACT_APP_KAKAO_REST_API_KEY}&redirect_uri=${process.env.REACT_APP_KAKAO_REDIRECT_URI}&response_type=code`;
   // 여기서 카카오 로그인 페이지로 리다이렉션 시켜준다 => KakaoAuthLoading에서 이후 토큰 발급 로직을 작성해준다.
 
@@ -53,12 +52,7 @@ export default function Login() {
 
   const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
-    // dispatch(
-    //   loginReq({
-    //     email,
-    //     password,
-    //   }),
-    // );
+
     axios
       .post(
         'http://localhost:4000/auth/login',
@@ -74,8 +68,12 @@ export default function Login() {
         if (res.data.message === 'email 로그인 성공') {
           axios.defaults.headers.common['Authorization'] = `Bearer ${res.data.accessToken}`;
           console.log(res.data.accessToken);
-          dispatch(setIsLogin(true)); //? redux 상태 isLogin === true로 설정?
-          // localStorage.setItem('token', res.data.accessToken);
+          // console.log(localStorage.getItem('token'));
+          dispatch(
+            setIsLogin({
+              isLogin: true,
+            }),
+          );
           navigate('/');
         }
       });
