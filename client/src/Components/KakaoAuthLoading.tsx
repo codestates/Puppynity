@@ -13,24 +13,19 @@ export default function KakaoAuthLoading() {
   const navigate = useNavigate();
   const dispatch = useDispatch();
   const code = new URL(window.location.href).searchParams.get('code'); // 인가코드
-  const REDIRECT_URI = 'http://localhost:3000/login/kakao/callback';
-  const REST_API_KEY = 'fd4b88881bd747670e3fe74aab66ce82';
+  // const REDIRECT_URI = 'http://localhost:3000/login/kakao/callback';
+  // const REST_API_KEY = 'fd4b88881bd747670e3fe74aab66ce82';
 
   const getAccessToken = async (code: string) => {
     // 카카오 콜백 uri로 받은 인가코드를 서버한테 카카오에서 토큰 받아주라고 요청
     try {
-      const resp = await axios.post(`http://localhost:4000/auth/kakao`, {
-        headers: {
-          'Content-type': 'application/x-www-form-urlencoded;charset=utf-8', // 추가된 항목
-        },
-        authorizationCode: code,
-      });
-      // 잘 토큰 잘 받아왔으면 header에 default로 토큰 설정을해준다
-      console.log(resp.data.accessToken);
+      const resp = await axios.post(`http://localhost:4000/auth/kakao`, { authorizationCode: code });
+      // 토큰 잘 받아왔으면 header에 default로 토큰 설정을해준다
+      // axios.defaults.headers.common['Authorization'] = `Bearer resp.accessToken`;
+      console.log('카카오 토큰 ===> ', resp.data.accessToken);
+      console.log('로그인 타입 ---> ', resp.data.loginType);
+      console.log('닉네임 ---> ', resp.data.nickname);
       axios.defaults.headers.common['Authorization'] = `Bearer ${resp.data.accessToken}`;
-      localStorage.setItem('k-token', resp.data.accessToken);
-      console.log('======= checking localstorage ========');
-      console.log(localStorage.getItem('k-token'));
     } catch (err: any) {
       console.log(err.data);
     }
@@ -57,15 +52,6 @@ export default function KakaoAuthLoading() {
   //   });
   //   try {
   //     const res = await axios.post('https://kauth.kakao.com/oauth/token', payload);
-  //     localStorage.setItem('k-token', res.data.access_token);
-  //     console.log('---------');
-  //     // console.log(localStorage.getItem('k-token')); // 잘 담기고 있음
-  //     dispatch(
-  //       // 카카오 로그인 시 isLogin 상태 변경
-  //       setIsLogin({
-  //         isLogin: true,
-  //       }),
-  //     );
   //     navigate('/');
   //   } catch (err) {
   //     console.log(err);
