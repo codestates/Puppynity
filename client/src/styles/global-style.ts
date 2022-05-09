@@ -1,14 +1,14 @@
-import { createGlobalStyle } from 'styled-components';
-import { reset } from 'styled-reset';
+// import { createGlobalStyle } from 'styled-components';
+// import { reset } from 'styled-reset';
 
-/* eslint-disable */
+// /* eslint-disable */
 
-const GlobalStyle = createGlobalStyle`
-${reset}
-/* global style 작성 */
-    margin: 0;
-    padding: 0;
-    box-sizing: border-box;
-`;
+// const GlobalStyle = createGlobalStyle`
+// ${reset}
+// global style 작성
+//     margin: 0;
+//     padding: 0;
+//     box-sizing: border-box;
+// `;
 
-export default GlobalStyle;
+// export default GlobalStyle;

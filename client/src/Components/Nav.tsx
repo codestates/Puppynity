@@ -1,7 +1,9 @@
 import React from 'react';
 import { NavLink as Link } from 'react-router-dom';
 import styled from 'styled-components';
+// import { useSelector } from 'react-redux';
 import LogoImg from '../Assets/puppynityLogo.svg';
+// import LoginType from '../Redux/authSlice';
 
 const Nav = styled.div`
   background: #fff;
@@ -99,6 +101,7 @@ const NavLogo = styled(Link)`
 // ==========================여기까지 스타일===========================
 
 function NavBar() {
+  // const loginStatus = useSelector((state) => state.isLogin);
   return (
     <Nav>
       <NavLogo to="/" className={({ isActive }) => (isActive ? 'active' : 'inactive')}>
@@ -108,14 +111,19 @@ function NavBar() {
         <NavLink to="/community" className={({ isActive }) => (isActive ? 'active' : 'inactive')}>
           커뮤니티
         </NavLink>
-        <NavLink to="/mypage" className={({ isActive }) => (isActive ? 'active' : 'inactive')}>
-          마이페이지
+        <NavLink to="/chat" className={({ isActive }) => (isActive ? 'active' : 'inactive')}>
+          채팅하기
         </NavLink>
       </NavMenu>
       <NavBtn>
         <NavBtnLink to="/signup">회원가입</NavBtnLink>
         <NavBtnLink to="/login">로그인</NavBtnLink>
       </NavBtn>
+      {/* isLogin 데려와서 3항연산 시전
+      <NavBtn>
+        <NavBtnLink to="/mypage">마이페이지</NavBtnLink>
+        <NavBtnLink to="/" --로그아웃 함수 자리-->로그아웃</NavBtnLink>
+      </NavBtn> */}
     </Nav>
   );
 }

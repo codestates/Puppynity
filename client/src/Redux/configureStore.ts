@@ -1,19 +1,19 @@
 import { configureStore } from '@reduxjs/toolkit';
 /* eslint-disable */
-import counterReducer from './counterSlice';
-import userReducer from './userSlice';
-// import todosReducer from './todoSlice';
-// import loginReducer from './loginSlice';
+
+import contentReducer from './contentSlice';
+import authReducer from './authSlice';
+import categoryReducer from './categorySlice';
+import signupReducer from './signupSlice';
 
 export default configureStore({
   reducer: {
-    counter: counterReducer,
-    user: userReducer,
-    // todos: todosReducer,
-    // login: loginReducer,
+    content: contentReducer,
+    auth: authReducer,
+    category: categoryReducer,
+    signup: signupReducer,
   }, // where we put all of our reducers
 });
 
-// export type RootState = ReturnType<typeof configureStore.getState>;
-
+// export type RootState = ReturnType<typeof authReducer>;
 // export type AppDispatch = typeof configureStore.dispatch;
