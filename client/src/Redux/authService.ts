@@ -17,7 +17,7 @@ const register = async (userData: IUserData) => {
   //     localStorage.setItem('user', JSON.stringify(response.data));
   //   }
   //   return response.data;
-  return axios.post('https://localhost3000/auth/signup', {
+  return axios.post('https://www.puppynity.gq/auth/signup', {
     userData,
   });
 };
@@ -29,7 +29,7 @@ const login = async (email: string, password: string) => {
   //   }
   //   return response.data;
   return axios
-    .post('https://localhost4000/auth/login', {
+    .post('https://www.puppynity.gq/auth/login', {
       email,
       password,
     })

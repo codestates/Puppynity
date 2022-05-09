@@ -3,6 +3,7 @@ import './App.css';
 import { BrowserRouter, Routes, Route } from 'react-router-dom';
 import { useSelector } from 'react-redux';
 // import { selectUser } from './Redux/userSlice';
+import io from 'socket.io-client';
 import dummyContents from './static/dummyContents';
 import Main from './Pages/Main';
 import Login from './Pages/Login';
@@ -18,6 +19,11 @@ import EditUserInfo from './Pages/EditUserInfo';
 /* eslint-disable */
 //! 카카오 로그인 처리 컴포넌트
 import KakaoAuthLoading from 'Components/KakaoAuthLoading';
+
+const socket =io.connect('http://localhost:4000',{
+  transports:['websocket'],
+  withCredentials:true
+})
 
 function App() {
   //const user = useSelector(selectUser);
