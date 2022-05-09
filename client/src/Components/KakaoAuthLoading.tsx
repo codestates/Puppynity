@@ -6,10 +6,12 @@ import './KakaoAuthLoading.css';
 import qs from 'qs';
 import { useDispatch } from 'react-redux';
 import { useNavigate } from 'react-router-dom';
+import { setIsLogin } from '../Redux/authSlice';
 
 export default function KakaoAuthLoading() {
   // ---
   const navigate = useNavigate();
+  const dispatch = useDispatch();
   const code = new URL(window.location.href).searchParams.get('code'); // 인가코드
   // const REDIRECT_URI = 'http://localhost:3000/login/kakao/callback';
   // const REST_API_KEY = 'fd4b88881bd747670e3fe74aab66ce82';
@@ -54,7 +56,6 @@ export default function KakaoAuthLoading() {
   //   } catch (err) {
   //     console.log(err);
   //   }
-
   //   // return null;
   // };
 

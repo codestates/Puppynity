@@ -52,12 +52,6 @@ export default function Login() {
 
   const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
-    // dispatch(
-    //   loginReq({
-    //     email,
-    //     password,
-    //   }),
-    // );
 
     axios
       .post(
@@ -74,7 +68,7 @@ export default function Login() {
         if (res.data.message === 'email 로그인 성공') {
           axios.defaults.headers.common['Authorization'] = `Bearer ${res.data.accessToken}`;
           console.log(res.data.accessToken);
-
+          // console.log(localStorage.getItem('token'));
           dispatch(
             setIsLogin({
               isLogin: true,

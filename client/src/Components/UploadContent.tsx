@@ -103,7 +103,7 @@ function UploadContent(): JSX.Element {
     console.log('현재 선택된 카테고리: ' + e.target.value);
   };
 
-  const formData = new FormData();
+  const formData: any = new FormData();
   formData.append('img', file);
   // 이미지만 폼데이터로 보내고, 나머지는 스트링타입으로 보내줘야한다.
 
@@ -132,16 +132,14 @@ function UploadContent(): JSX.Element {
     e.preventDefault();
     if (title && text) {
       // 사진은 없어도 게시물을 올려도되기때문
-      // dispatch(
-      //   uploadContent({
-      //     id: nanoid(), // userId
-      //     title,
-      //     file,
-      //     text,
-      //     category,
-      //     createdAt,
-      //   }),
-      // );
+      dispatch(
+        uploadContent({
+          title,
+          file,
+          text,
+          category,
+        }),
+      );
       axios
         .post(
           'http://localhost:4000/posts',
@@ -162,13 +160,14 @@ function UploadContent(): JSX.Element {
         )
         .then((res) => {
           console.log('컨텐츠 업로드 완료');
+          console.log(formData.get('img'));
           console.log(res.data);
         });
       console.log('==============================');
       console.log(formData.get('img'));
       setTitle(''); //로컬 상태들은 다시 빈 값으로 돌려준다.
       setText('');
-      setFile('');
+      //setFile();
       formData.delete('file'); // formdata 초기화
       navigate('/community');
     }
