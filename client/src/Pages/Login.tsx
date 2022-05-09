@@ -3,7 +3,7 @@ import { Link, Routes, Route, useNavigate } from 'react-router-dom';
 import styled from 'styled-components';
 import { useSelector, useDispatch } from 'react-redux'; // store에있는 상태 꺼내오기가능
 /* eslint-disable */
-import setIsLogin, { loginReq } from '../Redux/authSlice';
+import { setIsLogin } from '../Redux/authSlice';
 import LogoImg from '../Assets/puppynityLogo.svg';
 import KakaoLogin from '../Assets/kakao_login_medium.png';
 import axios from 'axios';
@@ -58,6 +58,7 @@ export default function Login() {
     //     password,
     //   }),
     // );
+
     axios
       .post(
         'http://localhost:4000/auth/login',
@@ -73,8 +74,12 @@ export default function Login() {
         if (res.data.message === 'email 로그인 성공') {
           axios.defaults.headers.common['Authorization'] = `Bearer ${res.data.accessToken}`;
           console.log(res.data.accessToken);
-          dispatch(setIsLogin(true)); //? redux 상태 isLogin === true로 설정?
-          // localStorage.setItem('token', res.data.accessToken);
+
+          dispatch(
+            setIsLogin({
+              isLogin: true,
+            }),
+          );
           navigate('/');
         }
       });
