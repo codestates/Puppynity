@@ -11,10 +11,10 @@ export interface loginResDataType {
   email: string;
   loginType: string;
 }
-export interface loginDataType {
-  isLogin: boolean;
-  data: loginResDataType;
-}
+// export interface loginDataType {
+//   isLogin: boolean;
+//   data: loginResDataType;
+// }
 
 export interface IUserData {
   email: string;
@@ -39,13 +39,13 @@ export const loginReq = createAsyncThunk('loginReq', async (email: IUserData, pa
     });
 });
 
-const initialState: loginDataType = {
+const initialState = {
   isLogin: false,
-  data: {
-    accessToken: '',
-    email: '',
-    loginType: '',
-  },
+  // data: {
+  //   accessToken: '',
+  //   email: '',
+  //   loginType: '',
+  // },
 };
 
 export const authSlice = createSlice({
@@ -61,18 +61,19 @@ export const authSlice = createSlice({
     //   console.log('local state에 로그인정보가 잘 들어오나?');
     // },
   },
-  extraReducers: {
-    [loginReq.fulfilled.type]: (state, { payload }: PayloadAction<loginResDataType>) => {
-      state.isLogin = true;
-      //state.data = action.payload;
-      state.data = payload;
-      console.log('login 잘되면 나옴');
-    },
-    [loginReq.rejected.type]: (state) => {
-      state.isLogin = false;
-      console.log('sir, you are rejected');
-    },
-  },
+  // extraReducers: {
+  //   [loginReq.fulfilled.type]: (state, { payload }: PayloadAction<loginResDataType>) => {
+  //     state.isLogin = true;
+  //     //state.data = action.payload;
+  //     state.data = payload;
+  //     console.log('login 잘되면 나옴');
+  //   },
+  //   [loginReq.rejected.type]: (state) => {
+  //     state.isLogin = false;
+  //     console.log('sir, you are rejected');
+  //   },
+  // },
 });
 
 export default authSlice.reducer;
+export const { setIsLogin } = authSlice.actions;

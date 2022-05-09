@@ -10,18 +10,21 @@ import { uploadContent } from '../Redux/contentSlice';
 //   handleImgChange: (e: React.ChangeEvent<HTMLInputElement>) => void;
 //   uploadFile: (e: React.MouseEvent<HTMLSpanElement, MouseEvent>) => void;
 // }
+
 const InputStyle = styled.input`
-  padding: 10px;
+  // padding: 10px;
   width: auto;
   height: auto;
-  align-items: center;
+  //align-items: center;
+  margin: auto;
 `;
 
 const ImgContainer = styled.div`
-  width: 300px;
-  height: 400px;
-  position: cemter;
-  // display: center;
+  width: 430px;
+  height: 330px;
+  // position: center;
+  margin: auto;
+  display: center;
   border-width: '10px';
   border-color: orange;
 `;
@@ -30,7 +33,7 @@ const ImageFill = styled.img`
   width: 400px;
   height: 300px;
   object-fit: fill;
-  margin: 20px;
+  margin: 5px;
   border-radius: 10%;
   padding: 10px;
 `;
@@ -136,7 +139,7 @@ function UploadContent(): JSX.Element {
       //     file,
       //     text,
       //     category,
-      //     // createdAt,
+      //     createdAt,
       //   }),
       // );
       axios
@@ -179,13 +182,13 @@ function UploadContent(): JSX.Element {
     <div>
       <h2> 게시물을 올려보세요! </h2>
       <form onSubmit={handleContentChange}>
-        <InputStyle
+        {/* <InputStyle
           onChange={handleTitleChange}
           type="input"
           className="title-input"
           placeholder="제목을 입력해주세요"
         ></InputStyle>
-        <br />
+        <br /> */}
         <label htmlFor="image"></label>
         <br />
         <InputStyle onChange={handleFileChange} accept="image/*" id="upload-img" type="file" multiple />
@@ -196,6 +199,13 @@ function UploadContent(): JSX.Element {
             alt="conditional"
           />
         </ImgContainer>
+        <InputStyle
+          onChange={handleTitleChange}
+          type="input"
+          className="title-input"
+          placeholder="제목을 입력해주세요"
+        ></InputStyle>
+        <br />
         <Selector onChange={handleCategoryChange}>
           <option value="" hidden>
             카테고리를 선택해주세요
