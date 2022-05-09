@@ -54,6 +54,7 @@ export default function KakaoAuthLoading() {
     try {
       const res = await axios.post('https://kauth.kakao.com/oauth/token', payload);
       navigate('/');
+      console.log(res);
     } catch (err) {
       console.log(err);
     }

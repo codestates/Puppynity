@@ -5,6 +5,7 @@ import contentReducer from './contentSlice';
 import authReducer from './authSlice';
 import categoryReducer from './categorySlice';
 import signupReducer from './signupSlice';
+import mypageReducer from './mypageSlice';
 
 export default configureStore({
   reducer: {
@@ -12,6 +13,7 @@ export default configureStore({
     auth: authReducer,
     category: categoryReducer,
     signup: signupReducer,
+    mypage: mypageReducer,
   }, // where we put all of our reducers
 });
 

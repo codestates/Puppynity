@@ -121,7 +121,7 @@ function NavBar() {
       </NavBtn>
       {/* isLogin 데려와서 3항연산 시전
       <NavBtn>
-        <NavBtnLink to="/mypage">마이페이지</NavBtnLink>
+        <NavBtnLink to="/mypage">user님 어서오세요</NavBtnLink>
         <NavBtnLink to="/" --로그아웃 함수 자리-->로그아웃</NavBtnLink>
       </NavBtn> */}
     </Nav>
