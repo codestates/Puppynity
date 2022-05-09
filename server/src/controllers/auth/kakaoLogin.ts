@@ -34,7 +34,13 @@ export const kakaoLogin = async (req: Request, res: Response) => {
 
     // 이미 카카오 연동된 회원인 경우
     if (userInfo) {
-      return res.status(409).json({ message: '이미 카카오 계정과 연동된 회원입니다.' })
+      return res.status(200).json({
+        id: userInfo.id,
+        nickname: userInfo.nickname,
+        accessToken: access_token,
+        loginType: userInfo.signupType,
+        message: '카카오 로그인 성공',
+      })
     }
 
     // 회원 정보 저장
@@ -51,11 +57,13 @@ export const kakaoLogin = async (req: Request, res: Response) => {
         secure: true,
         sameSite: 'none',
       })
-      .status(200)
+      .status(201)
       .json({
         id: createdUser.id,
         accessToken: access_token,
         nickname: createdUser.nickname,
+        loginType: createdUser.signupType,
+        message: '카카오 회원 정보 생성 및 로그인 성공',
       })
   } catch (err) {
     console.log(err)

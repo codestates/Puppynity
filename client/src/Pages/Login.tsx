@@ -39,10 +39,9 @@ export default function Login() {
   // const [isLogin, setIsLogin] = useState<boolean>(false);
   // const { user, isLoading, isError, isSuccess, message } = useSelector((state) => state.auth);
 
-  // const setIsLogin = useSelector((state: any) => state.isLogin);
+  const { setIsLogin } = useSelector((state: any) => state.auth);
 
   //! 카카오 oauth 요청 url
-  // const KAKAO_AUTH_URL = `https://kauth.kakao.com/oauth/authorize?client_id=${process.env.REACT_APP_KAKAO_REST_API_KEY}&redirect_uri=${process.env.REACT_APP_KAKAO_REDIRECT_URI}&response_type=code`;
   const KAKAO_AUTH_URL = `https://kauth.kakao.com/oauth/authorize?client_id=${process.env.REACT_APP_KAKAO_REST_API_KEY}&redirect_uri=${process.env.REACT_APP_KAKAO_REDIRECT_URI}&response_type=code`;
   // 여기서 카카오 로그인 페이지로 리다이렉션 시켜준다 => KakaoAuthLoading에서 이후 토큰 발급 로직을 작성해준다.
 
