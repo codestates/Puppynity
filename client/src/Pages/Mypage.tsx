@@ -173,10 +173,13 @@ const Write = styled.div`
 // ==========================여기까지 스타일===========================
 
 function MyPage() {
-  console.log(useSelector((state: any) => state));
+  const loginStatus = useSelector((state: any) => state.auth.isLogin);
+  const loginState = useSelector((state: any) => state);
+  const { userPk } = loginState.auth;
   const isOpen = useSelector((state: any) => state.mypage.isModalOpen);
   const isDeleteUserModalOpen = useSelector((state: any) => state.mypage.isDeleteUserModalOpen);
-
+  const [isNickname, setIsNickname] = useState('');
+  const [isKakao, setIsKakao] = useState(false);
   // ==========================여기까지 상태===========================
 
   const dispatch = useDispatch();
@@ -187,18 +190,45 @@ function MyPage() {
     dispatch(DELETE_USER_MODAL_OPEN(true));
   };
 
+  if (userPk !== 0 && localStorage.getItem('loginType') === 'email') {
+    useEffect(() => {
+      axios({
+        url: `http://localhost:4000/users/:${userPk}`,
+        method: 'get',
+        headers: { Authorization: `Bearer ${localStorage.getItem('token')}` },
+      }).then((res) => {
+        setIsNickname(res.data.userInfo.nickname);
+      });
+    }, [loginStatus]);
+  }
+
+  const kakaoNick: any = localStorage.getItem('user');
+
+  useEffect(() => {
+    if (localStorage.getItem('loginType') === 'kakao') {
+      setIsNickname(kakaoNick);
+      setIsKakao(true);
+    } else {
+      setIsKakao(false);
+    }
+  }, [isNickname]);
+
   // ==========================여기까지 구현===========================
 
   return (
     <Body>
       {isOpen && <Modal />}
       {isDeleteUserModalOpen && <Modal2 />}
-      <Title>user님의 마이페이지 입니다.</Title>
+      <Title>{isNickname}님의 마이페이지 입니다.</Title>
       <Container>
         <ChildBox>
           <ProfileImg />
-          user 의 닉네임
-          <EditBtn onClick={openModal}>내 정보 변경하기</EditBtn>
+          {isNickname}
+          {isKakao ? (
+            <EditBtn disabled>카카오 로그인중 ...</EditBtn>
+          ) : (
+            <EditBtn onClick={openModal}>내 정보 변경하기</EditBtn>
+          )}
         </ChildBox>
 
         <ChildBox>

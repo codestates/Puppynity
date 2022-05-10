@@ -146,6 +146,11 @@ function EmailAuthModal(props: any) {
     'https://cdn.pixabay.com/photo/2015/10/05/22/37/blank-profile-picture-973460_1280.png',
   );
   const [files, setFiles] = React.useState<File>();
+  const loginStatus = useSelector((state: any) => state.auth.isLogin);
+  const loginState = useSelector((state: any) => state);
+  const { userPk } = loginState.auth;
+  const [isNickname, setIsNickname] = useState('');
+  const [isMobile, setIsMobile] = useState('');
   // ==========================상태===============================
 
   const handleInput = (event: React.FormEvent<HTMLInputElement>) => {
@@ -180,9 +185,6 @@ function EmailAuthModal(props: any) {
     } else {
       setValidEdit(false);
     }
-
-    console.log(validEdit);
-    console.log(inputValue);
   }, [inputValue]);
 
   const dispatch = useDispatch();
@@ -191,16 +193,18 @@ function EmailAuthModal(props: any) {
   };
 
   // axios patch 함수
-
   const editUserInfo = () => {
-    console.log(inputValue);
-    console.log(nickname);
-    console.log(mobile);
+    axios({
+      url: `http://localhost:4000/users/:${userPk}`,
+      method: 'patch',
+      headers: { Authorization: `Bearer ${localStorage.getItem('token')}` },
+      data: { nickname: `${nickname}`, mobile: `${mobile}` },
+    }).then((res) => {
+      console.log(res);
+    });
 
-    // axios.patch(`http://localhost:4000/users/:${42}`, {
-    //   nickname: { nickname },
-    //   mobile: { mobile },
-    // });
+    closeModal();
+    window.location.replace('/mypage');
   };
 
   // 하이픈 자동 생성
@@ -243,6 +247,18 @@ function EmailAuthModal(props: any) {
     };
   };
 
+  // axios get요청 (userinfo)
+  useEffect(() => {
+    axios({
+      url: `http://localhost:4000/users/:${userPk}`,
+      method: 'get',
+      headers: { Authorization: `Bearer ${localStorage.getItem('token')}` },
+    }).then((res) => {
+      setIsNickname(res.data.userInfo.nickname);
+      setIsMobile(res.data.userInfo.mobile);
+    });
+  }, [loginStatus]);
+
   // ==========================구현===============================
   return (
     <Body>
@@ -270,12 +286,12 @@ function EmailAuthModal(props: any) {
         </ModalBox>
         <ModalBox>
           <Detail>닉네임 변경</Detail>
-          <Input placeholder="변경전 닉네임" name="nickname" onChange={handleInput} />
+          <Input placeholder={isNickname} name="nickname" onChange={handleInput} />
         </ModalBox>
         <ValidMsg>{nicknameMsg}</ValidMsg>
         <ModalBox>
           <Detail>전화번호 변경</Detail>
-          <Input placeholder="변경전 전화번호" name="mobile" onChange={handleInput} onKeyUp={autoHypen} />
+          <Input placeholder={isMobile} name="mobile" onChange={handleInput} onKeyUp={autoHypen} />
         </ModalBox>
         <ValidMsg>{mobileMsg}</ValidMsg>
         <ModalBox>
