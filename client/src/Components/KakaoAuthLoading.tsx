@@ -1,4 +1,4 @@
-import React, { Component, useEffect } from 'react';
+import React, { Component, useEffect, useState } from 'react';
 /* eslint-disable */
 import LogoImg from '../Assets/puppynityLogo.svg';
 import axios from 'axios';
@@ -6,13 +6,16 @@ import './KakaoAuthLoading.css';
 import qs from 'qs';
 import { useDispatch } from 'react-redux';
 import { useNavigate } from 'react-router-dom';
+import { setIsLogin, setUserPk } from '../Redux/authSlice';
 
 export default function KakaoAuthLoading() {
   // ---
   const navigate = useNavigate();
+  const dispatch = useDispatch();
   const code = new URL(window.location.href).searchParams.get('code'); // 인가코드
   // const REDIRECT_URI = 'http://localhost:3000/login/kakao/callback';
   // const REST_API_KEY = 'fd4b88881bd747670e3fe74aab66ce82';
+  const [isKakaoPk, setIsKakaoPk] = useState(0);
 
   const getAccessToken = async (code: string) => {
     // 카카오 콜백 uri로 받은 인가코드를 서버한테 카카오에서 토큰 받아주라고 요청
@@ -24,6 +27,11 @@ export default function KakaoAuthLoading() {
       console.log('로그인 타입 ---> ', resp.data.loginType);
       console.log('닉네임 ---> ', resp.data.nickname);
       axios.defaults.headers.common['Authorization'] = `Bearer ${resp.data.accessToken}`;
+      localStorage.setItem('user', resp.data.nickname);
+      localStorage.setItem('token', resp.data.accessToken);
+      localStorage.setItem('loginType', 'kakao');
+      localStorage.setItem('userPk', resp.data.id);
+      window.location.replace('/');
     } catch (err: any) {
       console.log(err.data);
     }
@@ -54,7 +62,6 @@ export default function KakaoAuthLoading() {
   //   } catch (err) {
   //     console.log(err);
   //   }
-
   //   // return null;
   // };
 
