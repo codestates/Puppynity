@@ -22,7 +22,7 @@ const postsRouter = express.Router()
 
 const storage = multer.diskStorage({
   destination: (req, file, cb) => {
-    cb(null, 'src/images/')
+    cb(null, 'uploads/')
   },
   filename: (req, file, cb) => {
     const ext = path.extname(file.originalname)

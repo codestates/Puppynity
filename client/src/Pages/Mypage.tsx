@@ -180,6 +180,7 @@ function MyPage() {
   const isDeleteUserModalOpen = useSelector((state: any) => state.mypage.isDeleteUserModalOpen);
   const [isNickname, setIsNickname] = useState('');
   const [isKakao, setIsKakao] = useState(false);
+  const [avatarImg, setAvatarImg] = useState('');
   // ==========================여기까지 상태===========================
 
   const dispatch = useDispatch();
@@ -198,8 +199,10 @@ function MyPage() {
         headers: { Authorization: `Bearer ${localStorage.getItem('token')}` },
       }).then((res) => {
         setIsNickname(res.data.userInfo.nickname);
+        setAvatarImg(res.data.userInfo.avatarRef);
+        console.log(res.data.userInfo.avatarRef);
       });
-    }, [loginStatus]);
+    }, []);
   }
 
   const kakaoNick: any = localStorage.getItem('user');
@@ -213,16 +216,24 @@ function MyPage() {
     }
   }, [isNickname]);
 
+  console.log(avatarImg);
+  console.log(typeof avatarImg);
+
   // ==========================여기까지 구현===========================
 
   return (
     <Body>
       {isOpen && <Modal />}
       {isDeleteUserModalOpen && <Modal2 />}
-      <Title>{isNickname}님의 마이페이지 입니다.</Title>
       <Container>
         <ChildBox>
-          <ProfileImg />
+          <ProfileImg
+            src={
+              avatarImg === 'null'
+                ? `https://cdn.pixabay.com/photo/2015/10/05/22/37/blank-profile-picture-973460_1280.png`
+                : `http://localhost:4000/uploads/${avatarImg}`
+            }
+          />
           {isNickname}
           {isKakao ? (
             <EditBtn disabled>카카오 로그인중 ...</EditBtn>

@@ -96,6 +96,8 @@ function DeleteUserModal(props: any) {
     dispatch(setUserPk({ userPk: 0 }));
     dispatch(setLoginType({ loginType: '' }));
 
+    console.log(userPk);
+    console.log(token);
     axios({
       url: `http://localhost:4000/users/:${userPk}`,
       method: 'delete',

@@ -4,6 +4,7 @@ import React, { useEffect, useState } from 'react';
 import styled from 'styled-components';
 
 import io from 'socket.io-client';
+import axios from 'axios';
 
 const Body = styled.div`
   margin: 0;
@@ -22,13 +23,59 @@ const Container = styled.div`
   background-color: #fff;
   display: flex;
   flex-wrap: wrap;
-  /* width: 70vw; */
-  /* height: 80vh; */
-  padding: 30px 30px;
+  width: 701px;
+  min-width: 701px;
+  height: 95vh;
+  /* padding: 30px 30px; */
   border-radius: 5px;
+  justify-content: center;
+  border: 1px solid #aaa;
 `;
 
-const TextArea = styled.textarea``;
+const LeftSide = styled.div`
+  height: 95vh;
+  width: 250px;
+  border-right: 1px solid #aaa;
+`;
+
+const RightSide = styled.div`
+  height: 95vh;
+  width: 450px;
+`;
+
+const ViewArea = styled.div`
+  background-color: lightblue;
+`;
+
+const Message = styled.div`
+  color: grey;
+`;
+
+const MessageInfo = styled.div`
+  color: lightcoral;
+`;
+
+const MessageContents = styled.div`
+  color: lightgoldenrodyellow;
+`;
+
+const InputArea = styled.input``;
+
+const Btn = styled.button``;
+
+const MyNickName = styled.div`
+  padding: 10px;
+  font-size: 20px;
+  color: #ffa224;
+  border-bottom: 1px solid #aaa;
+`;
+
+const ChatRoom = styled.div`
+  background-color: lightgreen;
+  height: 95vh-241px;
+`;
+
+const ChatRoomNo = styled.div``;
 // ==========================여기까지 스타일===========================
 
 function ChatPage() {
@@ -43,6 +90,17 @@ function ChatPage() {
       // time: '',
     },
   ]);
+  const [isMyNickName, setIsMyNickName] = useState('');
+
+  // 유저정보 get 요청하기
+  const userPk = localStorage.getItem('userPk');
+  axios({
+    url: `http://localhost:4000/users/:${userPk}`,
+    method: 'get',
+    headers: { Authorization: `Bearer ${localStorage.getItem('token')}` },
+  }).then((res) => {
+    setIsMyNickName(res.data.userInfo.nickname);
+  });
 
   const socket = io('http://localhost:4000', {
     transports: ['websocket'],
@@ -85,33 +143,43 @@ function ChatPage() {
   return (
     <Body>
       <Container>
-        <div>채팅 페이지</div>
-        <div>
-          {messageList.map((messageContent, index) => (
-            <div key={index} className="message">
-              <div className="message-info">
-                <div className="message-content">
-                  {messageContent.message ? <span>{messageContent.message}</span> : null}
-                </div>
-              </div>
-            </div>
-          ))}
-        </div>
-        <input
-          className="messageInput"
-          type="text"
-          value={currentMessage}
-          placeholder="메시지 입력해주세요"
-          onChange={(event) => {
-            setcurrentMessage(event.target.value);
-          }}
-          onKeyPress={(event) => {
-            event.key === 'Enter' && sendMessage();
-          }}
-        />
-        <button onClick={sendMessage} type="button">
-          send
-        </button>
+        <LeftSide>
+          <MyNickName>{isMyNickName}</MyNickName>
+          <ChatRoom>
+            <ChatRoomNo>김갑둘</ChatRoomNo>
+            <ChatRoomNo>조철황</ChatRoomNo>
+          </ChatRoom>
+        </LeftSide>
+        <RightSide>
+          <ViewArea>
+            {messageList.map((messageContent, index) => (
+              <Message key={index} className="message">
+                더큰 메시지
+                <MessageInfo className="message-info">
+                  내가 보낸 메시지
+                  <MessageContents className="message-content">
+                    {messageContent.message ? <span>{messageContent.message}</span> : null}
+                  </MessageContents>
+                </MessageInfo>
+              </Message>
+            ))}
+          </ViewArea>
+          <InputArea
+            className="messageInput"
+            type="text"
+            value={currentMessage}
+            placeholder="메시지 입력해주세요"
+            onChange={(event) => {
+              setcurrentMessage(event.target.value);
+            }}
+            onKeyPress={(event) => {
+              event.key === 'Enter' && sendMessage();
+            }}
+          />
+          <Btn onClick={sendMessage} type="button">
+            send
+          </Btn>
+        </RightSide>
       </Container>
     </Body>
   );
