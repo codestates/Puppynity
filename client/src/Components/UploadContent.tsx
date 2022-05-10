@@ -107,8 +107,6 @@ function UploadContent(): JSX.Element {
   };
 
   const formData: any = new FormData();
-  formData.append('img', file);
-  // 이미지만 폼데이터로 보내고, 나머지는 스트링타입으로 보내줘야한다.
 
   const handleFileChange = async (e: React.ChangeEvent<HTMLInputElement>) => {
     // const fileList = e.target.files;
