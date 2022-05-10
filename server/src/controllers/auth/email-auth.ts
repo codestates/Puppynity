@@ -25,7 +25,7 @@ const generateRandom = function(min:number,max:number){
 const number=generateRandom(111111,999999);
 
 const mailOptions={
-  from:'puppynity',
+  // from:`puppynity`,
   to:`${email}`,
   subject:'인증메일 ',
   text:'인증코드입니다'+number
