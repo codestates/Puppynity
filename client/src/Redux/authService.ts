@@ -17,7 +17,7 @@ const register = async (userData: IUserData) => {
   //     localStorage.setItem('user', JSON.stringify(response.data));
   //   }
   //   return response.data;
-  return axios.post('https://www.puppynity.gq/auth/signup', {
+  return axios.post(`${process.env.REACT_APP_BASE_URL}/auth/signup`, {
     userData,
   });
 };
@@ -29,7 +29,7 @@ const login = async (email: string, password: string) => {
   //   }
   //   return response.data;
   return axios
-    .post('https://www.puppynity.gq/auth/login', {
+    .post(`${process.env.REACT_APP_BASE_URL}/auth/login`, {
       email,
       password,
     })

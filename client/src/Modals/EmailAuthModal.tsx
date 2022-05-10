@@ -230,6 +230,21 @@ function EmailAuthModal(props: any) {
     dispatch(CLOSE_MODAL(false));
   };
 
+  // axios patch 함수
+  const editUserInfo = () => {
+    axios({
+      url: `${process.env.REACT_APP_BASE_URL}/users/:${userPk}`,
+      method: 'patch',
+      headers: { Authorization: `Bearer ${localStorage.getItem('token')}` },
+      data: { nickname: `${nickname}`, mobile: `${mobile}` },
+    }).then((res) => {
+      console.log(res);
+    });
+
+    closeModal();
+    window.location.replace('/mypage');
+  };
+
   // 하이픈 자동 생성
   const autoHypen = (event: React.KeyboardEvent<HTMLInputElement>) => {
     const regExp = /[^0-9]/g;
@@ -296,7 +311,7 @@ function EmailAuthModal(props: any) {
   // 처음 페이지 렌더링 시 axios get요청 (userinfo)
   useEffect(() => {
     axios({
-      url: `http://localhost:4000/users/:${userPk}`,
+      url: `${process.env.REACT_APP_BASE_URL}/users/:${userPk}`,
       method: 'get',
       headers: { Authorization: `Bearer ${localStorage.getItem('token')}` },
     }).then((res) => {

@@ -29,7 +29,7 @@ function Comment(): JSX.Element {
   const dispatch = useDispatch();
 
   React.useEffect(() => {
-    axios.get(`http://localhost:4000/posts/postId/comments`);
+    axios.get(`${process.env.REACT_APP_BASE_URL}/posts/postId/comments`);
   }, []);
 
   return (

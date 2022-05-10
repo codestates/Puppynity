@@ -146,7 +146,7 @@ function NavBar() {
 
   if (userPk !== 0 && localStorage.getItem('loginType') === 'email') {
     axios({
-      url: `http://localhost:4000/users/:${userPk}`,
+      url: `${process.env.REACT_APP_BASE_URL}/users/:${userPk}`,
       method: 'get',
       headers: { Authorization: `Bearer ${localStorage.getItem('token')}` },
     }).then((res) => {

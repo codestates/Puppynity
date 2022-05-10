@@ -30,7 +30,7 @@ function Content() {
   const submitComment = () => {
     // body: userid, 댓글 내용이 필요하다
 
-    axios.post(`http://localhost:4000/posts/1/comments`, { comment }).then((res) => {
+    axios.post(`${process.env.REACT_APP_BASE_URL}/posts/1/comments`, { comment }).then((res) => {
       if (res.status === 201) {
         console.log('잘 등록된듯?');
         console.log(res);

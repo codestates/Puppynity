@@ -99,7 +99,7 @@ function DeleteUserModal(props: any) {
     console.log(userPk);
     console.log(token);
     axios({
-      url: `http://localhost:4000/users/:${userPk}`,
+      url: `${process.env.REACT_APP_BASE_URL}/users/:${userPk}`,
       method: 'delete',
       data: { Authorization: `Bearer ${token}` },
     }).then((res) => {
