@@ -3,11 +3,11 @@ import { Link, Routes, Route, useNavigate } from 'react-router-dom';
 import styled from 'styled-components';
 import { useSelector, useDispatch } from 'react-redux'; // store에있는 상태 꺼내오기가능
 /* eslint-disable */
+
 import { setIsLogin, setUserPk, setLoginType } from '../Redux/authSlice';
 import LogoImg from '../Assets/puppynityLogo.svg';
 import KakaoLogin from '../Assets/kakao_login_medium.png';
 import axios from 'axios';
-import { access } from 'fs';
 
 const InputContainer = styled.div`
   align-items: center;
@@ -39,7 +39,6 @@ export default function Login() {
   // const [isLogin, setIsLogin] = useState<boolean>(false);
   // const { user, isLoading, isError, isSuccess, message } = useSelector((state) => state.auth);
 
-  // const { setIsLogin } = useSelector((state: any) => state.auth);
 
   //! 카카오 oauth 요청 url
   const KAKAO_AUTH_URL = `https://kauth.kakao.com/oauth/authorize?client_id=${process.env.REACT_APP_KAKAO_REST_API_KEY}&redirect_uri=${process.env.REACT_APP_KAKAO_REDIRECT_URI}&response_type=code`;
@@ -62,6 +61,10 @@ export default function Login() {
       )
       .then((res) => {
         if (res.data.accessToken) {
+
+          const userId = localStorage.setItem('user', JSON.stringify(res.data.id)); //! 유저 정보를 로컬 스토리지에 저장
+          console.log(res.data);
+
           localStorage.setItem('user', JSON.stringify(res.data)); //! 유저 정보를 로컬 스토리지에 저장
           dispatch(setUserPk({ userPk: res.data.id }));
           dispatch(setLoginType({ loginType: res.data.loginType }));
@@ -76,6 +79,9 @@ export default function Login() {
             setIsLogin({
               isLogin: true,
             }),
+            // setUserId({
+            //   action.payload = userId,
+            // }),
           );
           navigate('/');
         }
