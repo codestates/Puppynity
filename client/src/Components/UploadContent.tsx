@@ -148,15 +148,6 @@ function UploadContent(): JSX.Element {
   const handleContentChange = (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     if (title && text) {
-      // 사진은 없어도 게시물을 올려도되기때문
-      dispatch(
-        uploadContent({
-          title,
-          file,
-          text,
-          category,
-        }),
-      );
       axios
         .post(
           'http://localhost:4000/posts',
