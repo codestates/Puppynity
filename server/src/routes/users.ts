@@ -1,34 +1,34 @@
-import express from 'express';
-import { body, CustomValidator } from 'express-validator';
+import express from 'express'
+import { body, CustomValidator } from 'express-validator'
 
-import { validation } from '../middlewares/valdation';
-import { authentication } from '../middlewares/authentcation';
+import { validation } from '../middlewares/valdation'
+import { authentication } from '../middlewares/authentcation'
 
-import { createUserInfo } from '../controllers/users/createUserInfo';
-import { getUserIinfo } from '../controllers/users/getUserInfo';
-import { updateUserInfo } from '../controllers/users/updateUserInfo';
-import { deleteUserInfo } from '../controllers/users/deleteUserInfo';
-import { checkDuplicateEmails } from '../controllers/users/checkDuplicateEmails';
+import { createUserInfo } from '../controllers/users/createUserInfo'
+import { getUserIinfo } from '../controllers/users/getUserInfo'
+import { updateUserInfo } from '../controllers/users/updateUserInfo'
+import { deleteUserInfo } from '../controllers/users/deleteUserInfo'
+import { checkDuplicateEmails } from '../controllers/users/checkDuplicateEmails'
 
-const usersRouter = express.Router();
+const usersRouter = express.Router()
 //! 이름, 닉네임, 모바일 valdation 강화 필요
 // 비밀번호 validator
 const isValidPassword: CustomValidator = (value: string) => {
   const pwValidator = (pw: string): boolean => {
-    const pwRegExp = RegExp('^(?=.*[a-zA-z])(?=.*[0-9])(?=.*[$`~!@$!%*#^?&\\(\\)-_=+]).{8,20}$');
-    return pwRegExp.test(pw);
-  };
+    const pwRegExp = RegExp('^(?=.*[a-zA-z])(?=.*[0-9])(?=.*[$`~!@$!%*#^?&\\(\\)-_=+]).{8,20}$')
+    return pwRegExp.test(pw)
+  }
 
   if (pwValidator(value) === false) {
     return Promise.reject(
       '비밀번호는 영문, 숫자, 특수기호를 각각 1개이상 포함하고, 최소 8자 이상, 최대 20자 이하 여야 합니다.',
-    );
+    )
   }
-  return Promise.resolve(value);
-};
+  return Promise.resolve(value)
+}
 
 // 회원 상세 정보 확인
-usersRouter.get('/:userId', authentication, getUserIinfo);
+usersRouter.get('/:userId', authentication, getUserIinfo)
 // 회원 정보 생성(회원가입)
 usersRouter.post(
   '/',
@@ -75,7 +75,7 @@ usersRouter.post(
   ],
   validation,
   createUserInfo,
-);
+)
 // 회원 정보 변경
 usersRouter.patch(
   '/:userId',
@@ -99,9 +99,9 @@ usersRouter.patch(
   ],
   validation,
   updateUserInfo,
-);
+)
 // 회원 탈퇴
-usersRouter.delete('/:userId', authentication, deleteUserInfo);
+usersRouter.delete('/:userId', authentication, deleteUserInfo)
 
 // 이메일 중복 체크
 usersRouter.post(
@@ -118,5 +118,5 @@ usersRouter.post(
   ],
   validation,
   checkDuplicateEmails,
-);
-module.exports = usersRouter;
+)
+module.exports = usersRouter

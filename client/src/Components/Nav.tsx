@@ -1,8 +1,11 @@
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 import { NavLink as Link } from 'react-router-dom';
 import styled from 'styled-components';
-// import { useSelector } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
+import axios from 'axios';
 import LogoImg from '../Assets/puppynityLogo.svg';
+import { setIsLogout, setUserPk, setLoginType } from '../Redux/authSlice';
+
 // import LoginType from '../Redux/authSlice';
 
 const Nav = styled.div`
@@ -44,16 +47,6 @@ const NavMenu = styled.div`
   }
 `;
 
-const NavBtn = styled.div`
-  display: flex;
-  align-items: center;
-  margin-right: 24px;
-
-  @media screen and (max-width: 768px) {
-    dispaly: none;
-  }
-`;
-
 const NavBtnLink = styled(Link)`
   border-radius: 4px;
   background: #ffa224;
@@ -71,6 +64,34 @@ const NavBtnLink = styled(Link)`
     transition: all 0.2s ease-in-out;
     background: #fff;
     color: #ffa224;
+  }
+`;
+
+interface ILoginCheck {
+  loginStatus: boolean;
+}
+
+const NavBtn = styled.div<ILoginCheck>`
+  display: flex;
+  align-items: center;
+  margin-right: 24px;
+
+  @media screen and (max-width: 768px) {
+    dispaly: none;
+  }
+
+  ${NavBtnLink}:nth-child(2) {
+    ${(props) =>
+      props.loginStatus === true &&
+      `
+      background: #ff7b8f;
+      color: #fff;
+      
+      &:hover{
+        background: #fff;
+        color: #ff7b8f;
+      }
+    `}
   }
 `;
 
@@ -101,7 +122,48 @@ const NavLogo = styled(Link)`
 // ==========================여기까지 스타일===========================
 
 function NavBar() {
-  // const loginStatus = useSelector((state) => state.isLogin);
+  const loginStatus = useSelector((state: any) => state.auth.isLogin);
+  const loginState = useSelector((state: any) => state);
+  const { userPk, isLogin } = loginState.auth;
+  const dispatch = useDispatch();
+  const [isNickname, setIsNickname] = useState('');
+
+  console.log(loginState);
+  console.log(localStorage);
+
+  const logout = () => {
+    dispatch(setIsLogout(false));
+    dispatch(setUserPk({ userPk: 0 }));
+    dispatch(setLoginType({ loginType: '' }));
+    setIsNickname('');
+    localStorage.setItem('user', '');
+    localStorage.setItem('token', '');
+    localStorage.setItem('loginType', '');
+    localStorage.setItem('userPk', '');
+  };
+
+  const kakaoNick: any = localStorage.getItem('user');
+
+  if (userPk !== 0 && localStorage.getItem('loginType') === 'email') {
+    axios({
+      url: `http://localhost:4000/users/:${userPk}`,
+      method: 'get',
+      headers: { Authorization: `Bearer ${localStorage.getItem('token')}` },
+    }).then((res) => {
+      setIsNickname(res.data.userInfo.nickname);
+    });
+  }
+
+  useEffect(() => {
+    if (localStorage.getItem('loginType') === 'kakao') {
+      setIsNickname(kakaoNick);
+    }
+  }, [isNickname]);
+
+  useEffect(() => {
+    console.log(isLogin);
+  }, [isLogin]);
+
   return (
     <Nav>
       <NavLogo to="/" className={({ isActive }) => (isActive ? 'active' : 'inactive')}>
@@ -115,15 +177,20 @@ function NavBar() {
           채팅하기
         </NavLink>
       </NavMenu>
-      <NavBtn>
-        <NavBtnLink to="/signup">회원가입</NavBtnLink>
-        <NavBtnLink to="/login">로그인</NavBtnLink>
-      </NavBtn>
-      {/* isLogin 데려와서 3항연산 시전
-      <NavBtn>
-        <NavBtnLink to="/mypage">마이페이지</NavBtnLink>
-        <NavBtnLink to="/" --로그아웃 함수 자리-->로그아웃</NavBtnLink>
-      </NavBtn> */}
+
+      {loginStatus ? (
+        <NavBtn loginStatus={loginStatus}>
+          <NavBtnLink to="/mypage">{isNickname} 님 어서오세요</NavBtnLink>
+          <NavBtnLink to="/" onClick={logout}>
+            로그아웃
+          </NavBtnLink>
+        </NavBtn>
+      ) : (
+        <NavBtn loginStatus={false}>
+          <NavBtnLink to="/signup">회원가입</NavBtnLink>
+          <NavBtnLink to="/login">로그인</NavBtnLink>
+        </NavBtn>
+      )}
     </Nav>
   );
 }
