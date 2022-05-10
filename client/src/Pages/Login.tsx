@@ -49,13 +49,14 @@ export default function Login() {
     window.location.assign(KAKAO_AUTH_URL);
     dispatch(setIsLogin(true));
   };
+  // console.log(`${process.env.REACT_APP_BASE_URL}`)
 
   const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
 
     axios
       .post(
-        'http://localhost:4000/auth/login',
+        `${process.env.REACT_APP_BASE_URL}/auth/login`,
         { email, password },
         { headers: { 'Content-Type': 'application/json' }, withCredentials: true },
       )

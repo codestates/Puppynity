@@ -75,7 +75,7 @@ function ContentList(): JSX.Element {
   // const [visibleContents, setVisibleContents] = useState()
 
   React.useEffect(() => {
-    axios.get('http://localhost:4000/posts').then((res) => {
+    axios.get(`${process.env.REACT_APP_BASE_URL}/posts`).then((res) => {
       console.log(res);
       setDbContents(res.data.posts);
     });

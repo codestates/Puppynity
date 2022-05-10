@@ -11,7 +11,7 @@ const Body = styled.div`
   box-sizing: border-box;
   /* ======== */
   display: flex;
-  height: 500px;
+  height: 600px;
   width: 400px;
   justify-content: center;
   align-items: center;
@@ -95,7 +95,7 @@ const Btn = styled.button<IIsValidEdit>`
 const CloseBtn = styled.button`
   position: absolute;
   margin-left: 300px;
-  margin-bottom: 400px;
+  margin-bottom: 500px;
 `;
 
 const Input = styled.input`
@@ -129,18 +129,47 @@ const UploadBtn = styled.input`
   display: none;
 `;
 
+const AvatarBtn = styled.button`
+  height: 24px;
+  border-radius: 4px;
+  color: #fff;
+  border: none;
+  outline: none;
+  transition: all 0.2s ease-in-out;
+  text-decoration: none;
+  font-weight: bold;
+  background-color: #ffa224;
+  cursor: pointer;
+  margin-left: 120px;
+  margin-bottom: 20px;
+
+  background-color: #ffa224;
+  cursor: pointer;
+
+  &:hover {
+    transition: all 0.2s ease-in-out;
+    background: #fff;
+    color: #ffa224;
+  }
+`;
 // ==========================여기까지 스타일===========================
 
 function EmailAuthModal(props: any) {
   const [inputValue, setInputValue] = useState({
     nickname: '',
     mobile: '',
+    password: '',
+    avatarRef: null,
   });
-  const { nickname, mobile } = inputValue;
+  const { nickname, mobile, password, avatarRef } = inputValue;
   const [nicknameMsg, setNicknameMsg] = useState('닉네임은 3자 이상, 12자 이하 입니다.');
   const [mobileMsg, setMobileMsg] = useState('전화번호는 최소 11자 이상이어야 합니다.');
+  const [passwordMsg, setPasswordMsg] = useState(
+    '비밀번호는 영문, 숫자, 특수기호를 각각 1개 이상 포함하고, 최소 8자 이상, 최대 20자 이하여야 합니다.',
+  );
   const [validNickname, setValidNickname] = useState(false);
   const [validMobile, setValidMobile] = useState(false);
+  // const [validPassword, setValidPassword] = useState(false);
   const [validEdit, setValidEdit] = useState(false);
   const [profileImage, setProfileImage] = useState(
     'https://cdn.pixabay.com/photo/2015/10/05/22/37/blank-profile-picture-973460_1280.png',
@@ -151,7 +180,11 @@ function EmailAuthModal(props: any) {
   const { userPk } = loginState.auth;
   const [isNickname, setIsNickname] = useState('');
   const [isMobile, setIsMobile] = useState('');
+  const [isAvatarImg, setIsAvatarImg] = useState('');
   // ==========================상태===============================
+  const specialLetter = password.search(/[`~!@@#$%^&*|₩₩₩'₩";:₩/?]/gi);
+  const specialNumber = password.search(/[0-9]/gi);
+  const isValidPassword = password.length >= 8 && specialLetter >= 1 && password.length < 20 && specialNumber >= 1;
 
   const handleInput = (event: React.FormEvent<HTMLInputElement>) => {
     const { name, value } = event.currentTarget;
@@ -179,12 +212,17 @@ function EmailAuthModal(props: any) {
       setValidMobile(false);
     }
 
-    if (validNickname && validMobile) {
-      console.log(validEdit);
+    if (isValidPassword) {
+      setPasswordMsg('');
+    }
+
+    if (validNickname && validMobile && isValidPassword) {
       setValidEdit(true);
     } else {
       setValidEdit(false);
     }
+
+    console.log(inputValue);
   }, [inputValue]);
 
   const dispatch = useDispatch();
@@ -195,7 +233,7 @@ function EmailAuthModal(props: any) {
   // axios patch 함수
   const editUserInfo = () => {
     axios({
-      url: `http://localhost:4000/users/:${userPk}`,
+      url: `${process.env.REACT_APP_BASE_URL}/users/:${userPk}`,
       method: 'patch',
       headers: { Authorization: `Bearer ${localStorage.getItem('token')}` },
       data: { nickname: `${nickname}`, mobile: `${mobile}` },
@@ -229,7 +267,8 @@ function EmailAuthModal(props: any) {
     const onChangeFiles = event.currentTarget.files;
     if (!onChangeFiles) return;
     if (onChangeFiles['0']) {
-      setFiles(onChangeFiles['0']);
+      console.log(onChangeFiles);
+      console.log(onChangeFiles[0]);
     } else {
       setProfileImage('https://cdn.pixabay.com/photo/2015/10/05/22/37/blank-profile-picture-973460_1280.png');
     }
@@ -245,19 +284,81 @@ function EmailAuthModal(props: any) {
         setProfileImage(e.target.result);
       }
     };
+
+    // img onChange event
+
+    const formData: any = new FormData();
+    formData.append('img', onChangeFiles[0]);
+
+    //! 정태영: 파일 첨부와 동시에 서버로 이미지 파일 전송
+    axios
+      .post('http://localhost:4000/posts/upload', formData, {
+        // formData
+        headers: {
+          Authorization: `Bearer ${localStorage.getItem('token')}`,
+          'content-type': 'multipart/form-data',
+        },
+      })
+      .then((res) => {
+        console.log(res.data);
+        setInputValue({
+          ...inputValue,
+          avatarRef: res.data.imgRef,
+        });
+      });
   };
 
-  // axios get요청 (userinfo)
+  // 처음 페이지 렌더링 시 axios get요청 (userinfo)
   useEffect(() => {
     axios({
-      url: `http://localhost:4000/users/:${userPk}`,
+      url: `${process.env.REACT_APP_BASE_URL}/users/:${userPk}`,
       method: 'get',
       headers: { Authorization: `Bearer ${localStorage.getItem('token')}` },
     }).then((res) => {
+      console.log(typeof res.data.userInfo.avatarRef);
+      console.log(res.data.userInfo.avatarRef);
       setIsNickname(res.data.userInfo.nickname);
       setIsMobile(res.data.userInfo.mobile);
+      setIsAvatarImg(res.data.userInfo.avatarRef);
+      if (res.data.userInfo.avatarRef) {
+        setProfileImage(`http://localhost:4000/uploads/${res.data.userInfo.avatarRef}`);
+      }
+      if (res.data.userInfo.avatarRef === 'null') {
+        setProfileImage('https://cdn.pixabay.com/photo/2015/10/05/22/37/blank-profile-picture-973460_1280.png');
+      }
     });
-  }, [loginStatus]);
+  }, []);
+
+  // axios patch 함수
+  const editUserInfo = () => {
+    console.log(avatarRef);
+    console.log(typeof avatarRef);
+    if (avatarRef !== null) {
+      axios({
+        url: `http://localhost:4000/users/:${userPk}`,
+        method: 'patch',
+        headers: { Authorization: `Bearer ${localStorage.getItem('token')}` },
+        data: { nickname: `${nickname}`, mobile: `${mobile}`, password: `${password}`, avatarRef: `${avatarRef}` },
+      }).then((res) => {
+        console.log(res);
+      });
+    } else {
+      axios({
+        url: `http://localhost:4000/users/:${userPk}`,
+        method: 'patch',
+        headers: { Authorization: `Bearer ${localStorage.getItem('token')}` },
+        data: { nickname: `${nickname}`, mobile: `${mobile}`, password: `${password}`, avatarRef: `${avatarRef}` },
+      }).then((res) => {
+        console.log(res);
+      });
+    }
+    closeModal();
+    window.location.replace('/mypage');
+  };
+
+  const defaultImg = () => {
+    setProfileImage('https://cdn.pixabay.com/photo/2015/10/05/22/37/blank-profile-picture-973460_1280.png');
+  };
 
   // ==========================구현===============================
   return (
@@ -285,6 +386,9 @@ function EmailAuthModal(props: any) {
           />
         </ModalBox>
         <ModalBox>
+          <AvatarBtn onClick={defaultImg}>기본 프로필 사용하기</AvatarBtn>
+        </ModalBox>
+        <ModalBox>
           <Detail>닉네임 변경</Detail>
           <Input placeholder={isNickname} name="nickname" onChange={handleInput} />
         </ModalBox>
@@ -294,6 +398,11 @@ function EmailAuthModal(props: any) {
           <Input placeholder={isMobile} name="mobile" onChange={handleInput} onKeyUp={autoHypen} />
         </ModalBox>
         <ValidMsg>{mobileMsg}</ValidMsg>
+        <ModalBox>
+          <Detail>비밀번호 변경</Detail>
+          <Input name="password" onChange={handleInput} />
+        </ModalBox>
+        <ValidMsg>{passwordMsg}</ValidMsg>
         <ModalBox>
           <Btn onClick={editUserInfo} disabled={!validEdit} validEdit={validEdit}>
             수정하기

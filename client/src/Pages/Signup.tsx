@@ -199,8 +199,9 @@ function SignupPage() {
     mobile: '',
     password: '',
     confirmPassword: '',
+    avatarRef: null,
   });
-  const { username, nickname, email, mobile, password, confirmPassword } = inputValue;
+  const { username, nickname, email, mobile, password, confirmPassword, avatarRef } = inputValue;
   const [profileImage, setProfileImage] = useState(
     'https://cdn.pixabay.com/photo/2015/10/05/22/37/blank-profile-picture-973460_1280.png',
   );
@@ -288,7 +289,7 @@ function SignupPage() {
   useEffect(() => {
     axios({
       method: 'post',
-      url: 'http://localhost:4000/users/email-check',
+      url: `${process.env.REACT_APP_BASE_URL}/email-check`,
       data: {
         email,
       },
@@ -332,14 +333,14 @@ function SignupPage() {
       password,
       mobile,
       email,
-      // profileImage,
+      avatarRef,
     };
 
     console.log(data);
 
     axios({
       method: 'post',
-      url: 'http://localhost:4000/users',
+      url: `${process.env.REACT_APP_BASE_URL}/users`,
       data,
       headers: {
         'Content-Type': `application/json`,
@@ -384,6 +385,30 @@ function SignupPage() {
         setProfileImage(e.target.result);
       }
     };
+
+    console.log(onChangeFiles[0]);
+
+    const formData: any = new FormData();
+    formData.append('img', onChangeFiles[0]);
+
+    //! 정태영: 파일 첨부와 동시에 서버로 이미지 파일 전송
+    axios
+      .post('http://localhost:4000/posts/upload', formData, {
+        // formData
+        headers: {
+          Authorization: `Bearer ${localStorage.getItem('token')}`,
+          'content-type': 'multipart/form-data',
+        },
+      })
+      .then((res) => {
+        console.log(res.data);
+        setInputValue({
+          ...inputValue,
+          avatarRef: res.data.imgRef,
+        });
+      });
+
+    console.log(inputValue);
   };
 
   // 전화번호에 hypen 생성해주는 onkeyUp event
