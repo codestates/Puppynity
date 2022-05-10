@@ -59,8 +59,8 @@ function App() {
           <Route path="/signup" element={<Signup />} />
           <Route path="/community" element={<Community />} />
           <Route path="/chat" element={<Chat />} />
-          <Route path="/edituserinfo" element={<Mypage />} />
-          <Route path="/mypage" element={<EditUserInfo />} />
+          <Route path="/mypage" element={<Mypage />} />
+          <Route path="/edituserinfo" element={<EditUserInfo />} />
           <Route path="/contentdetail" element={<ContentDetail />} />
           {/* 추후 로딩 컴포넌트 만들어지면 라우팅 페이지로 넣어주세요*/}
           <Route path="/login/kakao/callback" element={<KakaoAuthLoading />} />
