@@ -1,26 +1,41 @@
-import express from 'express';
-import { body } from 'express-validator';
+import express from 'express'
+import multer from 'multer'
+import { body } from 'express-validator'
+import path from 'path'
 
-import { validation } from '../middlewares/valdation';
-import { authentication } from '../middlewares/authentcation';
+import { validation } from '../middlewares/valdation'
+import { authentication } from '../middlewares/authentcation'
 
-import { createPost } from '../controllers/posts/createPost';
-import { updatePost } from '../controllers/posts/updatePost';
-import { deletePost } from '../controllers/posts/deletePost';
-import { getPostDetail } from '../controllers/posts/getPostDetail';
+import { createPost } from '../controllers/posts/createPost'
+import { updatePost } from '../controllers/posts/updatePost'
+import { deletePost } from '../controllers/posts/deletePost'
+import { getPostsAndCountBy } from '../controllers/posts/getPostAndCountBy'
+import { getPostDetail } from '../controllers/posts/getPostDetail'
 
-import { createComment } from '../controllers/post_comments/createComment';
-import { updateComment } from '../controllers/post_comments/updateComment';
-import { deleteComment } from '../controllers/post_comments/deleteComment';
-import { getCommentsAndCount } from '../controllers/post_comments/getCommentsAndCount';
+import { createComment } from '../controllers/post_comments/createComment'
+import { updateComment } from '../controllers/post_comments/updateComment'
+import { deleteComment } from '../controllers/post_comments/deleteComment'
+import { getCommentsAndCount } from '../controllers/post_comments/getCommentsAndCount'
 
-const postsRouter = express.Router();
+const postsRouter = express.Router()
+
+// const storage = multer.diskStorage({
+//   destination: (req, file, cb) => {
+//     cb(null, '/images')
+//   },
+//   filename: (req, file, cb) => {
+//     const ext = path.extname(file.originalname)
+//     cb(null, path.basename(file.originalname, ext) + `-` + Date.now() + ext)
+//   },
+// })
+
+const upload = multer({ dest: '../images/' })
 
 // 게시물 목록 조회 페이지네이션, 검색 쿼리 받을 수 있도록
-// postsRouter.get('/', )
+postsRouter.get('/', getPostsAndCountBy)
 
 // 개시물 상세 조회
-postsRouter.get('/:postId', getPostDetail);
+postsRouter.get('/:postId', getPostDetail)
 
 // 게시물 생성
 postsRouter.post(
@@ -57,8 +72,9 @@ postsRouter.post(
       .withMessage('본문 내용을 입력해주세요'),
   ],
   validation,
+  upload.single('img'),
   createPost,
-);
+)
 
 // 게시물 수정
 postsRouter.patch(
@@ -83,13 +99,13 @@ postsRouter.patch(
   ],
   validation,
   updatePost,
-);
+)
 // 게시물 삭제
-postsRouter.delete('/:postId', authentication, deletePost);
+postsRouter.delete('/:postId', authentication, deletePost)
 
 //* ---
 // 댓글 전체 조회
-postsRouter.get('/:postId/comments', getCommentsAndCount);
+postsRouter.get('/:postId/comments', getCommentsAndCount)
 
 // 댓글 생성
 postsRouter.post(
@@ -103,7 +119,7 @@ postsRouter.post(
     .withMessage('댓글 내용을 입력해주세요'),
   validation,
   createComment,
-);
+)
 
 // 댓글 수정
 postsRouter.patch(
@@ -116,8 +132,8 @@ postsRouter.patch(
     .withMessage('수정할 댓글 내용을 한 글자 이상 입력해야합니다'),
   validation,
   updateComment,
-);
+)
 // 댓글 삭제
-postsRouter.delete('/:postId/comments/:commentId', authentication, deleteComment);
+postsRouter.delete('/:postId/comments/:commentId', authentication, deleteComment)
 
-module.exports = postsRouter;
+module.exports = postsRouter

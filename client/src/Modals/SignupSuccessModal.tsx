@@ -95,10 +95,8 @@ const CloseBtn = styled(Link)`
 
 // ==========================여기까지 스타일===========================
 
-function SignupSuccessModal(props: any) {
-  console.log(props);
+function SignupSuccessModal() {
   const dispatch = useDispatch();
-  const isSuccessOpen = useSelector((state: any) => state.signup.isSuccessModalOpen);
   const closeModal = () => {
     dispatch(CLOSE_SUCCESS_MODAL(false));
   };

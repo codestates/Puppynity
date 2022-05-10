@@ -18,6 +18,13 @@ export const emailLogin = async (req: Request, res: Response) => {
     return res.status(404).json({ message: '입력한 이메일 주소로 등록한 회원 정보가 없습니다. 회원가입 해주세요.' });
   }
 
+  // 카카오 계정인 경우 email 로그인 차단
+  if (userInfo.signupType === 'kakao') {
+    return res
+      .status(400)
+      .json({ message: '카카오 연동 회원입니다. 카카오 소셜 로그인 또는 이메일 회원 가입을 진행해주세요.' });
+  }
+
   // 비밀번호 검증
   try {
     const verifiedPassword = bcrypt.compare(password, userInfo.password);
@@ -38,5 +45,5 @@ export const emailLogin = async (req: Request, res: Response) => {
       secure: true,
       sameSite: 'none',
     })
-    .json({ id: userInfo.id, accessToken, message: 'email 로그인 성공' });
+    .json({ id: userInfo.id, accessToken, loginType: userInfo.signupType, message: 'email 로그인 성공' });
 };
