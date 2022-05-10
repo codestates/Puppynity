@@ -34,6 +34,7 @@ export const loginReq = createAsyncThunk('loginReq', async (email: IUserData, pa
     )
     .then((res) => {
       if (res.data.accessToken) {
+        console.log(res.data);
         localStorage.setItem('user', JSON.stringify(res.data));
       }
     });
@@ -41,6 +42,8 @@ export const loginReq = createAsyncThunk('loginReq', async (email: IUserData, pa
 
 const initialState = {
   isLogin: false,
+  userPk: 0,
+  loginType: '',
   // data: {
   //   accessToken: '',
   //   email: '',
@@ -55,6 +58,15 @@ export const authSlice = createSlice({
     setIsLogin: (state, action) => {
       /* eslint-disable */
       state.isLogin = true;
+    },
+    setIsLogout: (state, action) => {
+      state.isLogin = false;
+    },
+    setUserPk: (state, action) => {
+      state.userPk = action.payload.userPk;
+    },
+    setLoginType: (state, action) => {
+      state.loginType = action.payload.loginType;
     },
     // login: (state, action) => {
     //   state.userinfo = action.payload;
@@ -76,4 +88,4 @@ export const authSlice = createSlice({
 });
 
 export default authSlice.reducer;
-export const { setIsLogin } = authSlice.actions;
+export const { setIsLogin, setIsLogout, setUserPk, setLoginType } = authSlice.actions;
