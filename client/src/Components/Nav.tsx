@@ -165,33 +165,44 @@ function NavBar() {
   }, [isLogin]);
 
   return (
-    <Nav>
-      <NavLogo to="/" className={({ isActive }) => (isActive ? 'active' : 'inactive')}>
-        <img src={LogoImg} alt="LogoImg" width="50" height="50" />
-      </NavLogo>
-      <NavMenu>
-        <NavLink to="/community" className={({ isActive }) => (isActive ? 'active' : 'inactive')}>
-          커뮤니티
-        </NavLink>
-        <NavLink to="/chat" className={({ isActive }) => (isActive ? 'active' : 'inactive')}>
-          채팅하기
-        </NavLink>
-      </NavMenu>
-
+    <div>
       {loginStatus ? (
-        <NavBtn loginStatus={loginStatus}>
-          <NavBtnLink to="/mypage">{isNickname} 님 어서오세요</NavBtnLink>
-          <NavBtnLink to="/" onClick={logout}>
-            로그아웃
-          </NavBtnLink>
-        </NavBtn>
+        <Nav>
+          <NavLogo to="/" className={({ isActive }) => (isActive ? 'active' : 'inactive')}>
+            <img src={LogoImg} alt="LogoImg" width="50" height="50" />
+          </NavLogo>
+          <NavMenu>
+            <NavLink to="/community" className={({ isActive }) => (isActive ? 'active' : 'inactive')}>
+              커뮤니티
+            </NavLink>
+            <NavLink to="/chat" className={({ isActive }) => (isActive ? 'active' : 'inactive')}>
+              채팅하기
+            </NavLink>
+          </NavMenu>
+          <NavBtn loginStatus={loginStatus}>
+            <NavBtnLink to="/mypage">{isNickname} 님 어서오세요</NavBtnLink>
+            <NavBtnLink to="/" onClick={logout}>
+              로그아웃
+            </NavBtnLink>
+          </NavBtn>
+        </Nav>
       ) : (
-        <NavBtn loginStatus={false}>
-          <NavBtnLink to="/signup">회원가입</NavBtnLink>
-          <NavBtnLink to="/login">로그인</NavBtnLink>
-        </NavBtn>
+        <Nav>
+          <NavLogo to="/" className={({ isActive }) => (isActive ? 'active' : 'inactive')}>
+            <img src={LogoImg} alt="LogoImg" width="50" height="50" />
+          </NavLogo>
+          <NavMenu>
+            <NavLink to="/community" className={({ isActive }) => (isActive ? 'active' : 'inactive')}>
+              커뮤니티
+            </NavLink>
+          </NavMenu>
+          <NavBtn loginStatus={false}>
+            <NavBtnLink to="/signup">회원가입</NavBtnLink>
+            <NavBtnLink to="/login">로그인</NavBtnLink>
+          </NavBtn>
+        </Nav>
       )}
-    </Nav>
+    </div>
   );
 }
 

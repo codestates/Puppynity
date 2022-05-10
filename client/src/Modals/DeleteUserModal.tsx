@@ -96,6 +96,8 @@ function DeleteUserModal(props: any) {
     dispatch(setUserPk({ userPk: 0 }));
     dispatch(setLoginType({ loginType: '' }));
 
+    console.log(userPk);
+    console.log(token);
     axios({
       url: `${process.env.REACT_APP_BASE_URL}/users/:${userPk}`,
       method: 'delete',
