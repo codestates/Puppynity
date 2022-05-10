@@ -288,7 +288,7 @@ function SignupPage() {
   useEffect(() => {
     axios({
       method: 'post',
-      url: 'http://localhost:4000/users/email-check',
+      url: `${process.env.REACT_APP_BASE_URL}/email-check`,
       data: {
         email,
       },
@@ -339,7 +339,7 @@ function SignupPage() {
 
     axios({
       method: 'post',
-      url: 'http://localhost:4000/users',
+      url: `${process.env.REACT_APP_BASE_URL}/users`,
       data,
       headers: {
         'Content-Type': `application/json`,
