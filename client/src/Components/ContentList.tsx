@@ -109,7 +109,12 @@ function ContentList(): JSX.Element {
           {dbContents.map((post) => (
             <div key={post.id}>
               <ContentContainer>
-                <img src={post.imgref ? post.imgref : erorImg} alt="fromServer" height="100px" width="100px" />
+                <img
+                  src={post.imgRef ? `http://localhost:4000/uploads/${post.imgRef}` : erorImg}
+                  alt="fromServer"
+                  height="100px"
+                  width="100px"
+                />
                 <TitleContainer>{`[${post.category}] ` + post.title}</TitleContainer>
                 <UserinfoContainer>{post.username + post.createdAt}</UserinfoContainer>
               </ContentContainer>

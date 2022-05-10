@@ -9,6 +9,10 @@ export const uploadImg = async (req: Request, res: Response) => {
   console.log('이미지 업로드 🕹')
   console.log('업로드 파일 --->', req.file)
 
+  if (!req.file) {
+    return res.status(400).json({ message: '업로드 할 사진을 선택해주세요.' })
+  }
+
   //? 왜 POST psts/:id 요청 body에 userId를 담으라는지 당최 이해가 되지 않는다.
   const userId = req.userId
   const { title, content, category, img } = req.body

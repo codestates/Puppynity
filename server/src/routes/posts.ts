@@ -1,7 +1,7 @@
 import express from 'express'
 import multer from 'multer'
 import { body } from 'express-validator'
-import path from 'path'
+import path, { resolve } from 'path'
 
 import { validation } from '../middlewares/valdation'
 import { authentication } from '../middlewares/authentcation'
