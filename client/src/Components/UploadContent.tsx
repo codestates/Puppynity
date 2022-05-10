@@ -88,7 +88,10 @@ function UploadContent(): JSX.Element {
   const [title, setTitle] = useState<string>('');
   const [text, setText] = useState<string>('');
   const [fileUrl, setFileUrl] = useState<string>('');
-  const [file, setFile] = useState<File>();
+
+  //! 정태영: 사진 업로드 후 받은 이미지 제목
+  const [imgRef, setImgRef] = useState<string>('');
+
   const [category, setCategory] = useState<string>('');
   const navigate = useNavigate();
   const handleTitleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -104,18 +107,14 @@ function UploadContent(): JSX.Element {
   };
 
   const formData: any = new FormData();
-  formData.append('img', file);
-  // 이미지만 폼데이터로 보내고, 나머지는 스트링타입으로 보내줘야한다.
 
-  const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+  const handleFileChange = async (e: React.ChangeEvent<HTMLInputElement>) => {
     // const fileList = e.target.files;
 
     const reader = new FileReader();
     if (!e.target.files) {
       return;
     }
-    setFile(e.target.files[0]);
-    //formData.append('file', e.target.files[0]); //formdata에 선택된 파일을 담아준다. 근데 얘 필요없을수도..?
 
     if (e.target.files[0]) {
       reader.readAsDataURL(e.target.files[0]);
@@ -127,6 +126,21 @@ function UploadContent(): JSX.Element {
         setFileUrl(previewImg);
       }
     };
+    formData.append('img', e.target.files[0]);
+
+    //! 정태영: 파일 첨부와 동시에 서버로 이미지 파일 전송
+    axios
+      .post('http://localhost:4000/posts/upload', formData, {
+        // formData
+        headers: {
+          Authorization: `Bearer ${localStorage.getItem('token')}`, //undefined
+          'content-type': 'multipart/form-data',
+        },
+      })
+      .then((res) => {
+        console.log(res.data);
+        setImgRef(res.data.imgRef);
+      });
   };
 
   const handleContentChange = (e: React.FormEvent<HTMLFormElement>) => {
@@ -136,9 +150,10 @@ function UploadContent(): JSX.Element {
         .post(
           'http://localhost:4000/posts',
           {
-            title: title,
-            img: formData,
-            category: category,
+            title,
+            //! 정태영: 사진 업로드 요청 후 받은 응답(파일이름)
+            imgRef,
+            category,
             content: text,
           },
           {
@@ -155,8 +170,6 @@ function UploadContent(): JSX.Element {
           console.log(formData.get('img'));
           console.log(res.data);
         });
-      console.log('==============================');
-      console.log(formData.get('img'));
       setTitle(''); //로컬 상태들은 다시 빈 값으로 돌려준다.
       setText('');
       //setFile();

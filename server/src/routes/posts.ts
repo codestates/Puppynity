@@ -16,20 +16,24 @@ import { createComment } from '../controllers/post_comments/createComment'
 import { updateComment } from '../controllers/post_comments/updateComment'
 import { deleteComment } from '../controllers/post_comments/deleteComment'
 import { getCommentsAndCount } from '../controllers/post_comments/getCommentsAndCount'
+import { uploadImg } from '../controllers/posts/uploadImg'
 
 const postsRouter = express.Router()
 
-// const storage = multer.diskStorage({
-//   destination: (req, file, cb) => {
-//     cb(null, '/images')
-//   },
-//   filename: (req, file, cb) => {
-//     const ext = path.extname(file.originalname)
-//     cb(null, path.basename(file.originalname, ext) + `-` + Date.now() + ext)
-//   },
-// })
+const storage = multer.diskStorage({
+  destination: (req, file, cb) => {
+    cb(null, 'src/images/')
+  },
+  filename: (req, file, cb) => {
+    const ext = path.extname(file.originalname)
+    cb(null, path.basename(file.originalname, ext) + `-` + Date.now() + ext)
+  },
+})
 
-const upload = multer({ dest: '../images/' })
+const upload = multer({ storage: storage })
+
+//! 이미지 업로드
+postsRouter.post('/upload', upload.single('img'), uploadImg)
 
 // 게시물 목록 조회 페이지네이션, 검색 쿼리 받을 수 있도록
 postsRouter.get('/', getPostsAndCountBy)

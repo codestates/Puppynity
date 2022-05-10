@@ -8,7 +8,7 @@ export const createPost = async (req: Request, res: Response) => {
   console.log('파일--->', req.file, 'body 객체 --->', req.body)
   //? 왜 POST psts/:id 요청 body에 userId를 담으라는지 당최 이해가 되지 않는다.
   const userId = req.userId
-  const { title, content, category, img } = req.body
+  const { title, content, category, imgRef } = req.body
 
   const userInfo = await User.findOne({ id: userId })
 
@@ -16,7 +16,7 @@ export const createPost = async (req: Request, res: Response) => {
     return res.status(403).json({ message: '작성자의 회원 정보가 없습니다' })
   }
   //! 추후 이미지 업로드 구현시 수정
-  const createdPost = await Post.create({ title, content, category, writer: userInfo })
+  const createdPost = await Post.create({ title, content, category, imgRef, writer: userInfo })
   const savedPost = await createdPost.save()
 
   savedPost.writer.password = ''
