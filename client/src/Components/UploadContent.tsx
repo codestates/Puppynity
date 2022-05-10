@@ -167,7 +167,6 @@ function UploadContent(): JSX.Element {
         )
         .then((res) => {
           console.log('컨텐츠 업로드 완료');
-          console.log(formData.get('img'));
           console.log(res.data);
         });
       setTitle(''); //로컬 상태들은 다시 빈 값으로 돌려준다.

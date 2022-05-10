@@ -1,7 +1,7 @@
 import express from 'express'
 import multer from 'multer'
 import { body } from 'express-validator'
-import path from 'path'
+import path, { resolve } from 'path'
 
 import { validation } from '../middlewares/valdation'
 import { authentication } from '../middlewares/authentcation'
@@ -22,7 +22,7 @@ const postsRouter = express.Router()
 
 const storage = multer.diskStorage({
   destination: (req, file, cb) => {
-    cb(null, 'src/images/')
+    cb(null, 'uploads/')
   },
   filename: (req, file, cb) => {
     const ext = path.extname(file.originalname)
