@@ -107,11 +107,7 @@ function UploadContent(): JSX.Element {
   };
 
   const formData: any = new FormData();
-<<<<<<< HEAD
-
-=======
   formData.append('img', file);
->>>>>>> 97eed1647188c802268971a1fede5129b247f23b
   // 이미지만 폼데이터로 보내고, 나머지는 스트링타입으로 보내줘야한다.
 
   const handleFileChange = async (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -152,8 +148,6 @@ function UploadContent(): JSX.Element {
   const handleContentChange = (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     if (title && text) {
-<<<<<<< HEAD
-=======
       // 사진은 없어도 게시물을 올려도되기때문
       dispatch(
         uploadContent({
@@ -163,7 +157,6 @@ function UploadContent(): JSX.Element {
           category,
         }),
       );
->>>>>>> 97eed1647188c802268971a1fede5129b247f23b
       axios
         .post(
           'http://localhost:4000/posts',
@@ -185,18 +178,12 @@ function UploadContent(): JSX.Element {
         )
         .then((res) => {
           console.log('컨텐츠 업로드 완료');
-<<<<<<< HEAD
-=======
           console.log(formData.get('img'));
           console.log(res.data);
->>>>>>> 97eed1647188c802268971a1fede5129b247f23b
         });
       setTitle(''); //로컬 상태들은 다시 빈 값으로 돌려준다.
       setText('');
-<<<<<<< HEAD
-=======
       //setFile();
->>>>>>> 97eed1647188c802268971a1fede5129b247f23b
       formData.delete('file'); // formdata 초기화
       navigate('/community');
     }
