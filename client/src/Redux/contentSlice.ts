@@ -50,7 +50,7 @@ export const postContents = createAsyncThunk('POST/CONTENTS', async () => {
   // ajax를 요청하고 promise객체를 리턴받는 함수를 여기에 사용.
   await axios({
     method: 'post',
-    url: 'http://localhost:4000/posts',
+    url: `${process.env.REACT_APP_BASE_URL}`,
     headers: {
       'Content-Type': 'multipart/form-data',
     },

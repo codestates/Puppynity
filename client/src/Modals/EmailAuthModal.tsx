@@ -195,7 +195,7 @@ function EmailAuthModal(props: any) {
   // axios patch 함수
   const editUserInfo = () => {
     axios({
-      url: `http://localhost:4000/users/:${userPk}`,
+      url: `${process.env.REACT_APP_BASE_URL}/users/:${userPk}`,
       method: 'patch',
       headers: { Authorization: `Bearer ${localStorage.getItem('token')}` },
       data: { nickname: `${nickname}`, mobile: `${mobile}` },
@@ -250,7 +250,7 @@ function EmailAuthModal(props: any) {
   // axios get요청 (userinfo)
   useEffect(() => {
     axios({
-      url: `http://localhost:4000/users/:${userPk}`,
+      url: `${process.env.REACT_APP_BASE_URL}/users/:${userPk}`,
       method: 'get',
       headers: { Authorization: `Bearer ${localStorage.getItem('token')}` },
     }).then((res) => {
