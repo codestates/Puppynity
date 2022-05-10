@@ -3,7 +3,7 @@ import styled from 'styled-components';
 import { useDispatch, useSelector } from 'react-redux';
 import { useNavigate } from 'react-router-dom';
 import axios from 'axios';
-import { uploadContent } from '../Redux/contentSlice';
+// import { uploadContent } from '../Redux/contentSlice';
 /* eslint-disable */
 
 // export interface IImageProps {
@@ -88,7 +88,7 @@ function UploadContent(): JSX.Element {
   const [title, setTitle] = useState<string>('');
   const [text, setText] = useState<string>('');
   const [fileUrl, setFileUrl] = useState<string>('');
-  const [file, setFile] = useState<string | Blob>('');
+  const [file, setFile] = useState<File>();
   const [category, setCategory] = useState<string>('');
   const navigate = useNavigate();
   const handleTitleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -120,6 +120,7 @@ function UploadContent(): JSX.Element {
     if (e.target.files[0]) {
       reader.readAsDataURL(e.target.files[0]);
     }
+
     reader.onloadend = () => {
       const previewImg: string = reader.result as string;
       if (previewImg) {
@@ -131,15 +132,6 @@ function UploadContent(): JSX.Element {
   const handleContentChange = (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     if (title && text) {
-      // 사진은 없어도 게시물을 올려도되기때문
-      dispatch(
-        uploadContent({
-          title,
-          file,
-          text,
-          category,
-        }),
-      );
       axios
         .post(
           'http://localhost:4000/posts',
@@ -180,7 +172,7 @@ function UploadContent(): JSX.Element {
   return (
     <div>
       <h2> 게시물을 올려보세요! </h2>
-      <form onSubmit={handleContentChange}>
+      <form onSubmit={handleContentChange} encType="multipart/form-data">
         {/* <InputStyle
           onChange={handleTitleChange}
           type="input"
@@ -210,7 +202,6 @@ function UploadContent(): JSX.Element {
             카테고리를 선택해주세요
           </option>
           <option value="informational">팁/노하우</option>
-          <option value="brag">댕댕이자랑</option>
           <option value="Q&A">질문</option>
           <option value="dailyLog">일상공유&수다</option>
         </Selector>
