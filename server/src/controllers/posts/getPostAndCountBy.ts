@@ -21,5 +21,5 @@ export const getPostsAndCountBy = async (req: Request, res: Response) => {
   //! 추후 이미지 업로드 구현시 보완 필요
   const postsList = await Post.find()
   console.log(postsList)
-  res.status(200).json({ messgage: '전체 게시물 목록을 불러왔습니다.' })
+  res.status(200).json({ posts: postsList, messgage: '전체 게시물 목록을 불러왔습니다.' })
 }

@@ -10,7 +10,11 @@ import contentReducer from './contentSlice';
 import authReducer from './authSlice';
 import categoryReducer from './categorySlice';
 import signupReducer from './signupSlice';
+
+import { commentReducer } from './commentSlice';
+
 import mypageReducer from './mypageSlice';
+
 
 const persistConfig = {
   key: 'root',
@@ -22,7 +26,11 @@ const reducers = combineReducers({
   auth: authReducer,
   category: categoryReducer,
   signup: signupReducer,
+
+  comment: commentReducer,
+
   mypage: mypageReducer,
+
 });
 
 const persistedReducer = persistReducer(persistConfig, reducers);
