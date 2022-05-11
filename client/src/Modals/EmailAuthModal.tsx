@@ -231,19 +231,19 @@ function EmailAuthModal(props: any) {
   };
 
   // axios patch 함수
-  const editUserInfo = () => {
-    axios({
-      url: `${process.env.REACT_APP_BASE_URL}/users/:${userPk}`,
-      method: 'patch',
-      headers: { Authorization: `Bearer ${localStorage.getItem('token')}` },
-      data: { nickname: `${nickname}`, mobile: `${mobile}` },
-    }).then((res) => {
-      console.log(res);
-    });
+  // const editUserInfo = () => {
+  //   axios({
+  //     url: `${process.env.REACT_APP_BASE_URL}/users/:${userPk}`,
+  //     method: 'patch',
+  //     headers: { Authorization: `Bearer ${localStorage.getItem('token')}` },
+  //     data: { nickname: `${nickname}`, mobile: `${mobile}` },
+  //   }).then((res) => {
+  //     console.log(res);
+  //   });
 
-    closeModal();
-    window.location.replace('/mypage');
-  };
+  //   closeModal();
+  //   window.location.replace('/mypage');
+  // };
 
   // 하이픈 자동 생성
   const autoHypen = (event: React.KeyboardEvent<HTMLInputElement>) => {

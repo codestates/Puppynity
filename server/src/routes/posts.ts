@@ -9,7 +9,7 @@ import { authentication } from '../middlewares/authentcation'
 import { createPost } from '../controllers/posts/createPost'
 import { updatePost } from '../controllers/posts/updatePost'
 import { deletePost } from '../controllers/posts/deletePost'
-import { getPostsAndCountBy } from '../controllers/posts/getPostAndCountBy'
+import { getPostsByQuery } from '../controllers/posts/getPostsByQuery'
 import { getPostDetail } from '../controllers/posts/getPostDetail'
 
 import { createComment } from '../controllers/post_comments/createComment'
@@ -36,7 +36,7 @@ const upload = multer({ storage: storage })
 postsRouter.post('/upload', upload.single('img'), uploadImg)
 
 // 게시물 목록 조회 페이지네이션, 검색 쿼리 받을 수 있도록
-postsRouter.get('/', getPostsAndCountBy)
+postsRouter.get('/', getPostsByQuery)
 
 // 개시물 상세 조회
 postsRouter.get('/:postId', getPostDetail)
