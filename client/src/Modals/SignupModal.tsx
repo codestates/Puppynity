@@ -99,6 +99,7 @@ function SignupModal(props: any) {
         headers: {
           'Content-Type': `application/json`,
           withCredentials: true,
+          loginType: localStorage.getItem('loginType'),
         },
       })
         .then((res: any) => {

@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import styled from 'styled-components';
+import { useNavigate, NavLink as Link } from 'react-router-dom';
 import { useDispatch, useSelector } from 'react-redux';
-import { NavLink as Link } from 'react-router-dom';
 import axios from 'axios';
 import { DELETE_USER_MODAL_CLOSE } from '../Redux/mypageSlice';
 import { setIsLogout, setUserPk, setLoginType } from '../Redux/authSlice';
@@ -80,6 +80,7 @@ function DeleteUserModal(props: any) {
 
   console.log(localStorage);
   const dispatch = useDispatch();
+  const navigate = useNavigate();
   const closeModal = () => {
     dispatch(DELETE_USER_MODAL_CLOSE(false));
   };
@@ -88,6 +89,13 @@ function DeleteUserModal(props: any) {
   const token = localStorage.getItem('token');
 
   const handleDelete = () => {
+    axios({
+      url: `${process.env.REACT_APP_BASE_URL}/users/:${userPk}`,
+      method: 'delete',
+      data: { Authorization: `Bearer ${token}`, loginType: localStorage.getItem('loginType') },
+    }).then((res) => {
+      console.log(res);
+    });
     localStorage.setItem('user', '');
     localStorage.setItem('token', '');
     localStorage.setItem('loginType', '');
@@ -108,6 +116,7 @@ function DeleteUserModal(props: any) {
 
     closeModal();
     // window.location.replace('/');
+
   };
   // ==========================구현===============================
   return (
