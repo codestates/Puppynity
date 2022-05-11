@@ -4,7 +4,7 @@ import styled from 'styled-components';
 import { useDispatch, useSelector } from 'react-redux';
 import axios from 'axios';
 import LogoImg from '../Assets/puppynityLogo.svg';
-import { setUserPk, setLoginType, setIsLogin } from '../Redux/authSlice';
+import { setIsLogin, setUserPk, setLoginType } from '../Redux/authSlice';
 
 // import LoginType from '../Redux/authSlice';
 

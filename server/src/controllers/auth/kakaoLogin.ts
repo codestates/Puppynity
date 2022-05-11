@@ -18,12 +18,16 @@ export const kakaoLogin = async (req: Request, res: Response) => {
     console.log(access_token)
 
     // 카카오에 유저 정보 조회
-    const kakaoInfoApiResp = await axios.get('https://kapi.kakao.com/v2/user/me', {
-      headers: {
-        Authorization: `Bearer ${access_token}`,
-        Accept: 'application/x-www-form-urlencoded;charset=utf-8',
-      },
-    })
+    const kakaoInfoApiResp = await axios
+      .get('https://kapi.kakao.com/v2/user/me', {
+        headers: {
+          Authorization: `Bearer ${access_token}`,
+          Accept: 'application/x-www-form-urlencoded;charset=utf-8',
+        },
+      })
+      .catch((error) => {
+        console.log(error)
+      })
     // 필수 동의 항목 체크시
     const { id: kakaoId } = kakaoInfoApiResp.data
     //! 사진 업로드 구현시 db에 프로필 사진도 업로드 되도록 해야함
@@ -48,8 +52,7 @@ export const kakaoLogin = async (req: Request, res: Response) => {
     createdUser.nickname = nickname
     createdUser.kakaoId = kakaoId
     createdUser.signupType = 'kakao'
-    createdUser.save()
-
+    const savedUserInfo = await createdUser.save()
     res
       .cookie('refreshToken', refresh_token, {
         maxAge: 1000 * 60 * 60 * 24 * 7,
@@ -59,7 +62,7 @@ export const kakaoLogin = async (req: Request, res: Response) => {
       })
       .status(201)
       .json({
-        id: createdUser.id,
+        id: savedUserInfo.id,
         accessToken: access_token,
         nickname: createdUser.nickname,
         loginType: createdUser.signupType,

@@ -4,7 +4,7 @@ import { useNavigate, NavLink as Link } from 'react-router-dom';
 import { useDispatch, useSelector } from 'react-redux';
 import axios from 'axios';
 import { DELETE_USER_MODAL_CLOSE } from '../Redux/mypageSlice';
-import { setUserPk, setLoginType, setIsLogin } from '../Redux/authSlice';
+import { setIsLogin, setUserPk, setLoginType } from '../Redux/authSlice';
 
 const Body = styled.div`
   margin: 0;
@@ -90,9 +90,9 @@ function DeleteUserModal(props: any) {
 
   const handleDelete = () => {
     axios({
-      url: `${process.env.REACT_APP_BASE_URL}/users/:${userPk}`,
+      url: `${process.env.REACT_APP_BASE_URL}/users/${userPk}`,
       method: 'delete',
-      data: { Authorization: `Bearer ${token}`, loginType: localStorage.getItem('loginType') },
+      headers: { Authorization: `Bearer ${token}`, loginType: localStorage.getItem('loginType') },
     }).then((res) => {
       console.log(res);
     });

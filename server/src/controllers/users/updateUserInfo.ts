@@ -12,14 +12,19 @@ export const updateUserInfo = async (req: Request, res: Response) => {
   const { password, name, nickname, mobile, avatarRef } = req.body
 
   // 바디에 아무 값도 없을 경우 early return
-  if (!password && !name && !nickname && !mobile) {
+  if (!password && !name && !nickname && !mobile && avatarRef) {
     return res.sendStatus(200)
   }
 
-  // req.id에 저장된 값을 이용하여 유저정보 find
-  const userId = req.userId
+  const paramId = Number(req.params.userId)
+
+  // 본인 계정 삭제 요청이 아니면
+  if (paramId !== req.userId) {
+    res.status(403).json({ message: '다른 유저의 정보는 수정할 수 없습니다.' })
+  }
+
   const userInfo = await User.findOne({
-    where: { id: userId },
+    where: { id: paramId },
   })
 
   if (userInfo === undefined) {

@@ -66,7 +66,6 @@ export const authSlice = createSlice({
       /* eslint-disable */
       state.isLogin = action.payload.isLogin;
     },
-
     setUserId: (state, action) => {
       state.userId = action.payload;
     },

@@ -26,6 +26,7 @@ export default function KakaoAuthLoading() {
       console.log('카카오 토큰 ===> ', resp.data.accessToken);
       console.log('로그인 타입 ---> ', resp.data.loginType);
       console.log('닉네임 ---> ', resp.data.nickname);
+      console.log('data ---> ', resp.data);
       axios.defaults.headers.common['Authorization'] = `Bearer ${resp.data.accessToken}`;
       localStorage.setItem('user', resp.data.nickname);
       localStorage.setItem('token', resp.data.accessToken);
@@ -37,6 +38,7 @@ export default function KakaoAuthLoading() {
         }),
       );
       window.location.replace('/');
+      dispatch(setIsLogin({ isLogin: true }));
     } catch (err: any) {
       console.log(err.data);
     }
