@@ -47,7 +47,7 @@ const initialState = {
 
   userPk: 0,
   loginType: '',
-
+  content: [],
   // data: {
   //   accessToken: '',
   //   email: '',
@@ -76,6 +76,7 @@ export const authSlice = createSlice({
     setLoginType: (state, action) => {
       state.loginType = action.payload.loginType;
     },
+
     // login: (state, action) => {
     //   state.userinfo = action.payload;
     //   console.log('local state에 로그인정보가 잘 들어오나?');

@@ -1,7 +1,7 @@
 import axios from 'axios';
 import React, { useEffect, useState, useCallback, SetStateAction, useRef } from 'react';
 import { useSelector } from 'react-redux';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, Link, useParams } from 'react-router-dom';
 import styled from 'styled-components';
 import IContentType from '../Redux/contentSlice';
 // import RootState, { selectAllContents } from '../Redux/contentSlice';
@@ -11,16 +11,16 @@ import IContentType from '../Redux/contentSlice';
 
 /* eslint-disable */
 const ContentContainer = styled.div`
-  width: '120px';
-  height: '120px';
+  width: 120px;
+  height: 120px;
   margin: 5px;
   padding: 10px;
   border: solid;
 `;
 
 const TitleContainer = styled.div`
-  width: '80px';
-  height: '70px';
+  width: 80px;
+  height: 70px;
   font-size: 10px;
 `;
 
@@ -111,7 +111,6 @@ interface IDBContentType {
   content: string;
   createdAt: string;
 }
-interface IDBContentType extends Array<IDBContentType> {}
 
 function ContentList(): JSX.Element {
   // const [contentList, setContentList] = useState<Array<string>>([...dummyContents]);
@@ -119,7 +118,6 @@ function ContentList(): JSX.Element {
   const navigate = useNavigate();
   const erorImg = 'https://upload.wikimedia.org/wikipedia/commons/thumb/f/f0/Error.svg/1200px-Error.svg.png';
   const contents = useSelector((state: any) => state.content); // redux에 저장된 상태를 참조한다.
-
   // const [visiblePosts, setVisiblePosts] = useState(0); // for pagenation.
   const [dbContents, setDbContents] = useState<any[]>([]); // used Union type!
   // const [visibleContents, setVisibleContents] = useState()
@@ -195,15 +193,10 @@ function ContentList(): JSX.Element {
   };
   //! --------------
 
-  const renderedContnents = contents.map((content: IContentType) => (
-    <div key={content.id}>
-      <ContentContainer>
-        <img src={content.picture} alt="" width="80px" height="100px" />
-        <TitleContainer>{`[${content.category}]` + content.title}</TitleContainer>
-        <UserinfoContainer>{content.username + ' ' + content.createdAt}</UserinfoContainer>
-      </ContentContainer>
-    </div>
-  ));
+  const handleDetail = () => {
+    console.log(contents.id);
+    //navigate(`/posts/${contents.id}`);
+  };
 
   const redirectToContentDetail = (e: React.MouseEvent<HTMLInputElement>) => {
     // onClick event로 해당 게시물의 원래 주소(페이지)를 띄어준다.

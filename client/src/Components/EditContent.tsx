@@ -3,6 +3,7 @@ import styled from 'styled-components';
 import { useDispatch, useSelector } from 'react-redux';
 import { useNavigate } from 'react-router-dom';
 import axios from 'axios';
+import { deleteContent, ContentType } from '../Redux/contentSlice';
 // import { uploadContent } from '../Redux/contentSlice';
 /* eslint-disable */
 
@@ -84,8 +85,8 @@ const Selector = styled.select`
 // TODO: 이미지와 그 외 데이터 분기해서 서버에 보내줘야한다.
 // 그 외 필요한 거: 여기서 로그인된 유저정보를 받아와야한다.
 
-function UploadContent(): JSX.Element {
-  const [title, setTitle] = useState<string>('');
+function EditContent(): JSX.Element {
+  const [title, setTitle] = useState<string>(''); // 여기에 Props로 내려받은 기존 게시글 정보가 담겨있어야한다
   const [text, setText] = useState<string>('');
   const [fileUrl, setFileUrl] = useState<string>('');
 
@@ -93,6 +94,12 @@ function UploadContent(): JSX.Element {
   const [imgRef, setImgRef] = useState<string>('');
 
   const [category, setCategory] = useState<string>('');
+
+  //const { data } = useSelector((state) => state);
+
+  const data = useSelector((state: any) => state.content);
+  console.log(data);
+
   const navigate = useNavigate();
   const handleTitleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     setTitle(e.target.value);
@@ -130,7 +137,7 @@ function UploadContent(): JSX.Element {
 
     //! 정태영: 파일 첨부와 동시에 서버로 이미지 파일 전송
     axios
-      .post(`${process.env.REACT_APP_BASE_URL}/posts/upload`, formData, {
+      .post('http://localhost:4000/posts/upload', formData, {
         // formData
         headers: {
           Authorization: `Bearer ${localStorage.getItem('token')}`, //undefined
@@ -148,7 +155,7 @@ function UploadContent(): JSX.Element {
     if (title && text) {
       axios
         .post(
-          `${process.env.REACT_APP_BASE_URL}/posts`,
+          'http://localhost:4000/posts',
           {
             title,
             //! 정태영: 사진 업로드 요청 후 받은 응답(파일이름)
@@ -167,12 +174,14 @@ function UploadContent(): JSX.Element {
         )
         .then((res) => {
           console.log('컨텐츠 업로드 완료');
+          console.log(formData.get('img'));
           console.log(res.data);
         });
       setTitle(''); //로컬 상태들은 다시 빈 값으로 돌려준다.
       setText('');
       //setFile();
       formData.delete('file'); // formdata 초기화
+      dispatch(deleteContent());
       navigate('/community');
     }
   };
@@ -228,4 +237,4 @@ function UploadContent(): JSX.Element {
   );
 }
 
-export default UploadContent;
+export default EditContent;

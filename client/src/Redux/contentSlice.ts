@@ -16,78 +16,63 @@ export interface IContentType {
   category: string;
   createdAt: string;
 }
-const initialState = [
-  {
-    id: dummyContents[0].id,
-    title: dummyContents[0].title,
-    username: dummyContents[0].username,
-    picture: dummyContents[0].picture, // 사진 자체를 multer을 사용해 보내야하는데 form data는 어떤 타입인가...?
-    text: dummyContents[0].text,
-    category: '댕댕이자랑',
-    createdAt: dummyContents[0].createdAt,
-  },
-  {
-    id: dummyContents[1].id,
-    title: dummyContents[1].title,
-    username: dummyContents[1].username,
-    picture: dummyContents[1].picture,
-    text: dummyContents[1].text,
-    category: '댕댕이자랑',
-    createdAt: dummyContents[1].createdAt,
-  },
-  {
-    id: dummyContents[2].id,
-    title: dummyContents[2].title,
-    username: dummyContents[2].username,
-    picture: dummyContents[2].picture,
-    text: dummyContents[2].text,
-    category: '댕댕이자랑',
-    createdAt: dummyContents[2].createdAt,
-  },
-];
 
-export const postContents = createAsyncThunk('POST/CONTENTS', async () => {
-  // ajax를 요청하고 promise객체를 리턴받는 함수를 여기에 사용.
-  await axios({
-    method: 'post',
-    url: `${process.env.REACT_APP_BASE_URL}`,
-    headers: {
-      'Content-Type': 'multipart/form-data',
-    },
-  }).then((res) => console.log(res));
-});
+// const initialState = [
+//   {
+//     id: dummyContents[0].id,
+//     title: dummyContents[0].title,
+//     username: dummyContents[0].username,
+//     picture: dummyContents[0].picture, // 사진 자체를 multer을 사용해 보내야하는데 form data는 어떤 타입인가...?
+//     text: dummyContents[0].text,
+//     category: '댕댕이자랑',
+//     createdAt: dummyContents[0].createdAt,
+//   },
+// ];
+export interface ContentType {
+  id: number;
+  title: string;
+  username: string;
+  imgref?: string;
+  content: string;
+  param: string;
+}
+// const initialState = {
+//   contents: [0],
+// };
 
 export const contentSlice = createSlice({
   name: 'contents',
-  initialState,
+  initialState: [],
   reducers: {
-    uploadContent: (state, action) => {
-      // content를 올렸을 때?
-      // 아무것도 없는 게시물에 IcontentType의 타입들의 데이터가 들어와서
-      // 리덕스 스토어에 저장이 되어야하는데 어떻게 해야하지??
-      // state.content = action.payload;
-      state.push(action.payload); // RTK uses immerJS, let you code like js.
-      console.log('액션객체 안엔 뭐가있을까!? ' + action.payload);
+    saveContent: (state: any, action) => {
+      // 게시물을 수정할 때 여기로 ContentDetail에 있는 게시글 내용을 올려줄거임.
+      // 그리고 EditContent에서 여기에 저장된 상태값들을 가져간다.
+      state.contents = [action.payload];
+      // console.log([action.payload]);
+      console.log(state.contents);
+
+      // state.push(action.payload); // RTK uses immerJS, let you code like js.
+      // console.log('액션객체 안엔 뭐가있을까!? ' + action.payload);
+    },
+    deleteContent: (state) => {
+      state = [];
+      console.log(state);
     },
   },
   extraReducers: {
-    [postContents.fulfilled.type]: (state, action) => {
-      state.push(action.payload);
-      console.log('서버에 컨텐츠 전송?');
-      console.log(action.payload);
-    },
-    [postContents.rejected.type]: (state, action) => {
-      console.log('sir, content uploading has been rejected');
-    },
+    // [postContents.fulfilled.type]: (state, action) => {
+    //   state.push(action.payload);
+    //   console.log('서버에 컨텐츠 전송?');
+    //   console.log(action.payload);
+    // },
+    // [postContents.rejected.type]: (state, action) => {
+    //   console.log('sir, content uploading has been rejected');
+    // },
   },
 });
 
-export const { uploadContent } = contentSlice.actions;
+export const { saveContent, deleteContent } = contentSlice.actions;
 
 export default contentSlice.reducer;
 
 // const selectAllContents = (state) => state.contents;
-
-type RootState = ReturnType<typeof configureStore.getState>;
-
-export const ContentType = (state: RootState) => state.content;
