@@ -3,6 +3,7 @@ import styled from 'styled-components';
 import { useDispatch, useSelector } from 'react-redux';
 import { useNavigate } from 'react-router-dom';
 import axios from 'axios';
+import { deleteContent, ContentType } from '../Redux/contentSlice';
 // import { uploadContent } from '../Redux/contentSlice';
 /* eslint-disable */
 
@@ -84,8 +85,8 @@ const Selector = styled.select`
 // TODO: 이미지와 그 외 데이터 분기해서 서버에 보내줘야한다.
 // 그 외 필요한 거: 여기서 로그인된 유저정보를 받아와야한다.
 
-function UploadContent(): JSX.Element {
-  const [title, setTitle] = useState<string>('');
+function EditContent(): JSX.Element {
+  const [title, setTitle] = useState<string>(''); // 여기에 Props로 내려받은 기존 게시글 정보가 담겨있어야한다
   const [text, setText] = useState<string>('');
   const [fileUrl, setFileUrl] = useState<string>('');
 
@@ -93,6 +94,12 @@ function UploadContent(): JSX.Element {
   const [imgRef, setImgRef] = useState<string>('');
 
   const [category, setCategory] = useState<string>('');
+
+  //const { data } = useSelector((state) => state);
+
+  const data = useSelector((state: any) => state.content);
+  console.log(data);
+
   const navigate = useNavigate();
   const handleTitleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     setTitle(e.target.value);
@@ -174,6 +181,7 @@ function UploadContent(): JSX.Element {
       setText('');
       //setFile();
       formData.delete('file'); // formdata 초기화
+      dispatch(deleteContent());
       navigate('/community');
     }
   };
@@ -229,4 +237,4 @@ function UploadContent(): JSX.Element {
   );
 }
 
-export default UploadContent;
+export default EditContent;

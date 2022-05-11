@@ -15,15 +15,16 @@ import UploadContent from './Components/UploadContent';
 import Chat from './Pages/Chat';
 import Mypage from './Pages/Mypage';
 import EditUserInfo from './Pages/EditUserInfo';
-import ContentDetail from './Components/ContentDetail'; // 실험용
+import ContentDetail from './Components/ContentDetail';
+import EditContent from './Components/EditContent';
 /* eslint-disable */
 //! 카카오 로그인 처리 컴포넌트
 import KakaoAuthLoading from 'Components/KakaoAuthLoading';
 
-const socket = io('http://localhost:4000',{
-  transports:['websocket'],
-  withCredentials:true
-})
+const socket = io('http://localhost:4000', {
+  transports: ['websocket'],
+  withCredentials: true,
+});
 
 function App() {
   //const user = useSelector(selectUser);
@@ -33,24 +34,6 @@ function App() {
     { pic: dummyContents[1].picture, id: 2 },
     { pic: dummyContents[2].picture, id: 3 },
   ];
-
-  // const [translateValue, setTranslateValue] = useState<number>(0);
-
-  // const moveRight = (): void => {
-  //   if (translateValue !== 70 * (images.length - 1)) {
-  //     setTranslateValue((prev) => prev + 70);
-  //   } else {
-  //     setTranslateValue(0);
-  //   }
-  // };
-
-  // const moveLeft = (): void => {
-  //   if (translateValue !== 0) {
-  //     setTranslateValue((prev) => prev - 70);
-  //   } else {
-  //     setTranslateValue(70 * (images.length - 1));
-  //   }
-  // };
 
   return (
     <div className="App">
@@ -67,7 +50,9 @@ function App() {
           <Route path="/chat" element={<Chat />} />
           <Route path="/mypage" element={<Mypage />} />
           <Route path="/edituserinfo" element={<EditUserInfo />} />
-          <Route path="/contentdetail" element={<ContentDetail />} />
+          <Route path="/posts/:postid" element={<ContentDetail />} />
+          <Route path="/editcontent" element={<EditContent />} />
+
           {/* 추후 로딩 컴포넌트 만들어지면 라우팅 페이지로 넣어주세요*/}
           <Route path="/login/kakao/callback" element={<KakaoAuthLoading />} />
         </Routes>

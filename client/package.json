@@ -23,6 +23,7 @@
     "fontsource-titan-one": "^4.0.0",
     "jsonwebtoken": "^8.5.1",
     "nodemon": "^2.0.16",
+    "qs": "^6.10.3",
     "react": "^18.0.0",
     "react-dom": "^18.0.0",
     "react-icons": "^4.3.1",
@@ -30,6 +31,8 @@
     "react-router-dom": "^6.3.0",
     "react-scripts": "5.0.1",
     "redux": "^4.2.0",
+    "redux-persist": "^6.0.0",
+    "redux-thunk": "^2.4.1",
     "socket.io-client": "^4.5.0",
     "styled-components": "^5.3.5",
     "web-vitals": "^2.1.4"
