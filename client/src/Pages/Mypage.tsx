@@ -18,17 +18,7 @@ const Body = styled.div`
   align-items: center;
   padding: 10px;
   background-color: #ecf0f1;
-`;
-
-const Title = styled.div`
-  display: flex;
-  font-size: 20px;
-  font-weight: 700;
-  color: #ffa224;
-  /* background-color: yellow; */
-  width: 800px;
-  height: 30px;
-  align-items: flex-end;
+  font-family: GmarketLight;
 `;
 
 const ChildBox = styled.div`
@@ -55,6 +45,7 @@ const DeleteBtn = styled.button`
   font-weight: bold;
   background-color: #ff2424;
   cursor: pointer;
+  font-family: GmarketLight;
 
   &:hover {
     transition: all 0.2s ease-in-out;
@@ -146,6 +137,7 @@ const EditBtn = styled.button`
   font-weight: bold;
   background-color: #ffa224;
   cursor: pointer;
+  font-family: GmarketLight;
 
   &:hover {
     transition: all 0.2s ease-in-out;

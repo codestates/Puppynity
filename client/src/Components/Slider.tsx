@@ -3,47 +3,103 @@ import styled from 'styled-components';
 import { useSelector } from 'react-redux';
 /* eslint-disable */
 import { AiOutlineArrowLeft, AiOutlineArrowRight } from 'react-icons/ai';
+import sugar from '../Assets/백설기.gif';
+import coca from '../Assets/코카.gif';
+import forest from '../Assets/푸른숲.gif';
 
-const Container = styled.div`
-  width: 70%;
-  height: 40%;
-  /* position: fixed; */
-  /* top: 50%; */
-  /* left: 50%; */
-  /* transform: translate(-50%, -50%); */
+const Body = styled.div`
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+  /* ======== */
+  display: flex;
+  flex-wrap: wrap;
+  /* height: 100vh; */
+  justify-content: center;
+  /* align-items: center;
+  padding: 10px; */
+  background-color: #fff;
+`;
+
+const Container = styled.div``;
+
+const Intro = styled.div`
+  font-family: GmarketLight;
+  height: 300px;
+  width: 100vw;
+  font-size: 30px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: #ffa224;
+`;
+
+const Title = styled.div`
+  /* background-color: lightcoral; */
+  height: 300px;
+  width: 100vw;
+  font-size: 30px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: #ffa224;
+  font-family: GmarketLight;
+`;
+
+const ImgSlider = styled.div`
+  /* background-color: lightblue; */
+  width: 100vw;
+  height: 500px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
 `;
 
 const FillImage = styled.img`
-  width: 100%;
-  height: 100%;
+  height: 500px;
   object-fit: contain;
+  background-color: lightgoldenrodyellow;
 `;
 
-const ImageWrapper = styled.div`
-  position: absolute;
-  left: 50%;
-  bottom: 10px;
-  transform: translate(-50%, -10px);
-  display: flex;
-`;
+const ImageList = styled.div``;
 
 const Arrow = styled.div<{ isRight: boolean }>`
   width: 50px;
   height: 50px;
-  background-color: gray;
+  background-color: #fff;
   border-radius: 50%;
-  position: absolute;
-  top: 50%;
-  ${(props) => (props.isRight ? 'left: 5px' : 'right: 5px')};
-  transform: translate(-5px, -50%);
   display: flex;
   justify-content: center;
   align-items: center;
   font-size: 20px;
-  color: white;
+  color: #aaa;
   cursor: pointer;
+  ${(props) => (props.isRight ? 'margin-left: 20px' : 'margin-right: 20px')};
+
+  &:hover {
+    transition: all 0.2s ease-in-out;
+    background-color: #aaa;
+    color: #fff;
+  }
 `;
 
+const Contents = styled.div`
+  border: 1px solid #aaa;
+  height: 200px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+`;
+
+const Chat = styled.div`
+  border: 1px solid #aaa;
+  height: 200px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+`;
+
+// ========================스타일==============
 function Slider(): JSX.Element {
   const [pickers, setPickers] = useState<JSX.Element[]>([]);
   // 이미지 순서를 클릭하여 이동하는 pickers 배열
@@ -82,21 +138,35 @@ function Slider(): JSX.Element {
     setPickIndex(pickIndex + 1);
     // 인덱스 증가
   }, [pickIndex]);
+
   return (
-    <Container>
-      <FillImage src={pictures[pickIndex].picture} />
-      {/* pickIndex라는 state 변수를 이용하여 그에 맞는 이미지 렌더링 */}
+    <Body>
+      <Container>
+        <Intro>안녕하세요, 저희는 퍼피니티 입니다.</Intro>
+        <ImgSlider>
+          <Arrow isRight onClick={handlePrevClick}>
+            <AiOutlineArrowLeft />
+          </Arrow>
+          {/* <FillImage src={pictures[pickIndex].picture} /> */}
+          <ImageList>
+            <FillImage src={sugar} />
+            {/* <FillImage src={coca} /> */}
+            {/* <FillImage src={forest} /> */}
+          </ImageList>
+          {/* pickIndex라는 state 변수를 이용하여 그에 맞는 이미지 렌더링 */}
+          <Arrow isRight={false} onClick={handleNextClick}>
+            <AiOutlineArrowRight />
+          </Arrow>
 
-      <Arrow isRight onClick={handlePrevClick}>
-        <AiOutlineArrowLeft />
-      </Arrow>
-
-      <Arrow isRight={false} onClick={handleNextClick}>
-        <AiOutlineArrowRight />
-      </Arrow>
-
-      <ImageWrapper />
-    </Container>
+          {/* <ImageWrapper /> */}
+        </ImgSlider>
+        <Title>여러분의 이야기를 들려주세요.</Title>
+        <Contents>여기는 콘텐츠</Contents>
+        <Title>서로에게 이야기를 들려주세요.</Title>
+        <Chat>여기는 채팅 광고</Chat>
+        <Title>모두의 이야기가 모이는, 퍼피니티</Title>
+      </Container>
+    </Body>
   );
 }
 

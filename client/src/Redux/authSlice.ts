@@ -64,14 +64,11 @@ export const authSlice = createSlice({
   reducers: {
     setIsLogin: (state, action) => {
       /* eslint-disable */
-      state.isLogin = true;
+      state.isLogin = action.payload.isLogin;
     },
 
     setUserId: (state, action) => {
       state.userId = action.payload;
-    },
-    setIsLogout: (state, action) => {
-      state.isLogin = false;
     },
     setUserPk: (state, action) => {
       state.userPk = action.payload.userPk;
@@ -101,4 +98,4 @@ export const authSlice = createSlice({
 
 export default authSlice.reducer;
 
-export const { setIsLogin, setIsLogout, setUserPk, setLoginType } = authSlice.actions;
+export const { setIsLogin, setUserPk, setLoginType } = authSlice.actions;

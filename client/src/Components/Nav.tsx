@@ -4,7 +4,7 @@ import styled from 'styled-components';
 import { useDispatch, useSelector } from 'react-redux';
 import axios from 'axios';
 import LogoImg from '../Assets/puppynityLogo.svg';
-import { setIsLogout, setUserPk, setLoginType } from '../Redux/authSlice';
+import { setUserPk, setLoginType, setIsLogin } from '../Redux/authSlice';
 
 // import LoginType from '../Redux/authSlice';
 
@@ -14,7 +14,8 @@ const Nav = styled.div`
   justify-content: space-between;
   padding: 0.5rem calc((100vw - 1000px) / 2);
   z-index: 10;
-  border-bottom: 1px solid #aaa;
+  font-family: GmarketLight;
+  /* border-bottom: 1px solid #aaa; */
 `;
 
 const NavLink = styled(Link)`
@@ -132,7 +133,7 @@ function NavBar() {
   console.log(localStorage);
 
   const logout = () => {
-    dispatch(setIsLogout(false));
+    dispatch(setIsLogin(false));
     dispatch(setUserPk({ userPk: 0 }));
     dispatch(setLoginType({ loginType: '' }));
     setIsNickname('');

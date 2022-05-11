@@ -16,7 +16,8 @@ const Body = styled.div`
   justify-content: center;
   align-items: center;
   padding: 10px;
-  background-color: #ecf0f1;
+  /* background-color: #ecf0f1; */
+  font-family: GmarketMedium;
 `;
 
 const Container = styled.div`
@@ -94,9 +95,30 @@ const Lower = styled.div`
   align-items: center;
 `;
 
-const InputArea = styled.input``;
+const InputArea = styled.input`
+  border-radius: 30px;
+  height: 10px;
+  width: 280px;
+  padding: 15px;
+  outline: none;
+  border: 1px solid #aaa;
+`;
 
-const Btn = styled.button``;
+const Btn = styled.button`
+  margin-left: 10px;
+  height: 10px;
+  width: 10px;
+  padding: 15px;
+  border-radius: 30px;
+  border: 1px solid #aaa;
+  background: none;
+  background-color: #aaa;
+
+  &:hover {
+    transition: all 0.2s ease-in-out;
+    background-color: #fff;
+  }
+`;
 
 const ChatRoom = styled.div`
   height: calc(95vh - 58px);
@@ -143,7 +165,7 @@ const LastDate = styled.div`
 
 // 리스트 유저 닉네임
 const NickName = styled.div`
-  font-size: 16px;
+  font-size: 14px;
   color: #828282;
   font-weight: 500;
 `;
@@ -386,9 +408,7 @@ function ChatPage() {
                 event.key === 'Enter' && sendMessage();
               }}
             />
-            <Btn onClick={sendMessage} type="button">
-              send
-            </Btn>
+            <Btn onClick={sendMessage} type="button" />
           </Lower>
         </RightSide>
       </Container>

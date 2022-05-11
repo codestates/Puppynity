@@ -31,6 +31,11 @@ export default function KakaoAuthLoading() {
       localStorage.setItem('token', resp.data.accessToken);
       localStorage.setItem('loginType', 'kakao');
       localStorage.setItem('userPk', resp.data.id);
+      dispatch(
+        setIsLogin({
+          isLogin: true,
+        }),
+      );
       window.location.replace('/');
     } catch (err: any) {
       console.log(err.data);
