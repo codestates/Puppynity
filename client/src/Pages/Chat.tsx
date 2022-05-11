@@ -98,15 +98,6 @@ const InputArea = styled.input``;
 
 const Btn = styled.button``;
 
-// 내 닉네임
-const MyNickName = styled.div`
-  padding: 20px;
-  font-size: 14px;
-  font-weight: 700;
-  color: #ffa224;
-  border-bottom: 1px solid #aaa;
-`;
-
 const ChatRoom = styled.div`
   height: calc(95vh - 58px);
   overflow-y: auto;
@@ -183,6 +174,28 @@ const PickUserAvatar = styled.img`
   margin-left: 30px;
 `;
 
+// 내 닉네임
+const MyNickName = styled.div`
+  padding: 20px;
+  font-size: 14px;
+  font-weight: 700;
+  color: #ffa224;
+`;
+
+const MyAvatar = styled.img`
+  width: 26px;
+  height: 26px;
+  border-radius: 26px;
+  border: 1px solid #aaa;
+`;
+
+const MyContainer = styled.div`
+  display: flex;
+  flex-wrap: wrap;
+  border-bottom: 1px solid #aaa;
+  align-items: center;
+  justify-content: center;
+`;
 // ==========================여기까지 스타일===========================
 
 function ChatPage() {
@@ -204,7 +217,7 @@ function ChatPage() {
   axios({
     url: `http://localhost:4000/users/:${userPk}`,
     method: 'get',
-    headers: { Authorization: `Bearer ${localStorage.getItem('token')}` },
+    headers: { Authorization: `Bearer ${localStorage.getItem('token')}`, loginType: localStorage.getItem('loginType') },
   }).then((res) => {
     setIsMyNickName(res.data.userInfo.nickname);
   });
@@ -249,11 +262,21 @@ function ChatPage() {
 
   const time = `${new Date(Date.now()).getHours()}:${new Date(Date.now()).getMinutes()}`;
 
+  const localAvatar = localStorage.getItem('avatar');
   return (
     <Body>
       <Container>
         <LeftSide>
-          <MyNickName>{isMyNickName}</MyNickName>
+          <MyContainer>
+            <MyAvatar
+              src={
+                localAvatar === 'null'
+                  ? `https://cdn.pixabay.com/photo/2015/10/05/22/37/blank-profile-picture-973460_1280.png`
+                  : `http://localhost:4000/uploads/${localAvatar}`
+              }
+            />
+            <MyNickName>{isMyNickName}</MyNickName>
+          </MyContainer>
           <ChatRoom>
             <ChatRoomNo>
               <AvatarImg />

@@ -123,6 +123,7 @@ const Avatar = styled.img`
   margin: 0px 20px 20px 20px;
   border-radius: 10px;
   cursor: pointer;
+  border: 1px solid #aaa;
 `;
 
 const UploadBtn = styled.input`
@@ -282,6 +283,7 @@ function EmailAuthModal(props: any) {
         headers: {
           Authorization: `Bearer ${localStorage.getItem('token')}`,
           'content-type': 'multipart/form-data',
+          loginType: localStorage.getItem('loginType'),
         },
       })
       .then((res) => {
@@ -298,7 +300,10 @@ function EmailAuthModal(props: any) {
     axios({
       url: `${process.env.REACT_APP_BASE_URL}/users/:${userPk}`,
       method: 'get',
-      headers: { Authorization: `Bearer ${localStorage.getItem('token')}` },
+      headers: {
+        Authorization: `Bearer ${localStorage.getItem('token')}`,
+        loginType: localStorage.getItem('loginType'),
+      },
     }).then((res) => {
       console.log(typeof res.data.userInfo.avatarRef);
       console.log(res.data.userInfo.avatarRef);
@@ -324,7 +329,10 @@ function EmailAuthModal(props: any) {
       axios({
         url: `http://localhost:4000/users/:${userPk}`,
         method: 'patch',
-        headers: { Authorization: `Bearer ${localStorage.getItem('token')}` },
+        headers: {
+          Authorization: `Bearer ${localStorage.getItem('token')}`,
+          loginType: localStorage.getItem('loginType'),
+        },
         data: { nickname: `${nickname}`, mobile: `${mobile}`, password: `${password}`, avatarRef: `${avatarRef}` },
       }).then((res) => {
         console.log(res);
@@ -334,7 +342,10 @@ function EmailAuthModal(props: any) {
       axios({
         url: `http://localhost:4000/users/:${userPk}`,
         method: 'patch',
-        headers: { Authorization: `Bearer ${localStorage.getItem('token')}` },
+        headers: {
+          Authorization: `Bearer ${localStorage.getItem('token')}`,
+          loginType: localStorage.getItem('loginType'),
+        },
         data: { nickname: `${nickname}`, mobile: `${mobile}`, password: `${password}`, avatarRef: `${isAvatarImg}` },
       }).then((res) => {
         console.log(res);
@@ -343,7 +354,10 @@ function EmailAuthModal(props: any) {
       axios({
         url: `http://localhost:4000/users/:${userPk}`,
         method: 'patch',
-        headers: { Authorization: `Bearer ${localStorage.getItem('token')}` },
+        headers: {
+          Authorization: `Bearer ${localStorage.getItem('token')}`,
+          loginType: localStorage.getItem('loginType'),
+        },
         data: { nickname: `${nickname}`, mobile: `${mobile}`, password: `${password}`, avatarRef: `${avatarRef}` },
       }).then((res) => {
         console.log(res);

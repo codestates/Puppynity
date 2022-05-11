@@ -39,7 +39,6 @@ export default function Login() {
   // const [isLogin, setIsLogin] = useState<boolean>(false);
   // const { user, isLoading, isError, isSuccess, message } = useSelector((state) => state.auth);
 
-
   //! 카카오 oauth 요청 url
   const KAKAO_AUTH_URL = `https://kauth.kakao.com/oauth/authorize?client_id=${process.env.REACT_APP_KAKAO_REST_API_KEY}&redirect_uri=${process.env.REACT_APP_KAKAO_REDIRECT_URI}&response_type=code`;
   // 여기서 카카오 로그인 페이지로 리다이렉션 시켜준다 => KakaoAuthLoading에서 이후 토큰 발급 로직을 작성해준다.
@@ -58,11 +57,13 @@ export default function Login() {
       .post(
         `${process.env.REACT_APP_BASE_URL}/auth/login`,
         { email, password },
-        { headers: { 'Content-Type': 'application/json' }, withCredentials: true },
+        {
+          headers: { 'Content-Type': 'application/json', loginType: localStorage.getItem('loginType') },
+          withCredentials: true,
+        },
       )
       .then((res) => {
         if (res.data.accessToken) {
-
           const userId = localStorage.setItem('user', JSON.stringify(res.data.id)); //! 유저 정보를 로컬 스토리지에 저장
           console.log(res.data);
 

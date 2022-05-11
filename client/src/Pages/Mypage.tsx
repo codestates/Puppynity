@@ -127,7 +127,7 @@ const Container = styled.div`
 `;
 
 const ProfileImg = styled.img`
-  background-color: lightgrey;
+  border: 1px solid #aaa;
   width: 60px;
   height: 60px;
   border-radius: 60px;
@@ -170,6 +170,7 @@ const Write = styled.div`
   width: 75px;
 `;
 
+const NickDiv = styled.div``;
 // ==========================여기까지 스타일===========================
 
 function MyPage() {
@@ -196,11 +197,15 @@ function MyPage() {
       axios({
         url: `${process.env.REACT_APP_BASE_URL}/users/:${userPk}`,
         method: 'get',
-        headers: { Authorization: `Bearer ${localStorage.getItem('token')}` },
+        headers: {
+          Authorization: `Bearer ${localStorage.getItem('token')}`,
+          loginType: localStorage.getItem('loginType'),
+        },
       }).then((res) => {
         setIsNickname(res.data.userInfo.nickname);
         setAvatarImg(res.data.userInfo.avatarRef);
         console.log(res.data.userInfo.avatarRef);
+        console.log(typeof res.data.userInfo.avatarRef);
       });
     }, []);
   }
@@ -216,8 +221,8 @@ function MyPage() {
     }
   }, [isNickname]);
 
-  console.log(avatarImg);
-  console.log(typeof avatarImg);
+  // 로컬에 프사 set
+  localStorage.setItem('avatar', avatarImg);
 
   // ==========================여기까지 구현===========================
 
@@ -227,14 +232,18 @@ function MyPage() {
       {isDeleteUserModalOpen && <Modal2 />}
       <Container>
         <ChildBox>
-          <ProfileImg
-            src={
-              avatarImg === 'null'
-                ? `https://cdn.pixabay.com/photo/2015/10/05/22/37/blank-profile-picture-973460_1280.png`
-                : `http://localhost:4000/uploads/${avatarImg}`
-            }
-          />
-          {isNickname}
+          {isKakao ? (
+            <ProfileImg src="https://cdn.pixabay.com/photo/2015/10/05/22/37/blank-profile-picture-973460_1280.png" />
+          ) : (
+            <ProfileImg
+              src={
+                avatarImg === 'null' || avatarImg === null
+                  ? `https://cdn.pixabay.com/photo/2015/10/05/22/37/blank-profile-picture-973460_1280.png`
+                  : `http://localhost:4000/uploads/${avatarImg}`
+              }
+            />
+          )}
+          <NickDiv>{isNickname}</NickDiv>
           {isKakao ? (
             <EditBtn disabled>카카오 로그인중 ...</EditBtn>
           ) : (

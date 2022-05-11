@@ -7,56 +7,58 @@ import {
   UpdateDateColumn,
   ManyToOne,
   OneToMany,
-} from 'typeorm';
+} from 'typeorm'
 
-import { User } from './User';
-import { Post_like } from './Post_like';
-import { Post_comment } from './Post_comment';
+import { User } from './User'
+import { Post_like } from './Post_like'
+import { Post_comment } from './Post_comment'
 
 @Entity()
 export class Post extends BaseEntity {
   @PrimaryGeneratedColumn()
-  id!: number;
+  id!: number
 
   @Column()
-  title!: string;
+  title!: string
 
   @Column({
     type: 'text',
   })
-  content!: string;
+  content!: string
 
   @Column()
-  category!: string;
+  category!: string
 
   @Column({ nullable: true })
-  imgRef!: string;
+  imgRef!: string
 
   @Column({ default: 0 })
-  totalViews!: number;
+  totalViews!: number
 
   @Column({ default: 0 })
-  totalLikes!: number;
+  totalLikes!: number
 
   @Column({ default: 0 })
-  totalComments!: number;
+  totalComments!: number
 
   @CreateDateColumn({ name: 'createdAt' })
-  createdAt!: Date;
+  createdAt!: Date
 
   @UpdateDateColumn({ name: 'updatedAt' })
-  updatedAt!: Date;
+  updatedAt!: Date
 
   /* 관계 설정 */
   // Post(N) <-> User(1)
-  @ManyToOne((type) => User, (writer) => writer.posts)
-  writer!: User;
+  @ManyToOne((type) => User, (writer) => writer.posts, {
+    onDelete: 'CASCADE',
+  })
+  writer!: User
 
   // Post(1) <-> Post_comment(N)
   @OneToMany((type) => Post_comment, (comments) => comments.post)
-  comments!: Post_comment;
+  comments!: Post_comment
 
   //! Post(1) <-> Post_like(N)
   @OneToMany((type) => Post_like, (post_likes) => post_likes.post)
-  post_likes!: Post_like[];
+  post_likes!: Post_like[]
 }
