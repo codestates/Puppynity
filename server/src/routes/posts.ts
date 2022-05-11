@@ -33,7 +33,7 @@ const storage = multer.diskStorage({
 const upload = multer({ storage: storage })
 
 //! 이미지 업로드
-postsRouter.post('/upload', upload.single('img'), uploadImg)
+postsRouter.post('/upload', authentication, upload.single('img'), uploadImg)
 
 // 게시물 목록 조회 페이지네이션, 검색 쿼리 받을 수 있도록
 postsRouter.get('/', getPostsByQuery)

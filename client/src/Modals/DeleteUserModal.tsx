@@ -101,13 +101,13 @@ function DeleteUserModal(props: any) {
     axios({
       url: `${process.env.REACT_APP_BASE_URL}/users/:${userPk}`,
       method: 'delete',
-      data: { Authorization: `Bearer ${token}` },
+      headers: { Authorization: `Bearer ${token}` },
     }).then((res) => {
       console.log(res);
     });
 
     closeModal();
-    window.location.replace('/');
+    // window.location.replace('/');
   };
   // ==========================구현===============================
   return (
