@@ -46,7 +46,6 @@ export default function Login() {
   const kakaoLoginHandler = () => {
     // 두번째 방법
     window.location.assign(KAKAO_AUTH_URL);
-    dispatch(setIsLogin(true));
   };
   // console.log(`${process.env.REACT_APP_BASE_URL}`)
 
