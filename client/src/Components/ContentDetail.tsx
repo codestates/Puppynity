@@ -120,7 +120,7 @@ function Content() {
       });
   };
 
-  const handleEdit = () => {
+  const handleEditContent = () => {
     dispatch(
       saveContent({
         id: dbContent.id,
@@ -134,6 +134,10 @@ function Content() {
     // navigate('/editcontent');
   };
 
+  const handleEditComment = () => {
+    console.log('comment to edit');
+  };
+
   return (
     <div className="content-container">
       <div className="header">
@@ -145,7 +149,7 @@ function Content() {
         <span>{`조회수: ${0}`}</span>
       </div>
       <span>
-        <button onClick={handleEdit} type="button">
+        <button onClick={handleEditContent} type="button">
           게시글 수정
         </button>
       </span>
@@ -174,7 +178,7 @@ function Content() {
               <button onClick={handleDeleteComment} id={el.id} type="button" style={{ float: 'right' }}>
                 X
               </button>
-              <button onClick={handleEdit} id={el.id} type="button" style={{ float: 'right' }}>
+              <button onClick={handleEditComment} id={el.id} type="button" style={{ float: 'right' }}>
                 ...
               </button>
               <div>{el.content}</div>
