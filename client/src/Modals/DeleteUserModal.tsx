@@ -103,11 +103,20 @@ function DeleteUserModal(props: any) {
     dispatch(setIsLogout(false));
     dispatch(setUserPk({ userPk: 0 }));
     dispatch(setLoginType({ loginType: '' }));
-    dispatch(DELETE_USER_MODAL_CLOSE(false));
+
+    console.log(userPk);
+    console.log(token);
+    axios({
+      url: `${process.env.REACT_APP_BASE_URL}/users/:${userPk}`,
+      method: 'delete',
+      headers: { Authorization: `Bearer ${token}` },
+    }).then((res) => {
+      console.log(res);
+    });
 
     closeModal();
     // window.location.replace('/');
-    navigate('/');
+
   };
   // ==========================구현===============================
   return (
