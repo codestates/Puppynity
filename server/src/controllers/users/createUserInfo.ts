@@ -13,9 +13,7 @@ dotenv.config()
 export const createUserInfo = async (req: Request, res: Response) => {
   console.log('회원 정보 생성 🕹')
 
-  //! 이메일 인증번호 확인 후 회원 정보 생성 로직 진행
-
-  const { email, password, name, nickname, mobile } = req.body
+  const { email, password, name, nickname, mobile, avatarRef } = req.body
 
   // 이미 등록된 이메일을 가진 유저 정보
   const user = await getRepository(User).findOne({ where: { email } })
@@ -53,6 +51,7 @@ export const createUserInfo = async (req: Request, res: Response) => {
     name,
     nickname,
     mobile,
+    avatarRef,
     signupType: 'email',
   })
   const savedUserInfo = await newUserInfo.save()

@@ -92,7 +92,7 @@ function SignupModal(props: any) {
     if (email !== '') {
       axios({
         method: 'post',
-        url: 'http://localhost:4000/auth/email-auth',
+        url: `${process.env.REACT_APP_BASE_URL}/auth/email-auth`,
         data: {
           email,
         },

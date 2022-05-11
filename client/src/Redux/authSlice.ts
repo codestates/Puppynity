@@ -25,7 +25,7 @@ export interface IUserData {
 export const loginReq = createAsyncThunk('loginReq', async (email: IUserData, password) => {
   return axios
     .post(
-      'http://localhost:4000/auth/login',
+      `${process.env.REACT_APP_BASE_URL}`,
       {
         email,
         password,

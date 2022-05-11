@@ -130,7 +130,7 @@ function UploadContent(): JSX.Element {
 
     //! 정태영: 파일 첨부와 동시에 서버로 이미지 파일 전송
     axios
-      .post('http://localhost:4000/posts/upload', formData, {
+      .post(`${process.env.REACT_APP_BASE_URL}/posts/upload`, formData, {
         // formData
         headers: {
           Authorization: `Bearer ${localStorage.getItem('token')}`, //undefined
@@ -148,7 +148,7 @@ function UploadContent(): JSX.Element {
     if (title && text) {
       axios
         .post(
-          'http://localhost:4000/posts',
+          `${process.env.REACT_APP_BASE_URL}/posts`,
           {
             title,
             //! 정태영: 사진 업로드 요청 후 받은 응답(파일이름)
@@ -167,7 +167,6 @@ function UploadContent(): JSX.Element {
         )
         .then((res) => {
           console.log('컨텐츠 업로드 완료');
-          console.log(formData.get('img'));
           console.log(res.data);
         });
       setTitle(''); //로컬 상태들은 다시 빈 값으로 돌려준다.

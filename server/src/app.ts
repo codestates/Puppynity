@@ -22,31 +22,6 @@ const postsRouter = require('./routes/posts')
 createConnection(connectionOptions)
   .then(async () => {
     console.log('DB CONNECTION!')
-
-    // // test 계정 삽입
-    // const user = new User();
-    // user.email = 'test@test.com';
-    // user.password = 'asdf1234!';
-    // user.name = 'test';
-    // user.nickname = 'test';
-    // user.mobile = '01012345678';
-    // user.signupType = 'email';
-    // await user.save();
-
-    // // test post 삽입
-    // const post = new Post();
-    // post.title = '테스트 게시글 제목';
-    // post.content = '테시트 게시글 본문';
-    // post.category = 'Q&A';
-    // post.writer = user;
-    // await post.save();
-
-    // // test comment 삽입
-    // const comment = new Post_comment();
-    // comment.content = '테스트 댓글 1';
-    // comment.writer = user;
-    // comment.post = post;
-    // await comment.save();
   })
   .catch((error) => {
     console.log(error)
@@ -78,6 +53,7 @@ app.use('/auth', authRouter)
 app.use('/users', usersRouter)
 app.use('/posts', postsRouter)
 // app.use('/post-likes', postLikesRouter);
+app.use('/uploads', express.static('uploads'))
 
 app.get('/', (req, res) => {
   console.log('/루트 GET 요청!')
