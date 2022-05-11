@@ -28,15 +28,9 @@
 //   // 유저의 프로필 사진, 닉네임, createdAt, 댓글내용이 보여져야한다.
 //   const dispatch = useDispatch();
 
-<<<<<<< HEAD
-//   React.useEffect(() => {
-//     axios.get(`http://localhost:4000/posts/postId/comments`);
-//   }, []);
-=======
-  React.useEffect(() => {
-    axios.get(`${process.env.REACT_APP_BASE_URL}/posts/postId/comments`);
-  }, []);
->>>>>>> upstream/dev
+// React.useEffect(() => {
+//   axios.get(`${process.env.REACT_APP_BASE_URL}/posts/postId/comments`);
+// }, []);
 
 //   return (
 //     <div>
