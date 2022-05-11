@@ -123,6 +123,7 @@ const Avatar = styled.img`
   margin: 0px 20px 20px 20px;
   border-radius: 10px;
   cursor: pointer;
+  border: 1px solid #aaa;
 `;
 
 const UploadBtn = styled.input`
@@ -230,21 +231,6 @@ function EmailAuthModal(props: any) {
     dispatch(CLOSE_MODAL(false));
   };
 
-  // axios patch 함수
-  // const editUserInfo = () => {
-  //   axios({
-  //     url: `${process.env.REACT_APP_BASE_URL}/users/:${userPk}`,
-  //     method: 'patch',
-  //     headers: { Authorization: `Bearer ${localStorage.getItem('token')}` },
-  //     data: { nickname: `${nickname}`, mobile: `${mobile}` },
-  //   }).then((res) => {
-  //     console.log(res);
-  //   });
-
-  //   closeModal();
-  //   window.location.replace('/mypage');
-  // };
-
   // 하이픈 자동 생성
   const autoHypen = (event: React.KeyboardEvent<HTMLInputElement>) => {
     const regExp = /[^0-9]/g;
@@ -297,6 +283,7 @@ function EmailAuthModal(props: any) {
         headers: {
           Authorization: `Bearer ${localStorage.getItem('token')}`,
           'content-type': 'multipart/form-data',
+          loginType: localStorage.getItem('loginType'),
         },
       })
       .then((res) => {
@@ -313,7 +300,10 @@ function EmailAuthModal(props: any) {
     axios({
       url: `${process.env.REACT_APP_BASE_URL}/users/:${userPk}`,
       method: 'get',
-      headers: { Authorization: `Bearer ${localStorage.getItem('token')}` },
+      headers: {
+        Authorization: `Bearer ${localStorage.getItem('token')}`,
+        loginType: localStorage.getItem('loginType'),
+      },
     }).then((res) => {
       console.log(typeof res.data.userInfo.avatarRef);
       console.log(res.data.userInfo.avatarRef);
@@ -333,12 +323,30 @@ function EmailAuthModal(props: any) {
   const editUserInfo = () => {
     console.log(avatarRef);
     console.log(typeof avatarRef);
+    console.log(isAvatarImg);
+    console.log(typeof isAvatarImg);
     if (avatarRef !== null) {
       axios({
         url: `http://localhost:4000/users/:${userPk}`,
         method: 'patch',
-        headers: { Authorization: `Bearer ${localStorage.getItem('token')}` },
+        headers: {
+          Authorization: `Bearer ${localStorage.getItem('token')}`,
+          loginType: localStorage.getItem('loginType'),
+        },
         data: { nickname: `${nickname}`, mobile: `${mobile}`, password: `${password}`, avatarRef: `${avatarRef}` },
+      }).then((res) => {
+        console.log(res);
+        console.log(`avatarRef null(object) 아닌상황`);
+      });
+    } else if (isAvatarImg !== 'null') {
+      axios({
+        url: `http://localhost:4000/users/:${userPk}`,
+        method: 'patch',
+        headers: {
+          Authorization: `Bearer ${localStorage.getItem('token')}`,
+          loginType: localStorage.getItem('loginType'),
+        },
+        data: { nickname: `${nickname}`, mobile: `${mobile}`, password: `${password}`, avatarRef: `${isAvatarImg}` },
       }).then((res) => {
         console.log(res);
       });
@@ -346,18 +354,31 @@ function EmailAuthModal(props: any) {
       axios({
         url: `http://localhost:4000/users/:${userPk}`,
         method: 'patch',
-        headers: { Authorization: `Bearer ${localStorage.getItem('token')}` },
+        headers: {
+          Authorization: `Bearer ${localStorage.getItem('token')}`,
+          loginType: localStorage.getItem('loginType'),
+        },
         data: { nickname: `${nickname}`, mobile: `${mobile}`, password: `${password}`, avatarRef: `${avatarRef}` },
       }).then((res) => {
         console.log(res);
       });
     }
+
     closeModal();
     window.location.replace('/mypage');
+    // 기본프사 -> 기본프사 (o)
+    // avatarRef = nullObj , isAvatarImg = 'null'
+    // 기본프사 -> 새로 프사(o)
+    // avatarRef = 새프사이름 , isAvatarImg = 'null'
+    // 새프사 -> 프사설정안함(o)
+    // avatarRef = nullObj , isAvatarImg = 새프사이름
+    // 새프사 -> 기본프사 설정(o)
+    // avatarRef = nullObj , isAvatarImg = 'null'
   };
 
   const defaultImg = () => {
     setProfileImage('https://cdn.pixabay.com/photo/2015/10/05/22/37/blank-profile-picture-973460_1280.png');
+    setIsAvatarImg('null');
   };
 
   // ==========================구현===============================

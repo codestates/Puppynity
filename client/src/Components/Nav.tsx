@@ -140,6 +140,7 @@ function NavBar() {
     localStorage.setItem('token', '');
     localStorage.setItem('loginType', '');
     localStorage.setItem('userPk', '');
+    localStorage.setItem('avatar', '');
   };
 
   const kakaoNick: any = localStorage.getItem('user');
@@ -148,7 +149,10 @@ function NavBar() {
     axios({
       url: `${process.env.REACT_APP_BASE_URL}/users/:${userPk}`,
       method: 'get',
-      headers: { Authorization: `Bearer ${localStorage.getItem('token')}` },
+      headers: {
+        Authorization: `Bearer ${localStorage.getItem('token')}`,
+        loginType: localStorage.getItem('loginType'),
+      },
     }).then((res) => {
       setIsNickname(res.data.userInfo.nickname);
     });
@@ -158,7 +162,7 @@ function NavBar() {
     if (localStorage.getItem('loginType') === 'kakao') {
       setIsNickname(kakaoNick);
     }
-  }, [isNickname]);
+  }, []);
 
   useEffect(() => {
     console.log(isLogin);
