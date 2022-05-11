@@ -21,10 +21,18 @@ import EditContent from './Components/EditContent';
 //! 카카오 로그인 처리 컴포넌트
 import KakaoAuthLoading from 'Components/KakaoAuthLoading';
 
+<<<<<<< HEAD
 const socket = io('http://localhost:4000', {
   transports: ['websocket'],
   withCredentials: true,
 });
+=======
+
+const socket = io(`${process.env.REACT_APP_BASE_URL}`,{
+  transports:['websocket'],
+  withCredentials:true
+})
+>>>>>>> upstream/dev
 
 function App() {
   //const user = useSelector(selectUser);
