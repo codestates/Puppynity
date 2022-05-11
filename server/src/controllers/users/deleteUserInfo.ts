@@ -5,7 +5,7 @@ import { User } from '../../entity/User'
 
 export const deleteUserInfo = async (req: Request, res: Response) => {
   console.log('회원 정보 삭제 🕹')
-
+  console.log(req.params)
   const paramId = Number(req.params.userId)
   // req.id에 저장된 값을 이용하여 유저정보 find
 
