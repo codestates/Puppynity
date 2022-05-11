@@ -41,9 +41,9 @@ export class User extends BaseEntity {
 
   @Column({
     type: 'text',
-    nullable: true
-})
-emailToken!: string | null;
+    nullable: true,
+  })
+  emailToken!: string | null
 
   @Column({ nullable: true })
   avatarRef!: string
