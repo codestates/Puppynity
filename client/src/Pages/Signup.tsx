@@ -289,7 +289,7 @@ function SignupPage() {
   useEffect(() => {
     axios({
       method: 'post',
-      url: `${process.env.REACT_APP_BASE_URL}/email-check`,
+      url: `${process.env.REACT_APP_BASE_URL}/users/email-check`,
       data: {
         email,
       },
