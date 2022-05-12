@@ -13,7 +13,7 @@ export default function Main() {
   return (
     <div>
       <Slider />
-      <Link to="/uploadcontent">upload content</Link>
+      {/* <Link to="/uploadcontent">upload content</Link> */}
     </div>
   );
 }

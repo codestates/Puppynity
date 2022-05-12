@@ -15,19 +15,8 @@ const signupSlice = createSlice({
   reducers: {
     OPEN_MODAL: (state, action) => {
       const open = state;
-      open.isModalOpen = true;
-    },
-    CLOSE_MODAL: (state, action) => {
-      const close = state;
-      close.isModalOpen = false;
-    },
-    OPEN_SUCCESS_MODAL: (state, action) => {
-      const successOpen = state;
-      successOpen.isSuccessModalOpen = true;
-    },
-    CLOSE_SUCCESS_MODAL: (state, action) => {
-      const successClose = state;
-      successClose.isSuccessModalOpen = false;
+      open.isModalOpen = action.payload;
+      console.log(action);
     },
     TRUE_INPUT_DISABLE: (state, action) => {
       const trueInputDisable = state;
@@ -40,14 +29,7 @@ const signupSlice = createSlice({
   },
 });
 
-export const {
-  OPEN_MODAL,
-  CLOSE_MODAL,
-  OPEN_SUCCESS_MODAL,
-  CLOSE_SUCCESS_MODAL,
-  TRUE_INPUT_DISABLE,
-  FALSE_INPUT_DISABLE,
-} = signupSlice.actions;
+export const { OPEN_MODAL, TRUE_INPUT_DISABLE, FALSE_INPUT_DISABLE } = signupSlice.actions;
 // u need to export all your actions so that u can call them in your application
 
 export default signupSlice.reducer;

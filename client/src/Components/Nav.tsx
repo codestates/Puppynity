@@ -14,7 +14,8 @@ const Nav = styled.div`
   justify-content: space-between;
   padding: 0.5rem calc((100vw - 1000px) / 2);
   z-index: 10;
-  border-bottom: 1px solid #aaa;
+  font-family: GmarketLight;
+  /* border-bottom: 1px solid #aaa; */
 `;
 
 const NavLink = styled(Link)`
@@ -140,6 +141,7 @@ function NavBar() {
       console.log(resp);
     });
     dispatch(setIsLogin(false));
+
     dispatch(setKakaoNickname({ kakaoNickname: '' }));
     dispatch(setNickname({ nickname: '' }));
 
@@ -153,13 +155,8 @@ function NavBar() {
     localStorage.setItem('avatar', '');
   };
 
-  // useEffect(() => {
-  //   if (loginType === 'kakao') {
-  //     setIsNickname(kakaoNickname);
-  //   }
-  //   setIsNickname(nickname);
-  // }, []);
-  console.log(loginStatus);
+
+
 
   return (
     <div>
