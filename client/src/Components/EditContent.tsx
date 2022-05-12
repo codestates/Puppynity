@@ -166,9 +166,9 @@ function EditContent(): JSX.Element {
       .post('http://localhost:4000/posts/upload', formData, {
         // formData
         headers: {
-          Authorization: `Bearer ${localStorage.getItem('token')}`, //undefined
+          // Authorization: `Bearer ${localStorage.getItem('token')}`, //undefined
           'content-type': 'multipart/form-data',
-          loginType: localStorage.getItem('loginType'),
+          // loginType: localStorage.getItem('loginType'),
         },
       })
       .then((res) => {
@@ -197,7 +197,6 @@ function EditContent(): JSX.Element {
           headers: {
             Authorization: `Bearer ${localStorage.getItem('token')}`, //undefined
             'Content-Type': 'application/json',
-
           },
           withCredentials: true,
         },

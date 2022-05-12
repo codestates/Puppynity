@@ -4,7 +4,7 @@ import styled from 'styled-components';
 import { useDispatch, useSelector } from 'react-redux';
 import axios from 'axios';
 import LogoImg from '../Assets/puppynityLogo.svg';
-import { setIsLogin, setUserPk, setLoginType } from '../Redux/authSlice';
+import { setIsLogin, setUserPk, setLoginType, setKakaoNickname, setNickname } from '../Redux/authSlice';
 
 // import LoginType from '../Redux/authSlice';
 
@@ -125,7 +125,8 @@ const NavLogo = styled(Link)`
 function NavBar() {
   const loginStatus = useSelector((state: any) => state.auth.isLogin);
   const loginState = useSelector((state: any) => state);
-  const { userPk, isLogin, nickname, kakaoNickname, loginType } = loginState.auth;
+  const { name } = useSelector((state: any) => state.auth.nickname);
+  const { userPk, nickname, kakaoNickname, loginType, isLogin } = loginState.auth;
   const dispatch = useDispatch();
   const [isNickname, setIsNickname] = useState('');
   //! 필요한거:  닉네임, 로그인 상태
@@ -141,21 +142,21 @@ function NavBar() {
     });
     dispatch(setIsLogin(false));
 
+    dispatch(setKakaoNickname({ kakaoNickname: '' }));
+    dispatch(setNickname({ nickname: '' }));
+
     dispatch(setUserPk({ userPk: 0 }));
     dispatch(setLoginType({ loginType: '' }));
     setIsNickname('');
-    localStorage.setItem('user', '');
-    localStorage.setItem('token', '');
-    localStorage.setItem('loginType', '');
-    localStorage.setItem('userPk', '');
+    // localStorage.setItem('user', '');
+    // localStorage.setItem('token', '');
+    // localStorage.setItem('loginType', '');
+    // localStorage.setItem('userPk', '');
     localStorage.setItem('avatar', '');
   };
 
-  useEffect(() => {
-    if (localStorage.getItem('loginType') === 'kakao') {
-      setIsNickname(kakaoNickname);
-    }
-  }, []);
+
+
 
   return (
     <div>
@@ -173,7 +174,7 @@ function NavBar() {
             </NavLink>
           </NavMenu>
           <NavBtn loginStatus={loginStatus}>
-            <NavBtnLink to="/mypage">{isNickname} 님 어서오세요</NavBtnLink>
+            <NavBtnLink to="/mypage">{loginType === 'kakao' ? kakaoNickname : nickname} 님 어서오세요</NavBtnLink>
             <NavBtnLink to="/" onClick={logout}>
               로그아웃
             </NavBtnLink>

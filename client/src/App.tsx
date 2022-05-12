@@ -30,6 +30,9 @@ const socket = io(`${process.env.REACT_APP_BASE_URL}`, {
 
 function App() {
   //const user = useSelector(selectUser);
+  const loginState = useSelector((state: any) => state);
+  const { loginType } = loginState.auth;
+
   axios.defaults.withCredentials = true;
 
   const images = [
@@ -43,31 +46,37 @@ function App() {
   // send refreshToken to server
 
   //! 새로고침 시 액세스 토큰 재발급하는 로직
-  // useEffect(() => {
-  //   try {
-  //     let data; //
-  //     axios
-  //       .post(`${process.env}/auth/silentrefresh`, JSON.stringify(data), {
-  //         headers: {
-  //           'Content-Type': 'application/json',
-  //         },
-  //       })
-  //       .then((res) => {
-  //         console.log(res.data);
-  //         axios.defaults.headers.common['Authorization'] = `Bearer ${res.data}`;
-  //         // islogin = true // 로그인 유지
-  //       })
-  //       .catch((ex) => {
-  //         console.log(ex);
-  //       })
-  //       .finally(() => {
-  //         console.log('login req end');
-  //         // loading = true
-  //       });
-  //   } catch (e) {
-  //     console.log(e);
-  //   }
-  // }, []);
+  useEffect(() => {
+    try {
+      axios({
+        method: 'post',
+        url: `http://localhost:4000/auth/token-refresh`,
+        headers: { loginType },
+      }).then((res) => {
+        console.log(res.data);
+        axios.defaults.headers.common['Authorization'] = `Bearer ${res.data}`;
+        // islogin = true // 로그인 유지
+
+        setInterval(
+          () => {
+            axios({
+              method: 'post',
+              url: `http://localhost:4000/auth/token-refresh`,
+              headers: { loginType },
+              withCredentials: true,
+            }).then((res) => {
+              console.log(res);
+              axios.defaults.headers.common['Authorization'] = `Bearer ${res.data.accessToken}`;
+            });
+            console.log('interval');
+          },
+          loginType === 'kakao' ? 1000 * 80 : Math.floor(1000 * 8),
+        );
+      });
+    } catch (e) {
+      console.log(e);
+    }
+  }, []);
 
   return (
     <div className="App">

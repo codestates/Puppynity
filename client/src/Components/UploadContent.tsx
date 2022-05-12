@@ -88,6 +88,8 @@ function UploadContent(): JSX.Element {
   const [title, setTitle] = useState<string>('');
   const [text, setText] = useState<string>('');
   const [fileUrl, setFileUrl] = useState<string>('');
+  const loginState = useSelector((state: any) => state);
+  const { loginType } = loginState.auth;
 
   //! 정태영: 사진 업로드 후 받은 이미지 제목
   const [imgRef, setImgRef] = useState<string>('');
@@ -133,9 +135,9 @@ function UploadContent(): JSX.Element {
       .post(`${process.env.REACT_APP_BASE_URL}/posts/upload`, formData, {
         // formData
         headers: {
-          Authorization: `Bearer ${localStorage.getItem('token')}`, //undefined
+          // Authorization: `Bearer ${localStorage.getItem('token')}`, //undefined
           'content-type': 'multipart/form-data',
-          loginType: localStorage.getItem('loginType'),
+          loginType: loginType,
         },
       })
       .then((res) => {
@@ -158,11 +160,10 @@ function UploadContent(): JSX.Element {
             content: text,
           },
           {
-            // formData
             headers: {
-              Authorization: `Bearer ${localStorage.getItem('token')}`, //undefined
-              'Content-Type': 'application/json',
-              loginType: localStorage.getItem('loginType'),
+              //Authorization: `Bearer ${localStorage.getItem('token')}`, //undefined
+              //'Content-Type': 'application/json',
+              loginType: loginType,
             },
             withCredentials: true,
           },

@@ -31,11 +31,41 @@ export default function KakaoAuthLoading() {
       )
       .then((resp) => {
         // 토큰 잘 받아왔으면 header에 default로 토큰 설정을해준다
-        axios.defaults.headers.common['Authorization'] = `Bearer ${resp.data.accessToken}`;
-        localStorage.setItem('user', resp.data.nickname);
-        localStorage.setItem('token', resp.data.accessToken);
-        localStorage.setItem('loginType', 'kakao');
-        localStorage.setItem('userPk', resp.data.id);
+        console.log(resp);
+        const token = resp.data.accessToken;
+        axios.defaults.headers.common['Authorization'] = `Bearer ${token}`;
+        // localStorage.setItem('user', resp.data.nickname);
+        // localStorage.setItem('token', resp.data.accessToken);
+        // localStorage.setItem('loginType', 'kakao');
+        // localStorage.setItem('userPk', resp.data.id);
+        dispatch(setIsLogin({ isLogin: true }));
+        dispatch(
+          setKakaoNickname({
+            kakaoNickname: resp.data.nickname,
+          }),
+        );
+        dispatch(
+          setLoginType({
+            loginType: 'kakao',
+          }),
+        );
+        dispatch(
+          setUserPk({
+            userPk: resp.data.id,
+          }),
+        );
+
+        setTimeout(() => {
+          axios.post(
+            `http://localhost:4000/auth/token-refresh`,
+            { authorizationCode: code },
+            {
+              headers: { 'Content-Type': 'application/json', loginType: localStorage.getItem('loginType') },
+              withCredentials: true,
+            },
+          );
+        }, 7199 * 1000);
+
         window.location.replace('/');
       });
   };

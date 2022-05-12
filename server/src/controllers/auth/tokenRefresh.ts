@@ -3,6 +3,7 @@ import jwt, { VerifyErrors } from 'jsonwebtoken'
 import { accessTokenGenerator } from '../../jwt/GenerateAccessToken'
 import axios from 'axios'
 import * as dotenv from 'dotenv'
+import { refreshTokenGenerator } from '../../jwt/GenerateRefreshToken'
 dotenv.config()
 
 export const tokenRefresh = async (req: Request, res: Response) => {
@@ -20,9 +21,6 @@ export const tokenRefresh = async (req: Request, res: Response) => {
     return res.status(400).json({ message: '쿠키에 refreshToken이 없습니다.' })
   }
   // 헤더에 accessToken이 없는 경우
-  if (!accessToken) {
-    return res.status(400).json({ message: 'accesToken이 없습니다.' })
-  }
 
   try {
     if (loginType === 'kakao') {
@@ -54,8 +52,18 @@ export const tokenRefresh = async (req: Request, res: Response) => {
 
     const { userId, email } = decoded
     const accessToken = await accessTokenGenerator(userId, email)
+    const refresh_token = await refreshTokenGenerator(userId, email)
 
-    res.status(200).json({ accessToken, message: '퍼피니티 자체 토큰 갱신 완료, 유효 시간 : 15초' })
+    res
+      .status(200)
+      .cookie('refreshToken', refresh_token, {
+        maxAge: 1000 * 60 * 60 * 24 * 30, // 한 달
+        httpOnly: true,
+        secure: true,
+        sameSite: 'none',
+      })
+      .json({ accessToken, message: '퍼피니티 자체 토큰 갱신 완료, 유효 시간 : 15초' })
+    // res.status(200).json({ accessToken, message: '퍼피니티 자체 토큰 갱신 완료, 유효 시간 : 15초' })
   } catch (err) {
     console.log(err)
     res.status(401).json({ message: err })
