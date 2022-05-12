@@ -125,10 +125,10 @@ const NavLogo = styled(Link)`
 function NavBar() {
   const loginStatus = useSelector((state: any) => state.auth.isLogin);
   const loginState = useSelector((state: any) => state);
-  const { name } = useSelector((state: any) => state.auth.nickname);
+  // const { name } = useSelector((state: any) => state.auth.nickname);
   const { userPk, nickname, kakaoNickname, loginType, isLogin } = loginState.auth;
   const dispatch = useDispatch();
-  const [isNickname, setIsNickname] = useState('');
+  // const [isNickname, setIsNickname] = useState('');
   //! 필요한거:  닉네임, 로그인 상태
 
   const logout = async () => {
@@ -147,16 +147,13 @@ function NavBar() {
 
     dispatch(setUserPk({ userPk: 0 }));
     dispatch(setLoginType({ loginType: '' }));
-    setIsNickname('');
+    // setIsNickname('');
     // localStorage.setItem('user', '');
     // localStorage.setItem('token', '');
     // localStorage.setItem('loginType', '');
     // localStorage.setItem('userPk', '');
     localStorage.setItem('avatar', '');
   };
-
-
-
 
   return (
     <div>
