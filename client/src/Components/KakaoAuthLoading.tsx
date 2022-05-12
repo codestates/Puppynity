@@ -17,26 +17,27 @@ export default function KakaoAuthLoading() {
   // const REST_API_KEY = 'fd4b88881bd747670e3fe74aab66ce82';
   const [isKakaoPk, setIsKakaoPk] = useState(0);
 
-  const getAccessToken = async (code: string) => {
+  const getAccessToken = (code: string) => {
     // 카카오 콜백 uri로 받은 인가코드를 서버한테 카카오에서 토큰 받아주라고 요청
-    try {
-      const resp = await axios.post(`${process.env.REACT_APP_BASE_URL}/auth/kakao`, { authorizationCode: code });
-      // 토큰 잘 받아왔으면 header에 default로 토큰 설정을해준다
-      // axios.defaults.headers.common['Authorization'] = `Bearer resp.accessToken`;
-      console.log('카카오 토큰 ===> ', resp.data.accessToken);
-      console.log('로그인 타입 ---> ', resp.data.loginType);
-      console.log('닉네임 ---> ', resp.data.nickname);
-      console.log('data ---> ', resp.data);
-      axios.defaults.headers.common['Authorization'] = `Bearer ${resp.data.accessToken}`;
-      localStorage.setItem('user', resp.data.nickname);
-      localStorage.setItem('token', resp.data.accessToken);
-      localStorage.setItem('loginType', 'kakao');
-      localStorage.setItem('userPk', resp.data.id);
-      window.location.replace('/');
-      dispatch(setIsLogin({ isLogin: true }));
-    } catch (err: any) {
-      console.log(err.data);
-    }
+    axios
+      .post(
+        `${process.env.REACT_APP_BASE_URL}/auth/kakao`,
+        { authorizationCode: code },
+        {
+          headers: { 'Content-Type': 'application/json', loginType: localStorage.getItem('loginType') },
+          withCredentials: true,
+        },
+      )
+      .then((resp) => {
+        // 토큰 잘 받아왔으면 header에 default로 토큰 설정을해준다
+        axios.defaults.headers.common['Authorization'] = `Bearer ${resp.data.accessToken}`;
+        localStorage.setItem('user', resp.data.nickname);
+        localStorage.setItem('token', resp.data.accessToken);
+        localStorage.setItem('loginType', 'kakao');
+        localStorage.setItem('userPk', resp.data.id);
+        window.location.replace('/');
+      });
+
   };
 
   React.useEffect(() => {

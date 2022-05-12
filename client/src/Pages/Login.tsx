@@ -64,7 +64,7 @@ export default function Login() {
       .then((res) => {
         if (res.data.accessToken) {
           const userId = localStorage.setItem('user', JSON.stringify(res.data.id)); //! 유저 정보를 로컬 스토리지에 저장
-          console.log(res.data);
+          console.log(res);
 
           localStorage.setItem('user', JSON.stringify(res.data)); //! 유저 정보를 로컬 스토리지에 저장
           dispatch(setUserPk({ userPk: res.data.id }));
@@ -74,6 +74,7 @@ export default function Login() {
           localStorage.setItem('userPk', res.data.id);
         }
         if (res.data.message === 'email 로그인 성공') {
+          console.log('서버가 준 토큰 ---> ', res.data.accesToken);
           axios.defaults.headers.common['Authorization'] = `Bearer ${res.data.accessToken}`;
           // console.log(localStorage.getItem('token'));
           dispatch(

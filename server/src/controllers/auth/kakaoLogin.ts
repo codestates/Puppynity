@@ -7,7 +7,7 @@ import dotenv from 'dotenv'
 dotenv.config()
 
 export const kakaoLogin = async (req: Request, res: Response) => {
-  console.log('kako 로그인 🕹')
+  console.log('kakao 로그인 🕹')
   const { authorizationCode } = req.body
   try {
     // 카카오에 토큰 발급 요청
@@ -16,7 +16,7 @@ export const kakaoLogin = async (req: Request, res: Response) => {
     )
     const { access_token, refresh_token, expires_in, scope, refresh_token_expires_in } = kakaoTokenResp.data
     console.log(access_token)
-
+    console.log('리프레시 토큰 ---> ', refresh_token)
     // 카카오에 유저 정보 조회
     const kakaoInfoApiResp = await axios
       .get('https://kapi.kakao.com/v2/user/me', {
@@ -38,13 +38,21 @@ export const kakaoLogin = async (req: Request, res: Response) => {
 
     // 이미 카카오 연동된 회원인 경우
     if (userInfo) {
-      return res.status(200).json({
-        id: userInfo.id,
-        nickname: userInfo.nickname,
-        accessToken: access_token,
-        loginType: userInfo.signupType,
-        message: '카카오 로그인 성공',
-      })
+      return res
+        .cookie('refreshToken', refresh_token, {
+          maxAge: 1000 * 5183999, // 카카오 api 토큰 만료시간 (약 60일)
+          httpOnly: true,
+          secure: true,
+          sameSite: 'none',
+        })
+        .status(200)
+        .json({
+          id: userInfo.id,
+          nickname: userInfo.nickname,
+          accessToken: access_token,
+          loginType: userInfo.signupType,
+          message: '카카오 로그인 성공',
+        })
     }
 
     // 회원 정보 저장
@@ -54,13 +62,13 @@ export const kakaoLogin = async (req: Request, res: Response) => {
     createdUser.signupType = 'kakao'
     const savedUserInfo = await createdUser.save()
     res
+      .status(201)
       .cookie('refreshToken', refresh_token, {
-        maxAge: 1000 * 60 * 60 * 24 * 7,
+        maxAge: 1000 * 5183999, // 카카오 api 토큰 만료시간 (약 60일)
         httpOnly: true,
         secure: true,
         sameSite: 'none',
       })
-      .status(201)
       .json({
         id: savedUserInfo.id,
         accessToken: access_token,

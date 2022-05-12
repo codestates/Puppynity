@@ -131,8 +131,17 @@ function NavBar() {
   console.log(loginState);
   console.log(localStorage);
 
-  const logout = () => {
-    dispatch(setIsLogin(false));
+  const logout = async () => {
+    await axios({
+      method: 'post',
+      url: 'http://localhost:4000/auth/logout',
+      headers: { 'Content-Type': 'application/json', loginType: localStorage.getItem('loginType') },
+      withCredentials: true,
+    }).then((resp) => {
+      console.log(resp);
+    });
+    dispatch(setIsLogout(false));
+
     dispatch(setUserPk({ userPk: 0 }));
     dispatch(setLoginType({ loginType: '' }));
     setIsNickname('');
@@ -163,10 +172,6 @@ function NavBar() {
       setIsNickname(kakaoNick);
     }
   }, []);
-
-  useEffect(() => {
-    console.log(isLogin);
-  }, [isLogin]);
 
   return (
     <div>
