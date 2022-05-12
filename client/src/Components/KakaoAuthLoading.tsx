@@ -19,7 +19,6 @@ export default function KakaoAuthLoading() {
 
   const getAccessToken = (code: string) => {
     // 카카오 콜백 uri로 받은 인가코드를 서버한테 카카오에서 토큰 받아주라고 요청
-
     axios
       .post(
         `${process.env.REACT_APP_BASE_URL}/auth/kakao`,
@@ -38,6 +37,7 @@ export default function KakaoAuthLoading() {
         localStorage.setItem('userPk', resp.data.id);
         window.location.replace('/');
       });
+
   };
 
   React.useEffect(() => {

@@ -60,8 +60,7 @@ export const kakaoLogin = async (req: Request, res: Response) => {
     createdUser.nickname = nickname
     createdUser.kakaoId = kakaoId
     createdUser.signupType = 'kakao'
-    createdUser.save()
-
+    const savedUserInfo = await createdUser.save()
     res
       .status(201)
       .cookie('refreshToken', refresh_token, {
@@ -71,7 +70,7 @@ export const kakaoLogin = async (req: Request, res: Response) => {
         sameSite: 'none',
       })
       .json({
-        id: createdUser.id,
+        id: savedUserInfo.id,
         accessToken: access_token,
         nickname: createdUser.nickname,
         loginType: createdUser.signupType,

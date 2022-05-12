@@ -4,7 +4,7 @@ import styled from 'styled-components';
 import { useDispatch, useSelector } from 'react-redux';
 import axios from 'axios';
 import LogoImg from '../Assets/puppynityLogo.svg';
-import { setIsLogout, setUserPk, setLoginType } from '../Redux/authSlice';
+import { setIsLogin, setUserPk, setLoginType } from '../Redux/authSlice';
 
 // import LoginType from '../Redux/authSlice';
 
@@ -141,6 +141,7 @@ function NavBar() {
       console.log(resp);
     });
     dispatch(setIsLogout(false));
+
     dispatch(setUserPk({ userPk: 0 }));
     dispatch(setLoginType({ loginType: '' }));
     setIsNickname('');
