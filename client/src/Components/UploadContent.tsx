@@ -135,6 +135,7 @@ function UploadContent(): JSX.Element {
         headers: {
           Authorization: `Bearer ${localStorage.getItem('token')}`, //undefined
           'content-type': 'multipart/form-data',
+          loginType: localStorage.getItem('loginType'),
         },
       })
       .then((res) => {
@@ -161,6 +162,7 @@ function UploadContent(): JSX.Element {
             headers: {
               Authorization: `Bearer ${localStorage.getItem('token')}`, //undefined
               'Content-Type': 'application/json',
+              loginType: localStorage.getItem('loginType'),
             },
             withCredentials: true,
           },

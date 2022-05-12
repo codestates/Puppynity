@@ -2,6 +2,8 @@ import React, { Dispatch, SetStateAction, useEffect, useState, useRef } from 're
 import styled from 'styled-components';
 import { useDispatch, useSelector } from 'react-redux';
 import axios from 'axios';
+import { useNavigate } from 'react-router-dom';
+import { setIsLogin, setUserPk, setLoginType } from '../Redux/authSlice';
 import { OPEN_MODAL, OPEN_SUCCESS_MODAL, FALSE_INPUT_DISABLE } from '../Redux/signupSlice';
 import Modal from '../Modals/SignupModal';
 import Modal2 from '../Modals/SignupSuccessModal';
@@ -207,6 +209,7 @@ function SignupPage() {
   );
   const [files, setFiles] = React.useState<File>();
   const dispatch = useDispatch();
+  const navigate = useNavigate();
   const isOpen = useSelector((state: any) => state.signup.isModalOpen);
   const isSuccessOpen = useSelector((state: any) => state.signup.isSuccessModalOpen);
   const inputDisable = useSelector((state: any) => state.signup.inputDisable);
@@ -289,13 +292,14 @@ function SignupPage() {
   useEffect(() => {
     axios({
       method: 'post',
-      url: `${process.env.REACT_APP_BASE_URL}/email-check`,
+      url: `${process.env.REACT_APP_BASE_URL}/users/email-check`,
       data: {
         email,
       },
       headers: {
         'Content-Type': `application/json`,
         withCredentials: true,
+        loginType: localStorage.getItem('loginType'),
       },
     })
       .then((res: any) => {
@@ -320,13 +324,12 @@ function SignupPage() {
       setIsValidSignup(false);
     }
 
-    console.log(inputValue);
+    // console.log(inputValue);
   }, [inputValue]);
 
   // axios 로 post 요청 핸들러
   const handleAxios = (event: React.MouseEvent<HTMLElement>) => {
     const name = username;
-    console.log(event);
     const data = {
       name,
       nickname,
@@ -335,8 +338,6 @@ function SignupPage() {
       email,
       avatarRef,
     };
-
-    console.log(data);
 
     axios({
       method: 'post',
@@ -348,7 +349,44 @@ function SignupPage() {
       },
     })
       .then((res: any) => {
+        console.log(res);
         console.log(`${res.data.message} ⭐️`);
+
+        if (res.status === 201) {
+          const { accessToken, loginType, userId } = res.data;
+          axios({
+            method: 'post',
+            url: `${process.env.REACT_APP_BASE_URL}/auth/login`,
+            data,
+            headers: {
+              'Content-Type': `application/json`,
+              withCredentials: true,
+              loginType,
+            },
+          })
+            .then((resp) => {
+              console.log(resp);
+
+              dispatch(setUserPk({ userPk: resp.data.id }));
+              dispatch(setLoginType({ loginType: resp.data.loginType }));
+              localStorage.setItem('token', resp.data.accessToken); // 토큰 로컬에 저장
+              localStorage.setItem('loginType', 'email');
+              localStorage.setItem('userPk', resp.data.id);
+              localStorage.setItem('user', JSON.stringify(resp.data));
+              dispatch(
+                setIsLogin({
+                  isLogin: true,
+                }),
+                // setUserId({
+                //   action.payload = userId,
+                // }),
+              );
+              navigate('/');
+            })
+            .catch((err) => {
+              console.log(err);
+            });
+        }
       })
       .catch((err) => {
         if (err.message === 'Request failed with status code 409') {
@@ -357,7 +395,7 @@ function SignupPage() {
       });
 
     // 회원가입 버튼 누를 시 모달 오픈
-    dispatch(OPEN_SUCCESS_MODAL(true));
+    // dispatch(OPEN_SUCCESS_MODAL(true));
   };
 
   // 프로필 사진 업로드 useRef
@@ -386,8 +424,6 @@ function SignupPage() {
       }
     };
 
-    console.log(onChangeFiles[0]);
-
     const formData: any = new FormData();
     formData.append('img', onChangeFiles[0]);
 
@@ -398,6 +434,7 @@ function SignupPage() {
         headers: {
           Authorization: `Bearer ${localStorage.getItem('token')}`,
           'content-type': 'multipart/form-data',
+          loginType: localStorage.getItem('loginType'),
         },
       })
       .then((res) => {

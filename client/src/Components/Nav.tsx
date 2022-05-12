@@ -4,7 +4,7 @@ import styled from 'styled-components';
 import { useDispatch, useSelector } from 'react-redux';
 import axios from 'axios';
 import LogoImg from '../Assets/puppynityLogo.svg';
-import { setIsLogout, setUserPk, setLoginType } from '../Redux/authSlice';
+import { setIsLogin, setUserPk, setLoginType } from '../Redux/authSlice';
 
 // import LoginType from '../Redux/authSlice';
 
@@ -129,8 +129,17 @@ function NavBar() {
   const [isNickname, setIsNickname] = useState('');
   //! 필요한거:  닉네임, 로그인 상태
 
-  const logout = () => {
+  const logout = async () => {
+    await axios({
+      method: 'post',
+      url: 'http://localhost:4000/auth/logout',
+      headers: { 'Content-Type': 'application/json', loginType: localStorage.getItem('loginType') },
+      withCredentials: true,
+    }).then((resp) => {
+      console.log(resp);
+    });
     dispatch(setIsLogout(false));
+
     dispatch(setUserPk({ userPk: 0 }));
     dispatch(setLoginType({ loginType: '' }));
     setIsNickname('');
@@ -138,14 +147,16 @@ function NavBar() {
     localStorage.setItem('token', '');
     localStorage.setItem('loginType', '');
     localStorage.setItem('userPk', '');
+    localStorage.setItem('avatar', '');
   };
+
 
   useEffect(() => {
     if (localStorage.getItem('loginType') === 'kakao') {
       setIsNickname(kakaoNickname);
     }
-    setIsNickname(nickname);
-  }, [isNickname]);
+
+  }, []);
 
   return (
     <div>

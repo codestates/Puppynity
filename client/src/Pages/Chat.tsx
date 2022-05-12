@@ -44,38 +44,158 @@ const RightSide = styled.div`
 `;
 
 const ViewArea = styled.div`
-  background-color: lightblue;
+  background-color: #fff;
+  width: 450px;
+  height: calc(95vh - 116px);
+  overflow-y: auto;
+  display: flex;
+  flex-direction: column-reverse;
+  align-items: flex-end;
+
+  &::-webkit-scrollbar {
+    width: 4px;
+  }
+  &::-webkit-scrollbar-thumb {
+    border-radius: 2px;
+    background: #ccc;
+  }
 `;
 
 const Message = styled.div`
-  color: grey;
+  border: solid 1px #aaa;
+  width: 400px;
+  /* height: 58px; */
 `;
 
 const MessageInfo = styled.div`
   color: lightcoral;
+  display: flex;
+  justify-content: right;
 `;
 
 const MessageContents = styled.div`
-  color: lightgoldenrodyellow;
+  color: #fff;
+  background-color: #ffa224;
+  height: 20px;
+  /* width: 100px; */
+  display: flex;
+  justify-content: left;
+  margin: 5px;
+  padding: 5px;
+  border-radius: 5px;
+`;
+
+const Lower = styled.div`
+  display: flex;
+  height: 58px;
+  /* background-color: blue; */
+  /* padding: 20px; */
+  justify-content: center;
+  align-items: center;
 `;
 
 const InputArea = styled.input``;
 
 const Btn = styled.button``;
 
-const MyNickName = styled.div`
-  padding: 10px;
-  font-size: 20px;
-  color: #ffa224;
-  border-bottom: 1px solid #aaa;
-`;
-
 const ChatRoom = styled.div`
-  background-color: lightgreen;
-  height: 95vh-241px;
+  height: calc(95vh - 58px);
+  overflow-y: auto;
+  &::-webkit-scrollbar {
+    width: 4px;
+  }
+  &::-webkit-scrollbar-thumb {
+    border-radius: 2px;
+    background: #ccc;
+  }
 `;
 
-const ChatRoomNo = styled.div``;
+const ChatRoomNo = styled.div`
+  /* background-color: lightpink; */
+  border-bottom: 1px solid #aaa;
+  height: 80px;
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+
+  &:hover {
+    background-color: #f6f6f6;
+  }
+`;
+
+const AvatarImg = styled.img`
+  width: 50px;
+  height: 50px;
+  margin: 10px;
+  border-radius: 50px;
+  border: 1px solid #aaa;
+`;
+
+const Users = styled.div``;
+
+const LastDate = styled.div`
+  color: #aaa;
+  /* background-color: blue; */
+  display: flex;
+  justify-content: left;
+  font-size: 14px;
+`;
+
+// 리스트 유저 닉네임
+const NickName = styled.div`
+  font-size: 16px;
+  color: #828282;
+  font-weight: 500;
+`;
+
+// 채팅방 메시지 가장작은 단위
+const MessageLast = styled.div``;
+
+// 선택된 유저
+const PickUser = styled.div`
+  border-bottom: 1px solid #aaa;
+  display: flex;
+  justify-content: left;
+  align-items: center;
+`;
+
+const PickUserNickName = styled.div`
+  color: #ffa224;
+  padding: 20px;
+  font-size: 14px;
+  font-weight: 700;
+`;
+
+const PickUserAvatar = styled.img`
+  width: 26px;
+  height: 26px;
+  border-radius: 26px;
+  border: 1px solid #aaa;
+  margin-left: 30px;
+`;
+
+// 내 닉네임
+const MyNickName = styled.div`
+  padding: 20px;
+  font-size: 14px;
+  font-weight: 700;
+  color: #ffa224;
+`;
+
+const MyAvatar = styled.img`
+  width: 26px;
+  height: 26px;
+  border-radius: 26px;
+  border: 1px solid #aaa;
+`;
+
+const MyContainer = styled.div`
+  display: flex;
+  flex-wrap: wrap;
+  border-bottom: 1px solid #aaa;
+  align-items: center;
+  justify-content: center;
+`;
 // ==========================여기까지 스타일===========================
 
 function ChatPage() {
@@ -97,7 +217,7 @@ function ChatPage() {
   axios({
     url: `http://localhost:4000/users/:${userPk}`,
     method: 'get',
-    headers: { Authorization: `Bearer ${localStorage.getItem('token')}` },
+    headers: { Authorization: `Bearer ${localStorage.getItem('token')}`, loginType: localStorage.getItem('loginType') },
   }).then((res) => {
     setIsMyNickName(res.data.userInfo.nickname);
   });
@@ -140,45 +260,136 @@ function ChatPage() {
     });
   }, []);
 
+  const time = `${new Date(Date.now()).getHours()}:${new Date(Date.now()).getMinutes()}`;
+
+  const localAvatar = localStorage.getItem('avatar');
   return (
     <Body>
       <Container>
         <LeftSide>
-          <MyNickName>{isMyNickName}</MyNickName>
+          <MyContainer>
+            <MyAvatar
+              src={
+                localAvatar === 'null'
+                  ? `https://cdn.pixabay.com/photo/2015/10/05/22/37/blank-profile-picture-973460_1280.png`
+                  : `http://localhost:4000/uploads/${localAvatar}`
+              }
+            />
+            <MyNickName>{isMyNickName}</MyNickName>
+          </MyContainer>
           <ChatRoom>
-            <ChatRoomNo>김갑둘</ChatRoomNo>
-            <ChatRoomNo>조철황</ChatRoomNo>
+            <ChatRoomNo>
+              <AvatarImg />
+              <Users>
+                <NickName>이름은열두글자가국룰이지</NickName>
+                <LastDate>{time}</LastDate>
+              </Users>
+            </ChatRoomNo>
+            <ChatRoomNo>
+              <AvatarImg />
+              <Users>
+                <NickName>아닐걸?</NickName>
+                <LastDate>{time}</LastDate>
+              </Users>
+            </ChatRoomNo>
+            <ChatRoomNo>
+              <AvatarImg />
+              <Users>
+                <NickName>그럼짧은닉네임은?</NickName>
+                <LastDate>{time}</LastDate>
+              </Users>
+            </ChatRoomNo>
+            <ChatRoomNo>
+              <AvatarImg />
+              <Users>
+                <NickName>몰?루</NickName>
+                <LastDate>{time}</LastDate>
+              </Users>
+            </ChatRoomNo>
+            <ChatRoomNo>
+              <AvatarImg />
+              <Users>
+                <NickName>이름은열두글자가국룰이지</NickName>
+                <LastDate>{time}</LastDate>
+              </Users>
+            </ChatRoomNo>
+            <ChatRoomNo>
+              <AvatarImg />
+              <Users>
+                <NickName>알아서하는거지</NickName>
+                <LastDate>{time}</LastDate>
+              </Users>
+            </ChatRoomNo>
+            <ChatRoomNo>
+              <AvatarImg />
+              <Users>
+                <NickName>나는그놈이부러운거야</NickName>
+                <LastDate>{time}</LastDate>
+              </Users>
+            </ChatRoomNo>
+            <ChatRoomNo>
+              <AvatarImg />
+              <Users>
+                <NickName>승질나는거야</NickName>
+                <LastDate>{time}</LastDate>
+              </Users>
+            </ChatRoomNo>
+            <ChatRoomNo>
+              <AvatarImg />
+              <Users>
+                <NickName>전혀부럽지가않어</NickName>
+                <LastDate>{time}</LastDate>
+              </Users>
+            </ChatRoomNo>
+            <ChatRoomNo>
+              <AvatarImg />
+              <Users>
+                <NickName>이랬다가저랬다가</NickName>
+                <LastDate>{time}</LastDate>
+              </Users>
+            </ChatRoomNo>
+            <ChatRoomNo>
+              <AvatarImg />
+              <Users>
+                <NickName>왔다감</NickName>
+                <LastDate>{time}</LastDate>
+              </Users>
+            </ChatRoomNo>
           </ChatRoom>
         </LeftSide>
         <RightSide>
+          <PickUser>
+            <PickUserAvatar />
+            <PickUserNickName>아닐걸?</PickUserNickName>
+          </PickUser>
           <ViewArea>
-            {messageList.map((messageContent, index) => (
+            {messageList.reverse().map((messageContent, index) => (
               <Message key={index} className="message">
-                더큰 메시지
                 <MessageInfo className="message-info">
-                  내가 보낸 메시지
                   <MessageContents className="message-content">
-                    {messageContent.message ? <span>{messageContent.message}</span> : null}
+                    {messageContent.message ? <MessageLast>{messageContent.message}</MessageLast> : null}
                   </MessageContents>
                 </MessageInfo>
               </Message>
             ))}
           </ViewArea>
-          <InputArea
-            className="messageInput"
-            type="text"
-            value={currentMessage}
-            placeholder="메시지 입력해주세요"
-            onChange={(event) => {
-              setcurrentMessage(event.target.value);
-            }}
-            onKeyPress={(event) => {
-              event.key === 'Enter' && sendMessage();
-            }}
-          />
-          <Btn onClick={sendMessage} type="button">
-            send
-          </Btn>
+          <Lower>
+            <InputArea
+              className="messageInput"
+              type="text"
+              value={currentMessage}
+              placeholder="메시지 입력해주세요"
+              onChange={(event) => {
+                setcurrentMessage(event.target.value);
+              }}
+              onKeyPress={(event) => {
+                event.key === 'Enter' && sendMessage();
+              }}
+            />
+            <Btn onClick={sendMessage} type="button">
+              send
+            </Btn>
+          </Lower>
         </RightSide>
       </Container>
     </Body>

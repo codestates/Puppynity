@@ -75,6 +75,7 @@ function Content() {
           headers: {
             Authorization: `Bearer ${localStorage.getItem('token')}`,
             'Content-Type': 'application/json',
+            loginType: localStorage.getItem('loginType'),
           },
         },
       )
@@ -150,6 +151,7 @@ function Content() {
         // localhost:4000/posts1/comments/comment-id
         headers: {
           Authorization: `Bearer ${localStorage.getItem('token')}`,
+          loginType: localStorage.getItem('loginType'),
         },
       })
       .then((res) => {

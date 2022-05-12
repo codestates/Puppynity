@@ -49,7 +49,6 @@ export default function Login() {
   const kakaoLoginHandler = () => {
     // 두번째 방법
     window.location.assign(KAKAO_AUTH_URL);
-    dispatch(setIsLogin(true));
   };
   // console.log(`${process.env.REACT_APP_BASE_URL}`)
 
@@ -62,12 +61,15 @@ export default function Login() {
       .post(
         `${process.env.REACT_APP_BASE_URL}/auth/login`,
         { email, password },
-        { headers: { 'Content-Type': 'application/json' }, withCredentials: true },
+        {
+          headers: { 'Content-Type': 'application/json', loginType: localStorage.getItem('loginType') },
+          withCredentials: true,
+        },
       )
       .then((res) => {
         if (res.data.accessToken) {
           const userId = localStorage.setItem('user', JSON.stringify(res.data.id)); //! 유저 정보를 로컬 스토리지에 저장
-          console.log(res.data);
+          console.log(res);
 
           localStorage.setItem('user', JSON.stringify(res.data)); //! 유저 정보를 로컬 스토리지에 저장
           dispatch(setUserPk({ userPk: res.data.id }));
@@ -88,6 +90,7 @@ export default function Login() {
           });
         }
         if (res.data.message === 'email 로그인 성공') {
+          console.log('서버가 준 토큰 ---> ', res.data.accesToken);
           axios.defaults.headers.common['Authorization'] = `Bearer ${res.data.accessToken}`;
           // console.log(localStorage.getItem('token'));
           dispatch(

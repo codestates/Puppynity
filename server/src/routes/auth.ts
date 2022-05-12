@@ -8,6 +8,7 @@ import { emailLogin } from '../controllers/auth/emailLogin'
 import { logout } from '../controllers/auth/logout'
 import { sendMail } from '../controllers/auth/email-auth'
 import { kakaoLogin } from '../controllers/auth/kakaoLogin'
+import { tokenRefresh } from '../controllers/auth/tokenRefresh'
 
 const authRouter = express.Router()
 
@@ -26,6 +27,8 @@ const isValidPassword: CustomValidator = (value: string) => {
   }
   return Promise.resolve(value)
 }
+
+// 이메일 인증
 authRouter.post('/email-auth', sendMail)
 
 // 로그인
@@ -53,23 +56,11 @@ authRouter.post(
 )
 // 로그아웃
 authRouter.post('/logout', logout)
-// 회원 정보 변경
-// authRouter.patch(
-//   '/',
-//   authentication,
-//   [
-//     body('password').optional().custom(isValidPassword),
-//     body('name').optional().isLength({ min: 2 }).withMessage('이름은 최소 2자 이상 입력해야 합니다.'),
-//     body('nickname')
-//       .optional()
-//       .isLength({ min: 3, max: 12 })
-//       .withMessage('닉네임은 최소 3자 이상 12자 이하 여야 합니다.'),
-//     body('mobile').optional().isLength({ min: 11 }).withMessage('핸드폰 번호는 최소 11자 이상 이어야 합니다.'),
-//   ],
-//   validation,
-//   editMyIinfo,
-// );
 
+// 카카오 로그인
 authRouter.post('/kakao', kakaoLogin)
+
+// 토큰 갱신
+authRouter.post('/token-refresh', tokenRefresh)
 
 module.exports = authRouter

@@ -168,6 +168,7 @@ function EditContent(): JSX.Element {
         headers: {
           Authorization: `Bearer ${localStorage.getItem('token')}`, //undefined
           'content-type': 'multipart/form-data',
+          loginType: localStorage.getItem('loginType'),
         },
       })
       .then((res) => {
@@ -179,6 +180,7 @@ function EditContent(): JSX.Element {
 
   const handleContentChange = (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
+
     console.log(imgRef);
     axios
       .patch(
@@ -195,6 +197,7 @@ function EditContent(): JSX.Element {
           headers: {
             Authorization: `Bearer ${localStorage.getItem('token')}`, //undefined
             'Content-Type': 'application/json',
+
           },
           withCredentials: true,
         },

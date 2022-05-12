@@ -30,7 +30,10 @@ export const loginReq = createAsyncThunk('loginReq', async (email: IUserData, pa
         email,
         password,
       },
-      { headers: { 'Content-Type': 'application/json' }, withCredentials: true },
+      {
+        headers: { 'Content-Type': 'application/json', loginType: localStorage.getItem('loginType') },
+        withCredentials: true,
+      },
     )
     .then((res) => {
       if (res.data.accessToken) {
@@ -63,14 +66,10 @@ export const authSlice = createSlice({
   reducers: {
     setIsLogin: (state, action) => {
       /* eslint-disable */
-      state.isLogin = true;
+      state.isLogin = action.payload.isLogin;
     },
-
     setUserId: (state, action) => {
       state.userId = action.payload;
-    },
-    setIsLogout: (state, action) => {
-      state.isLogin = false;
     },
     setUserPk: (state, action) => {
       state.userPk = action.payload.userPk;
@@ -113,3 +112,4 @@ export default authSlice.reducer;
 
 export const { setIsLogin, setIsLogout, setUserPk, setLoginType, setContentId, setNickname, setKakaoNickname } =
   authSlice.actions;
+
