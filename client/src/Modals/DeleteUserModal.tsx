@@ -58,6 +58,7 @@ const DeleteBtn = styled.button`
   font-weight: bold;
   background-color: #ff2424;
   cursor: pointer;
+  font-family: GmarketLight;
 
   &:hover {
     transition: all 0.2s ease-in-out;
@@ -103,8 +104,10 @@ function DeleteUserModal(props: any) {
     dispatch(setIsLogin(false));
     dispatch(setUserPk({ userPk: 0 }));
     dispatch(setLoginType({ loginType: '' }));
-    closeModal();
-    window.location.replace('/');
+    dispatch(DELETE_USER_MODAL_CLOSE(false));
+
+    // window.location.replace('/');
+    navigate('/');
   };
   // ==========================구현===============================
   return (
@@ -114,7 +117,7 @@ function DeleteUserModal(props: any) {
           <Detail>아쉽네요.. 정말 탈퇴하시겠어요?</Detail>
         </ModalBox>
         <ModalBox>
-          <DeleteBtn onClick={handleDelete}>삭제하기</DeleteBtn>
+          <DeleteBtn onClick={handleDelete}>탈퇴하기</DeleteBtn>
         </ModalBox>
         <CloseBtn onClick={closeModal}>X</CloseBtn>
       </Container>

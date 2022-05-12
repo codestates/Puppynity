@@ -17,6 +17,7 @@ import Mypage from './Pages/Mypage';
 import EditUserInfo from './Pages/EditUserInfo';
 import ContentDetail from './Components/ContentDetail';
 import EditContent from './Components/EditContent';
+import GlobalFonts from './Assets/fonts';
 /* eslint-disable */
 //! 카카오 로그인 처리 컴포넌트
 import KakaoAuthLoading from 'Components/KakaoAuthLoading';
@@ -73,6 +74,7 @@ function App() {
       {/* <Slider /> */}
       {/* <UploadContent handleImgChange={handleImgChange} uploadFile={uploadFile} /> */}
       <BrowserRouter>
+        <GlobalFonts />
         <Nav />
         <Routes>
           <Route path="/" element={<Main />} />

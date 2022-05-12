@@ -38,7 +38,6 @@ export default function KakaoAuthLoading() {
         localStorage.setItem('userPk', resp.data.id);
         window.location.replace('/');
       });
-
   };
 
   React.useEffect(() => {

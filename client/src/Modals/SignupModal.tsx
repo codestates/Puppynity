@@ -3,7 +3,7 @@ import styled from 'styled-components';
 import { useDispatch, useSelector } from 'react-redux';
 import axios from 'axios';
 // import jwt from 'jsonwebtoken';
-import { CLOSE_MODAL, TRUE_INPUT_DISABLE } from '../Redux/signupSlice';
+import { OPEN_MODAL, TRUE_INPUT_DISABLE } from '../Redux/signupSlice';
 
 const Body = styled.div`
   margin: 0;
@@ -37,6 +37,7 @@ const Title = styled.div`
   font-size: 25px;
   font-weight: 500;
   color: #ffa224;
+  font-family: GmarketMedium;
 `;
 
 const AuthBox = styled.div`
@@ -52,14 +53,38 @@ const CloseBtn = styled.button`
   margin-bottom: 300px;
 `;
 
-const AuthInput = styled.input``;
+const AuthInput = styled.input`
+  height: 28px;
+  border: none;
+  outline: none;
+  border-bottom: 1px solid #aaa;
+`;
 
 const Detail = styled.div`
   color: #ffa224;
+  font-family: GmarketMedium;
+  font-size: 13px;
 `;
 
 const AuthSubmit = styled.button`
-  color: #ffa224;
+  height: 34px;
+  border-radius: 4px;
+  color: #fff;
+  border: none;
+  outline: none;
+  transition: all 0.2s ease-in-out;
+  text-decoration: none;
+  font-weight: bold;
+  background-color: #ffa224;
+  cursor: pointer;
+  font-family: GmarketLight;
+  margin-left: 10px;
+
+  &:hover {
+    transition: all 0.2s ease-in-out;
+    background: #fff;
+    color: #ffa224;
+  }
 `;
 
 // ==========================여기까지 스타일===========================
@@ -141,7 +166,7 @@ function SignupModal(props: any) {
     if (validNumNum === validNum) {
       setDisable(false);
       setValidMsg('');
-      dispatch(CLOSE_MODAL(false));
+      dispatch(OPEN_MODAL(false));
       dispatch(TRUE_INPUT_DISABLE(true));
       // 이메일 인풋 디스에이블 시키는 함수 넣기
     } else {
@@ -159,7 +184,7 @@ function SignupModal(props: any) {
         </AuthBox>
         <CloseBtn
           onClick={() => {
-            dispatch(CLOSE_MODAL(false));
+            dispatch(OPEN_MODAL(false));
           }}
           type="button"
         >
@@ -168,14 +193,14 @@ function SignupModal(props: any) {
         <AuthBox>
           <Detail>{`${email}로 인증번호가 발송되었습니다. 이메일로 전달받은 인증번호를 입력해주세요.`}</Detail>
         </AuthBox>
-        <AuthBox>
+        {/* <AuthBox>
           <Title>{timeFormat(time)}</Title>
-        </AuthBox>
+        </AuthBox> */}
         <AuthBox>
           <AuthInput name="validNum" onChange={handleInput} />
         </AuthBox>
         <AuthBox>
-          <AuthSubmit onClick={handleValid}>Submit</AuthSubmit>
+          <AuthSubmit onClick={handleValid}>인증하기</AuthSubmit>
         </AuthBox>
         <AuthBox>{validMsg}</AuthBox>
       </Container>

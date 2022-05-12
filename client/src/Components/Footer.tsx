@@ -9,7 +9,8 @@ const Foot = styled.div`
   justify-content: space-between;
   padding: 0.5rem calc((100vw - 1000px) / 2);
   z-index: 10;
-  border-top: 1px solid #aaa;
+  font-family: GmarketLight;
+  /* border-top: 1px solid #aaa; */
 `;
 
 const Copyright = styled.div`
@@ -24,7 +25,7 @@ const Copyright = styled.div`
 
 const NavLink = styled.a`
   font-weight: bold;
-  color: #ffa224;
+  color: #777;
   display: flex;
   align-items: center;
   text-decoration: none;
@@ -34,7 +35,7 @@ const NavLink = styled.a`
 
   &:hover {
     transition: all 0.2s ease-in-out;
-    color: #777;
+    color: #000;
   }
 `;
 
@@ -59,6 +60,7 @@ const NavLogo = styled(Link)`
   cursor: pointer;
   /* filter: invert(100%); */
   margin-left: 24px;
+  filter: invert(50%);
 
   &.active {
     color: #e29091;

@@ -25,7 +25,7 @@ export default function Main() {
     <div>
       <div onClick={refreshTokens}>토큰 갱신</div>
       <Slider />
-      <Link to="/uploadcontent">upload content</Link>
+      {/* <Link to="/uploadcontent">upload content</Link> */}
     </div>
   );
 }

@@ -14,7 +14,8 @@ const Nav = styled.div`
   justify-content: space-between;
   padding: 0.5rem calc((100vw - 1000px) / 2);
   z-index: 10;
-  border-bottom: 1px solid #aaa;
+  font-family: GmarketLight;
+  /* border-bottom: 1px solid #aaa; */
 `;
 
 const NavLink = styled(Link)`
@@ -138,7 +139,7 @@ function NavBar() {
     }).then((resp) => {
       console.log(resp);
     });
-    dispatch(setIsLogout(false));
+    dispatch(setIsLogin(false));
 
     dispatch(setUserPk({ userPk: 0 }));
     dispatch(setLoginType({ loginType: '' }));
@@ -150,12 +151,10 @@ function NavBar() {
     localStorage.setItem('avatar', '');
   };
 
-
   useEffect(() => {
     if (localStorage.getItem('loginType') === 'kakao') {
       setIsNickname(kakaoNickname);
     }
-
   }, []);
 
   return (
