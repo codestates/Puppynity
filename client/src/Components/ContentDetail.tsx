@@ -4,7 +4,8 @@ import { useDispatch, useSelector } from 'react-redux';
 import { useNavigate } from 'react-router-dom';
 import styled from 'styled-components';
 import { deleteComment, getCommentList, writeComment, setIndex } from '../Redux/commentSlice';
-import { saveContent } from '../Redux/contentSlice';
+import { saveContentId } from '../Redux/contentSlice';
+import { setContentId } from '../Redux/authSlice';
 
 const CommentContainer = styled.div`
   height: 150px;
@@ -34,8 +35,12 @@ function Content() {
   const reduxComments = useSelector((state: any) => state.commentList);
   // const viewCount = useSelector((state: number) => state.status) // 리덕스로 조회수 관리
   const [comment, setComment] = useState('');
+  const [editComment, setEditComment] = useState('');
   const [commentList, setCommentList] = useState<any[]>([]);
   const [dbContent, setDbContent] = useState<any>([]);
+  const [isSelected, setIsSelected] = useState<boolean>(false);
+  const [commentID, setCommentID] = useState<string | number>();
+
   const parameter = window.location.pathname;
   const loginState = useSelector((state: any) => state);
   const { userPk } = loginState.auth;
@@ -55,12 +60,16 @@ function Content() {
     setComment(e.target.value);
     // console.log(e.target.value);
   };
+
+  const handleEditCommentChange = (e: React.ChangeEvent<HTMLTextAreaElement>) => {
+    setEditComment(e.target.value);
+  };
+
   // console.log(dbContent.writer.nickname);
-  const submitComment = (e: any) => {
-    e.preventDefault();
+  const submitComment = () => {
     axios
       .post(
-        `http://localhost:4000${parameter}/comments`,
+        `http://localhost:4000${parameter}/comments`, // localhost:4000/posts/39/comments
         { userId: userPk, content: comment },
         {
           headers: {
@@ -79,6 +88,7 @@ function Content() {
         // dispatch(writeComment(res.data.comment));
       });
   };
+
   // 상세 게시물 정보 조회
   React.useEffect(() => {
     axios.get(`http://localhost:4000${parameter}`).then((res) => {
@@ -101,16 +111,43 @@ function Content() {
     });
   }, []);
 
+  const deleteContent = () => {
+    console.log('delete');
+
+    axios
+      .delete(`${process.env.REACT_APP_BASE_URL}${parameter}`, {
+        headers: {
+          Authorization: `Bearer ${localStorage.getItem('token')}`,
+        },
+      })
+      .then((res) => {
+        console.log(res);
+        navigate('/community');
+      });
+  };
+  const handleContentId = () => {
+    dispatch(
+      setContentId({
+        contentId: dbContent.id, // redux 상태에 해당 게시물의 Id가 잘 담기고 있다
+      }),
+    );
+    navigate('/editcontent');
+  };
+
+  // =====================handling content =============================
+
   const handleDeleteComment = (e: React.MouseEvent<HTMLElement>) => {
     // dispatch(deleteComment(e.currentTarget));
     console.log(e.currentTarget.id); // ? 버튼 클릭 시 해당 게시물의 Id가 전달됨
     const commentid = e.currentTarget.id;
     // dispatch(deleteComment({ commentid }));
     // commentList.filter((el) => el.id !== commentid);
-    commentList.filter((item) => item.id !== Number(commentid));
+    // commentList.filter((item) => item.id !== Number(commentid));
+    setCommentList([...commentList].filter((item) => item.id !== commentid));
+
     //! axios.delete() 요청
     axios
-      .delete(`http://localhost:4000${parameter}/comments/${commentid}`, {
+      .delete(`${process.env.REACT_APP_BASE_URL}${parameter}/comments/${commentid}`, {
         // localhost:4000/posts1/comments/comment-id
         headers: {
           Authorization: `Bearer ${localStorage.getItem('token')}`,
@@ -118,27 +155,51 @@ function Content() {
         },
       })
       .then((res) => {
+        console.log(res.data);
+        // setCommentList([])
+        window.location.reload(); // 삭제시 바로 리로드?
+      });
+  };
+
+  const selectComment = (e: React.MouseEvent<HTMLElement>) => {
+    // console.log(e.currentTarget.id);
+    // const commentId = e.currentTarget.id;
+    setIsSelected(true);
+    setCommentID(e.currentTarget.id);
+  };
+
+  const submitEditComment = () => {
+    // setCommentList([...commentList].find((el) => el.id === commentId));
+    //! axios request
+    axios
+      .patch(
+        `${process.env.REACT_APP_BASE_URL}${parameter}/comments/${commentID}`,
+        { content: editComment },
+        {
+          headers: {
+            Authorization: `Bearer ${localStorage.getItem('token')}`,
+          },
+        },
+      )
+      .then((res) => {
+        console.log('댓글 수정 완료');
         console.log(res);
       });
   };
 
-  const handleEdit = () => {
-    dispatch(
-      saveContent({
-        id: dbContent.id,
-        title: dbContent.title,
-        username: dbContent.writer.nickname,
-        imgref: dbContent.imgref,
-        content: dbContent.content,
-        param: parameter,
-      }),
-    );
-    // navigate('/editcontent');
-  };
+  // =========================== handling comments ================================
 
   return (
     <div className="content-container">
       <div className="header">
+        <button onClick={deleteContent} type="button">
+          삭제
+        </button>
+        <span>
+          <button onClick={handleContentId} type="button">
+            게시글 수정
+          </button>
+        </span>
         <div className="title">
           {`제목: ${dbContent.title}`}
           {/* {`글쓴이: ${dbContent.writer.name}`} */}
@@ -146,12 +207,13 @@ function Content() {
 
         <span>{`조회수: ${0}`}</span>
       </div>
-      <span>
-        <button onClick={handleEdit} type="button">
-          게시글 수정
-        </button>
-      </span>
-      <img alt="content-img" src={dbContent.imgref ? dbContent.imgref : noimg} width="200vh" height="200vh" />
+
+      <img
+        alt="content-img"
+        src={dbContent.imgRef ? `http://localhost:4000/uploads/${dbContent.imgRef}` : noimg}
+        width="200vh"
+        height="200vh"
+      />
       <div className="content-text">{dbContent.content}</div>
       <br />
       <CommentContainer>
@@ -176,11 +238,23 @@ function Content() {
               <button onClick={handleDeleteComment} id={el.id} type="button" style={{ float: 'right' }}>
                 X
               </button>
-              <button onClick={handleEdit} id={el.id} type="button" style={{ float: 'right' }}>
+              <button onClick={selectComment} id={el.id} type="button" style={{ float: 'right' }}>
                 ...
               </button>
               <div>{el.content}</div>
             </ListStyle>
+            {isSelected ? (
+              <form onSubmit={submitEditComment}>
+                <div>
+                  <textarea onChange={handleEditCommentChange}>{el.content}</textarea>
+                  <button type="submit" id={el.id}>
+                    댓글 수정
+                  </button>
+                </div>
+              </form>
+            ) : (
+              ''
+            )}
           </div>
         ))}
       </CommentListContainer>

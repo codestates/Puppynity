@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useEffect } from 'react';
 import './App.css';
 import { BrowserRouter, Routes, Route } from 'react-router-dom';
 import { useSelector } from 'react-redux';
@@ -20,6 +20,7 @@ import EditContent from './Components/EditContent';
 /* eslint-disable */
 //! 카카오 로그인 처리 컴포넌트
 import KakaoAuthLoading from 'Components/KakaoAuthLoading';
+import axios from 'axios';
 
 const socket = io(`${process.env.REACT_APP_BASE_URL}`, {
   transports: ['websocket'],
@@ -28,12 +29,44 @@ const socket = io(`${process.env.REACT_APP_BASE_URL}`, {
 
 function App() {
   //const user = useSelector(selectUser);
+  axios.defaults.withCredentials = true;
 
   const images = [
     { pic: dummyContents[0].picture, id: 1 },
     { pic: dummyContents[1].picture, id: 2 },
     { pic: dummyContents[2].picture, id: 3 },
   ];
+
+  //! 로그인 연장 요청 useEFfect로 보냄 (토큰 재발급)
+
+  // send refreshToken to server
+
+  //! 새로고침 시 액세스 토큰 재발급하는 로직
+  // useEffect(() => {
+  //   try {
+  //     let data; //
+  //     axios
+  //       .post(`${process.env}/auth/silentrefresh`, JSON.stringify(data), {
+  //         headers: {
+  //           'Content-Type': 'application/json',
+  //         },
+  //       })
+  //       .then((res) => {
+  //         console.log(res.data);
+  //         axios.defaults.headers.common['Authorization'] = `Bearer ${res.data}`;
+  //         // islogin = true // 로그인 유지
+  //       })
+  //       .catch((ex) => {
+  //         console.log(ex);
+  //       })
+  //       .finally(() => {
+  //         console.log('login req end');
+  //         // loading = true
+  //       });
+  //   } catch (e) {
+  //     console.log(e);
+  //   }
+  // }, []);
 
   return (
     <div className="App">

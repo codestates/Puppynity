@@ -175,6 +175,7 @@ function UploadContent(): JSX.Element {
       setText('');
       //setFile();
       formData.delete('file'); // formdata 초기화
+
       navigate('/community');
     }
   };

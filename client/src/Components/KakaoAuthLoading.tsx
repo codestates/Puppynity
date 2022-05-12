@@ -6,7 +6,7 @@ import './KakaoAuthLoading.css';
 import qs from 'qs';
 import { useDispatch } from 'react-redux';
 import { useNavigate } from 'react-router-dom';
-import { setIsLogin, setUserPk } from '../Redux/authSlice';
+import { setIsLogin, setUserPk, setKakaoNickname, setLoginType } from '../Redux/authSlice';
 
 export default function KakaoAuthLoading() {
   // ---
@@ -19,6 +19,7 @@ export default function KakaoAuthLoading() {
 
   const getAccessToken = (code: string) => {
     // 카카오 콜백 uri로 받은 인가코드를 서버한테 카카오에서 토큰 받아주라고 요청
+
     axios
       .post(
         `${process.env.REACT_APP_BASE_URL}/auth/kakao`,
@@ -51,31 +52,10 @@ export default function KakaoAuthLoading() {
     }
   }, []);
 
-  // const getToken = async () => {
-  //   const payload = qs.stringify({
-  //     grant_type: 'authorization_code',
-  //     client_id: REST_API_KEY,
-  //     redirect_uri: REDIRECT_URI,
-  //     code,
-  //     // client_secret:,
-  //   });
-  //   try {
-  //     const res = await axios.post('https://kauth.kakao.com/oauth/token', payload);
-  //     navigate('/');
-  //   } catch (err) {
-  //     console.log(err);
-  //   }
-  //   // return null;
-  // };
-
-  // React.useEffect(() => {
-  //   getToken();
-  // }, []);
-
   return (
     <div className="kakaoLoadingWrapper">
       <img src={LogoImg} className="logo" style={{ width: '200px', height: '200px', margin: '20px' }} />
-      <h1>
+      <h1 className="loading">
         <span>L</span>
         <span>O</span>
         <span>A</span>

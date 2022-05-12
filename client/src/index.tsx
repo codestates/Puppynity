@@ -5,11 +5,14 @@ import './index.css';
 import { Provider } from 'react-redux'; // for redux; 생성된 Store를 모든 태그가 공유할 수 있도록 하는 클래스
 import { PersistGate } from 'redux-persist/integration/react';
 import { persistStore } from 'redux-persist';
+import axios from 'axios';
 import App from './App';
 import configureStore from './Redux/configureStore';
 import reportWebVitals from './reportWebVitals';
 
 const persistor = persistStore(configureStore);
+
+axios.defaults.withCredentials = true;
 
 const root = ReactDOM.createRoot(document.getElementById('root') as HTMLElement);
 root.render(

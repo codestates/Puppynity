@@ -201,11 +201,14 @@ function ContentList(): JSX.Element {
   const redirectToContentDetail = (e: React.MouseEvent<HTMLInputElement>) => {
     // onClick event로 해당 게시물의 원래 주소(페이지)를 띄어준다.
     const click_id = e.currentTarget.id;
+    console.log(click_id);
     navigate(`/posts/${click_id}`);
   }; // 게시글 클릭 시 게시물의 디테일을 보여준다.
   // console.log('contents 상태 ------------>', dbContents);
 
   console.log(dbContents);
+
+  //! 상태관리를
 
   return (
     <Container>
@@ -223,7 +226,7 @@ function ContentList(): JSX.Element {
             {dbContents.length === 0
               ? '검색 결과가 없습니다.'
               : dbContents.map((post) => (
-                  <div key={post.id}>
+                  <div key={post.id} id={post.id} onClick={redirectToContentDetail}>
                     <ContentContainer>
                       <img
                         src={post.imgRef ? `http://localhost:4000/uploads/${post.imgRef}` : erorImg}
