@@ -153,14 +153,6 @@ function NavBar() {
     localStorage.setItem('avatar', '');
   };
 
-  // useEffect(() => {
-  //   if (loginType === 'kakao') {
-  //     setIsNickname(kakaoNickname);
-  //   }
-  //   setIsNickname(nickname);
-  // }, []);
-  console.log(loginStatus);
-
   return (
     <div>
       {loginStatus ? (
