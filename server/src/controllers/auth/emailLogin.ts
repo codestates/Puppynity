@@ -40,7 +40,7 @@ export const emailLogin = async (req: Request, res: Response) => {
   res
     .status(200)
     .cookie('refreshToken', refreshToken, {
-      maxAge: 1000 * 60 * 60 * 24 * 7,
+      maxAge: 1000 * 60 * 60 * 24 * 30, // 한 달
       httpOnly: true,
       secure: true,
       sameSite: 'none',
