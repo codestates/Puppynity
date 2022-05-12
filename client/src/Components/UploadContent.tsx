@@ -152,7 +152,7 @@ function UploadContent(): JSX.Element {
           {
             title,
             //! 정태영: 사진 업로드 요청 후 받은 응답(파일이름)
-            // imgRef,
+            imgRef,
             category,
             content: text,
           },
@@ -173,6 +173,7 @@ function UploadContent(): JSX.Element {
       setText('');
       //setFile();
       formData.delete('file'); // formdata 초기화
+
       navigate('/community');
     }
   };

@@ -4,7 +4,7 @@ import styled from 'styled-components';
 import { useSelector, useDispatch } from 'react-redux'; // store에있는 상태 꺼내오기가능
 /* eslint-disable */
 
-import { setIsLogin, setUserPk, setLoginType } from '../Redux/authSlice';
+import { setIsLogin, setUserPk, setLoginType, setNickname } from '../Redux/authSlice';
 import LogoImg from '../Assets/puppynityLogo.svg';
 import KakaoLogin from '../Assets/kakao_login_medium.png';
 import axios from 'axios';
@@ -34,11 +34,13 @@ const Button = styled.button`
 export default function Login() {
   const [email, setEmail] = useState<string>('');
   const [password, setPassword] = useState('');
+
+  const [isNickname, setIsNickname] = React.useState<string | undefined>('');
+
   const dispatch = useDispatch();
   const navigate = useNavigate();
   // const [isLogin, setIsLogin] = useState<boolean>(false);
   // const { user, isLoading, isError, isSuccess, message } = useSelector((state) => state.auth);
-
 
   //! 카카오 oauth 요청 url
   const KAKAO_AUTH_URL = `https://kauth.kakao.com/oauth/authorize?client_id=${process.env.REACT_APP_KAKAO_REST_API_KEY}&redirect_uri=${process.env.REACT_APP_KAKAO_REDIRECT_URI}&response_type=code`;
@@ -62,7 +64,6 @@ export default function Login() {
       )
       .then((res) => {
         if (res.data.accessToken) {
-
           const userId = localStorage.setItem('user', JSON.stringify(res.data.id)); //! 유저 정보를 로컬 스토리지에 저장
           console.log(res.data);
 
@@ -72,6 +73,17 @@ export default function Login() {
           localStorage.setItem('token', res.data.accessToken); // 토큰 로컬에 저장
           localStorage.setItem('loginType', 'email');
           localStorage.setItem('userPk', res.data.id);
+
+          axios({
+            // 요청이 잘 오고있다.
+            url: `${process.env.REACT_APP_BASE_URL}/users/:${res.data.id}`,
+            method: 'get',
+            headers: { Authorization: `Bearer ${localStorage.getItem('token')}` },
+          }).then((res) => {
+            const name = res.data.userInfo.nickname;
+            console.log(res.data.userInfo.nickname);
+            dispatch(setNickname({ nickname: name }));
+          });
         }
         if (res.data.message === 'email 로그인 성공') {
           axios.defaults.headers.common['Authorization'] = `Bearer ${res.data.accessToken}`;
@@ -80,9 +92,6 @@ export default function Login() {
             setIsLogin({
               isLogin: true,
             }),
-            // setUserId({
-            //   action.payload = userId,
-            // }),
           );
           navigate('/');
         }
@@ -91,6 +100,8 @@ export default function Login() {
     setPassword('');
     // const isLogin = useSelector()
   };
+
+  //? 여기서 개인정보 요청을 보내서, 개인정보를 담아서 redux 상태값으로 넘겨줘서 nav에 넘길 수 있어야함.
 
   const handleEmailChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     setEmail(e.target.value);

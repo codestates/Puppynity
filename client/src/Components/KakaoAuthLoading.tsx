@@ -6,7 +6,7 @@ import './KakaoAuthLoading.css';
 import qs from 'qs';
 import { useDispatch } from 'react-redux';
 import { useNavigate } from 'react-router-dom';
-import { setIsLogin, setUserPk } from '../Redux/authSlice';
+import { setIsLogin, setUserPk, setKakaoNickname, setLoginType } from '../Redux/authSlice';
 
 export default function KakaoAuthLoading() {
   // ---
@@ -26,6 +26,8 @@ export default function KakaoAuthLoading() {
       console.log('카카오 토큰 ===> ', resp.data.accessToken);
       console.log('로그인 타입 ---> ', resp.data.loginType);
       console.log('닉네임 ---> ', resp.data.nickname);
+      dispatch(setKakaoNickname({ kakaoNickname: resp.data.nickname }));
+      dispatch(setLoginType({ loginType: resp.data.loginType }));
       axios.defaults.headers.common['Authorization'] = `Bearer ${resp.data.accessToken}`;
       localStorage.setItem('user', resp.data.nickname);
       localStorage.setItem('token', resp.data.accessToken);
@@ -48,31 +50,10 @@ export default function KakaoAuthLoading() {
     }
   }, []);
 
-  // const getToken = async () => {
-  //   const payload = qs.stringify({
-  //     grant_type: 'authorization_code',
-  //     client_id: REST_API_KEY,
-  //     redirect_uri: REDIRECT_URI,
-  //     code,
-  //     // client_secret:,
-  //   });
-  //   try {
-  //     const res = await axios.post('https://kauth.kakao.com/oauth/token', payload);
-  //     navigate('/');
-  //   } catch (err) {
-  //     console.log(err);
-  //   }
-  //   // return null;
-  // };
-
-  // React.useEffect(() => {
-  //   getToken();
-  // }, []);
-
   return (
     <div className="kakaoLoadingWrapper">
       <img src={LogoImg} className="logo" style={{ width: '200px', height: '200px', margin: '20px' }} />
-      <h1>
+      <h1 className="loading">
         <span>L</span>
         <span>O</span>
         <span>A</span>

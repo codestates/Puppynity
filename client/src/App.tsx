@@ -35,6 +35,9 @@ function App() {
     { pic: dummyContents[2].picture, id: 3 },
   ];
 
+  //! 로그인 연장 요청 useEFfect로 보냄 (토큰 재발급)
+  // send refreshToken to server
+
   return (
     <div className="App">
       {/* <Slider /> */}
