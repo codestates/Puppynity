@@ -4,9 +4,8 @@ import { useDispatch, useSelector } from 'react-redux';
 import axios from 'axios';
 import { useNavigate } from 'react-router-dom';
 import { setIsLogin, setUserPk, setLoginType } from '../Redux/authSlice';
-import { OPEN_MODAL, OPEN_SUCCESS_MODAL, FALSE_INPUT_DISABLE } from '../Redux/signupSlice';
+import { OPEN_MODAL, FALSE_INPUT_DISABLE } from '../Redux/signupSlice';
 import Modal from '../Modals/SignupModal';
-import Modal2 from '../Modals/SignupSuccessModal';
 
 const Body = styled.div`
   margin: 0;
@@ -19,6 +18,7 @@ const Body = styled.div`
   align-items: center;
   padding: 10px;
   background-color: #ecf0f1;
+  font-family: GmarketLight;
 `;
 
 const Container = styled.div`
@@ -34,6 +34,7 @@ const Title = styled.div`
   font-size: 25px;
   font-weight: 500;
   color: #ffa224;
+  font-family: GmarketMedium;
 `;
 
 const Form = styled.form`
@@ -59,10 +60,12 @@ const Detail = styled.div`
   display: flex;
   justify-content: right;
   /* background-color: blue; */
+  font-size: 15px;
   margin-right: 10px;
   align-items: center;
   font-weight: 500;
   color: #ffa224;
+  font-family: GmarketMedium;
 `;
 
 const SignInput = styled.input`
@@ -99,6 +102,7 @@ const AuthBtn = styled.button<IDisabled>`
   transition: all 0.2s ease-in-out;
   text-decoration: none;
   font-weight: bold;
+  font-family: GmarketLight;
 
   ${(props) =>
     props.emailDbCheck === false &&
@@ -137,6 +141,7 @@ const Btn = styled.button<IIsValidSignup>`
   transition: all 0.2s ease-in-out;
   text-decoration: none;
   font-weight: bold;
+  font-family: GmarketLight;
 
   ${(props) =>
     props.isValidSignup === false &&
@@ -188,6 +193,7 @@ const ValidMsg = styled.p<IValidProps>`
   text-align: left;
   max-width: 240px;
   margin-left: 200px;
+  font-family: GmarketMedium;
   color: ${(props) => (props.validProps === false ? '#ff7b8f' : '#32B34B')};
 `;
 
@@ -393,9 +399,6 @@ function SignupPage() {
           console.log(err);
         }
       });
-
-    // 회원가입 버튼 누를 시 모달 오픈
-    // dispatch(OPEN_SUCCESS_MODAL(true));
   };
 
   // 프로필 사진 업로드 useRef
@@ -466,7 +469,6 @@ function SignupPage() {
   return (
     <Body>
       {isOpen && <Modal email={email} />}
-      {isSuccessOpen && <Modal2 />}
       <Container>
         <Form>
           <InputBox>

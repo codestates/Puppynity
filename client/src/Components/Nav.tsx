@@ -165,10 +165,6 @@ function NavBar() {
     }
   }, []);
 
-  useEffect(() => {
-    console.log(isLogin);
-  }, [isLogin]);
-
   return (
     <div>
       {loginStatus ? (
