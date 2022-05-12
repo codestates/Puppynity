@@ -53,6 +53,8 @@ export default function Login() {
   };
   // console.log(`${process.env.REACT_APP_BASE_URL}`)
 
+  const JWT_EXPIRY_TIME = 1000 * 15;
+
   const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
 
@@ -100,6 +102,55 @@ export default function Login() {
     setPassword('');
     // const isLogin = useSelector()
   };
+
+//  const refreshToken = () => {
+  //   axios.post(`${process.env.REACT_APP_BASE_URL}/auth/refreshtoken`, {Headers:{
+  //     "Content-Type": "application/json",
+  //   }}).then((res) => {
+  //     console.log(res.data);
+  //     axios.defaults.headers.common['Authorization'] = `Bearer ${res.data}`
+
+  //     setTimeout(() =>{
+  //       refreshToken(null);
+  //     }, (10* 1000))
+  //   })
+  // }
+
+  const onSilentRefresh = () => {
+    // refresh token이 쿠키에 담겨있을 예정.
+    // accessToken을 브라우저 상 private 변수로 저장한다.
+    // 주기적인 로그인 요청 
+    axios.post(`${process.env.REACT_APP_BASE_URL}/auth/login`, { email, password }, { headers: 
+       { 'Content-Type': 'application/json' }, withCredentials: true })
+      .then((res) => {
+      console.log(res.data);
+      // console.log(res.cookie) // refreshtoken 확인 
+      const {token} = res.data; // token을 변수에 저장한다. 
+      
+      setTimeout(()=> {
+          // 15초 뒤 액세스 토큰 재발급. 
+          // 자동적으로 setTimeout이 발행해 accesstoken이 갱신됨. 
+          axios.post(`${process.env.REACT_APP_BASE_URL}/auth/token-refresh`, {Headers: {
+             'Content-Type': 'application/json' }, withCredentials: true
+          })
+      }, 15 * 1000)
+
+      // res.cookie
+      axios.defaults.headers.common['Authorization'] = `Bearer ${res.data}`
+        dispatch(setIsLogin({
+          isLogin: true
+        }))
+
+        // accessToken이 만료되면 바로 또 요청 
+        // if accessToken is expired 
+        if (!token) {
+          console.log('requesting accesstoken again')
+          // 토큰 재발급?
+        }
+        
+      }
+    }
+  
 
   //? 여기서 개인정보 요청을 보내서, 개인정보를 담아서 redux 상태값으로 넘겨줘서 nav에 넘길 수 있어야함.
 
