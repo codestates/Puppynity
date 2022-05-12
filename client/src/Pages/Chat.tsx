@@ -301,32 +301,6 @@ function ChatPage() {
     });
   }, []);
 
-  //! 2번 식
-  // const sendMessage = async () => {
-  //   if (currentMessage !== '') {
-  //     // const minutes = new Date(Date.now()).getMinutes();
-  //     const messageData = {
-  //       id: 1,
-  //       message: currentMessage,
-  //       // time: ${new Date(Date.now()).getHours()}:${minutes}, //createdAt에서 시분만 나누기
-  //     };
-  //     await socket.emit('send_message', messageData);
-  //     setMessageList((list: any) => [...list, messageData]);
-  //     setcurrentMessage('');
-  //   }
-  // };
-  // useEffect(() => {
-  //   socket.on('receive_message', (data) => {
-  //     setMessageList((list) => [...list, data]);
-  //   });
-  // }, []);
-
-  // useEffect(() => {
-  //   socket.on('message', (data) => {
-  //     setMessageList((list) => [...list, data]);
-  //   });
-  // }, []);
-
   const time = `${new Date(Date.now()).getHours()}:${new Date(Date.now()).getMinutes()}`;
 
   const localAvatar = localStorage.getItem('avatar');
