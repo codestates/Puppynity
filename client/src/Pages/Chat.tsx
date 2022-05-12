@@ -294,10 +294,10 @@ function ChatPage() {
     }
   };
   useEffect(() => {
-    socket.on('receive_message', (res) => {
+    socket.on('receive_message', (res: any) => {
       // console.log(res);
       // console.log(messageList);
-      setMessageList((list) => [...list, res]);
+      setMessageList((list: any) => [...list, res]);
     });
   }, []);
 
