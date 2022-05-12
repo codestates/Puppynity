@@ -50,12 +50,14 @@ const initialState = {
 
   userPk: 0,
   loginType: '',
-  content: [],
+  contentId: 0,
   // data: {
   //   accessToken: '',
   //   email: '',
   //   loginType: '',
   // },
+  nickname: '',
+  kakaoNickname: '',
 };
 
 export const authSlice = createSlice({
@@ -74,8 +76,19 @@ export const authSlice = createSlice({
     },
     setLoginType: (state, action) => {
       state.loginType = action.payload.loginType;
+      console.log(state.loginType); // 성공!
     },
-
+    setContentId: (state, action) => {
+      state.contentId = action.payload.contentId;
+    },
+    setNickname: (state, action) => {
+      state.nickname = action.payload.nickname;
+      console.log(state.nickname);
+    },
+    setKakaoNickname: (state, action) => {
+      state.kakaoNickname = action.payload.kakaoNickname;
+      console.log(state.kakaoNickname); // 성공!
+    },
     // login: (state, action) => {
     //   state.userinfo = action.payload;
     //   console.log('local state에 로그인정보가 잘 들어오나?');
@@ -97,4 +110,6 @@ export const authSlice = createSlice({
 
 export default authSlice.reducer;
 
-export const { setIsLogin, setUserPk, setLoginType } = authSlice.actions;
+export const { setIsLogin, setIsLogout, setUserPk, setLoginType, setContentId, setNickname, setKakaoNickname } =
+  authSlice.actions;
+

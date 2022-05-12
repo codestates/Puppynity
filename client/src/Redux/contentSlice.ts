@@ -1,8 +1,6 @@
 import { createSlice, PayloadAction, createAsyncThunk } from '@reduxjs/toolkit';
 /* eslint-disable */
-import configureStore from './configureStore';
-import dummyContents from '../static/dummyContents';
-import axios from 'axios';
+
 // 하나의 게시물의 디테일한 요소를 모두 띄어주는 요소들을 모두 다뤄야한다.
 // 게시글의 제목, 유저이름, 생성 날짜, 게시글 내용 (사진 + 텍스트)
 // + 좋아요 갯수와 댓글까지?! <-- 어떻게 구현할지 고민...
@@ -17,17 +15,6 @@ export interface IContentType {
   createdAt: string;
 }
 
-// const initialState = [
-//   {
-//     id: dummyContents[0].id,
-//     title: dummyContents[0].title,
-//     username: dummyContents[0].username,
-//     picture: dummyContents[0].picture, // 사진 자체를 multer을 사용해 보내야하는데 form data는 어떤 타입인가...?
-//     text: dummyContents[0].text,
-//     category: '댕댕이자랑',
-//     createdAt: dummyContents[0].createdAt,
-//   },
-// ];
 export interface ContentType {
   id: number;
   title: string;
@@ -36,27 +23,22 @@ export interface ContentType {
   content: string;
   param: string;
 }
-// const initialState = {
-//   contents: [0],
-// };
 
 export const contentSlice = createSlice({
   name: 'contents',
-  initialState: [],
+  initialState: {
+    contentId: 0,
+  },
   reducers: {
-    saveContent: (state: any, action) => {
+    saveContentId: (state, action) => {
       // 게시물을 수정할 때 여기로 ContentDetail에 있는 게시글 내용을 올려줄거임.
       // 그리고 EditContent에서 여기에 저장된 상태값들을 가져간다.
-      state.contents = [action.payload];
+      // state.contentId = action.payload.contentId;
       // console.log([action.payload]);
-      console.log(state.contents);
+      console.log(state.contentId);
 
       // state.push(action.payload); // RTK uses immerJS, let you code like js.
       // console.log('액션객체 안엔 뭐가있을까!? ' + action.payload);
-    },
-    deleteContent: (state) => {
-      state = [];
-      console.log(state);
     },
   },
   extraReducers: {
@@ -71,7 +53,7 @@ export const contentSlice = createSlice({
   },
 });
 
-export const { saveContent, deleteContent } = contentSlice.actions;
+export const { saveContentId } = contentSlice.actions;
 
 export default contentSlice.reducer;
 

@@ -1,9 +1,8 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import styled from 'styled-components';
 import { useDispatch, useSelector } from 'react-redux';
 import { useNavigate } from 'react-router-dom';
 import axios from 'axios';
-import { deleteContent, ContentType } from '../Redux/contentSlice';
 // import { uploadContent } from '../Redux/contentSlice';
 /* eslint-disable */
 
@@ -85,22 +84,47 @@ const Selector = styled.select`
 // TODO: 이미지와 그 외 데이터 분기해서 서버에 보내줘야한다.
 // 그 외 필요한 거: 여기서 로그인된 유저정보를 받아와야한다.
 
+type Content = {
+  id: number;
+  title: string;
+  nickname?: string;
+  content: string;
+  imgRef: string;
+  category: string;
+};
+
 function EditContent(): JSX.Element {
-  const [title, setTitle] = useState<string>(''); // 여기에 Props로 내려받은 기존 게시글 정보가 담겨있어야한다
-  const [text, setText] = useState<string>('');
+  const contentId = useSelector((state: any) => state.auth.contentId);
+  console.log(contentId); // 잘 찍혀온다;
+  const [content, setContent] = React.useState<Content | undefined>(undefined);
   const [fileUrl, setFileUrl] = useState<string>('');
-
-  //! 정태영: 사진 업로드 후 받은 이미지 제목
+  const [title, setTitle] = useState<string | undefined>(''); // 여기에 내려받은 기존 게시글 정보가 담겨있어야한다
+  const [text, setText] = useState<string | undefined>('');
   const [imgRef, setImgRef] = useState<string>('');
-
+  const [editImgRef, setEditImgRef] = useState<string>('');
   const [category, setCategory] = useState<string>('');
-
-  //const { data } = useSelector((state) => state);
-
-  const data = useSelector((state: any) => state.content);
-  console.log(data);
-
   const navigate = useNavigate();
+
+  React.useEffect(() => {
+    axios.get(`${process.env.REACT_APP_BASE_URL}/posts/${contentId}`).then((res) => {
+      console.log(res.data);
+      console.log('-------------------');
+      console.log(res.data.post);
+      setContent(res.data.post);
+      // console.log(content);
+      // content === undefined
+      //   ? undefined
+      //   : (setTitle(content.title), setText(content.content), setImgRef(content.imgRef), setCategory(content.category));
+      //console.log(content.title);
+      setTitle(res.data.post.title);
+      setText(res.data.post.content);
+      setImgRef(res.data.post.imgRef);
+      setCategory(res.data.post.category);
+    });
+  }, []);
+
+  //======== redux에 담아준 content id의 값으로 원하는 상세 게시물 불러오기 성공 ========
+
   const handleTitleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     setTitle(e.target.value);
     // console.log('title change' + e.target.value);
@@ -125,6 +149,8 @@ function EditContent(): JSX.Element {
 
     if (e.target.files[0]) {
       reader.readAsDataURL(e.target.files[0]);
+      console.log('---------------------');
+      console.log(e.target.files[0]);
     }
 
     reader.onloadend = () => {
@@ -148,47 +174,46 @@ function EditContent(): JSX.Element {
       .then((res) => {
         console.log(res.data);
         setImgRef(res.data.imgRef);
+        console.log(imgRef);
       });
   };
 
   const handleContentChange = (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
-    if (title && text) {
-      axios
-        .post(
-          'http://localhost:4000/posts',
-          {
-            title,
-            //! 정태영: 사진 업로드 요청 후 받은 응답(파일이름)
-            // imgRef,
-            category,
-            content: text,
-          },
-          {
-            // formData
-            headers: {
-              Authorization: `Bearer ${localStorage.getItem('token')}`, //undefined
-              'Content-Type': 'application/json',
-              loginType: localStorage.getItem('loginType'),
-            },
-            withCredentials: true,
-          },
-        )
-        .then((res) => {
-          console.log('컨텐츠 업로드 완료');
-          console.log(formData.get('img'));
-          console.log(res.data);
-        });
-      setTitle(''); //로컬 상태들은 다시 빈 값으로 돌려준다.
-      setText('');
-      //setFile();
-      formData.delete('file'); // formdata 초기화
-      dispatch(deleteContent());
-      navigate('/community');
-    }
-  };
 
-  const dispatch = useDispatch();
+    console.log(imgRef);
+    axios
+      .patch(
+        `${process.env.REACT_APP_BASE_URL}/posts/${contentId}`,
+        {
+          title,
+          //! 정태영: 사진 업로드 요청 후 받은 응답(파일이름)
+          imgRef,
+          category,
+          content: text,
+        },
+        {
+          // formData
+          headers: {
+            Authorization: `Bearer ${localStorage.getItem('token')}`, //undefined
+            'Content-Type': 'application/json',
+
+          },
+          withCredentials: true,
+        },
+      )
+      .then((res) => {
+        console.log('컨텐츠 수정 완료');
+        console.log(formData.get('img'));
+        console.log(res.data);
+      });
+    setTitle(''); //로컬 상태들은 다시 빈 값으로 돌려준다.
+    setText('');
+    //setFile();
+    formData.delete('img'); // formdata 초기화
+    // navigate('/community');
+  };
+  // console.log(content.title);
 
   const canUpload = Boolean(title) && Boolean(text); // title과 게시물 내용이 있는경우 T를 반환해준다. 이걸로 버튼에 삼항연산자를 걸어준다.
 
@@ -213,12 +238,7 @@ function EditContent(): JSX.Element {
             alt="conditional"
           />
         </ImgContainer>
-        <InputStyle
-          onChange={handleTitleChange}
-          type="input"
-          className="title-input"
-          placeholder="제목을 입력해주세요"
-        ></InputStyle>
+        <InputStyle onChange={handleTitleChange} className="title" value={title}></InputStyle>
         <br />
         <Selector onChange={handleCategoryChange}>
           <option value="" hidden>
@@ -229,10 +249,10 @@ function EditContent(): JSX.Element {
           <option value="dailyLog">일상공유&수다</option>
         </Selector>
         <br />
-        <Textarea onChange={handleTextChange} className="text-content" />
+        <textarea onChange={handleTextChange} className="text-content" value={text}></textarea>
         <br />
         <Button type="submit" disabled={!canUpload}>
-          업로드!!
+          게시물 수정하기
         </Button>
       </form>
     </div>

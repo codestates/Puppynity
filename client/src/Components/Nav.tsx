@@ -125,15 +125,22 @@ const NavLogo = styled(Link)`
 function NavBar() {
   const loginStatus = useSelector((state: any) => state.auth.isLogin);
   const loginState = useSelector((state: any) => state);
-  const { userPk, isLogin } = loginState.auth;
+  const { userPk, isLogin, nickname, kakaoNickname, loginType } = loginState.auth;
   const dispatch = useDispatch();
   const [isNickname, setIsNickname] = useState('');
+  //! 필요한거:  닉네임, 로그인 상태
 
-  console.log(loginState);
-  console.log(localStorage);
-
-  const logout = () => {
+  const logout = async () => {
+    await axios({
+      method: 'post',
+      url: 'http://localhost:4000/auth/logout',
+      headers: { 'Content-Type': 'application/json', loginType: localStorage.getItem('loginType') },
+      withCredentials: true,
+    }).then((resp) => {
+      console.log(resp);
+    });
     dispatch(setIsLogin(false));
+
     dispatch(setUserPk({ userPk: 0 }));
     dispatch(setLoginType({ loginType: '' }));
     setIsNickname('');
@@ -144,24 +151,9 @@ function NavBar() {
     localStorage.setItem('avatar', '');
   };
 
-  const kakaoNick: any = localStorage.getItem('user');
-
-  if (userPk !== 0 && localStorage.getItem('loginType') === 'email') {
-    axios({
-      url: `${process.env.REACT_APP_BASE_URL}/users/:${userPk}`,
-      method: 'get',
-      headers: {
-        Authorization: `Bearer ${localStorage.getItem('token')}`,
-        loginType: localStorage.getItem('loginType'),
-      },
-    }).then((res) => {
-      setIsNickname(res.data.userInfo.nickname);
-    });
-  }
-
   useEffect(() => {
     if (localStorage.getItem('loginType') === 'kakao') {
-      setIsNickname(kakaoNick);
+      setIsNickname(kakaoNickname);
     }
   }, []);
 
