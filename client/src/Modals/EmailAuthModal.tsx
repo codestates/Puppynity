@@ -3,7 +3,7 @@ import styled from 'styled-components';
 import { useDispatch, useSelector } from 'react-redux';
 import { NavLink as Link } from 'react-router-dom';
 import axios from 'axios';
-import { CLOSE_MODAL } from '../Redux/mypageSlice';
+import { OPEN_MODAL } from '../Redux/mypageSlice';
 
 const Body = styled.div`
   margin: 0;
@@ -69,6 +69,7 @@ const Btn = styled.button<IIsValidEdit>`
   font-weight: bold;
   background-color: #ffa224;
   cursor: pointer;
+  font-family: GmarketLight;
 
   ${(props) =>
     props.validEdit === false &&
@@ -103,6 +104,7 @@ const Input = styled.input`
   outline: none;
   margin-right: 10px;
   border-bottom: 1px solid lightgrey;
+  font-family: GmarketMedium;
 `;
 
 const Detail = styled.div`
@@ -110,6 +112,7 @@ const Detail = styled.div`
   display: flex;
   justify-content: left;
   color: #ffa224;
+  font-family: GmarketMedium;
 `;
 
 const WrapAvater = styled.div`
@@ -143,6 +146,7 @@ const AvatarBtn = styled.button`
   cursor: pointer;
   margin-left: 120px;
   margin-bottom: 20px;
+  font-family: GmarketLight;
 
   background-color: #ffa224;
   cursor: pointer;
@@ -228,7 +232,7 @@ function EmailAuthModal(props: any) {
 
   const dispatch = useDispatch();
   const closeModal = () => {
-    dispatch(CLOSE_MODAL(false));
+    dispatch(OPEN_MODAL(false));
   };
 
   // 하이픈 자동 생성

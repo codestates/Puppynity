@@ -2,9 +2,10 @@
 /* eslint-disable no-unused-expressions */
 import React, { useEffect, useState } from 'react';
 import styled from 'styled-components';
-
 import io from 'socket.io-client';
 import axios from 'axios';
+import puppy1 from '../Assets/puppy1.jpeg';
+import puppy2 from '../Assets/puppy2.jpeg';
 
 const Body = styled.div`
   margin: 0;
@@ -16,7 +17,8 @@ const Body = styled.div`
   justify-content: center;
   align-items: center;
   padding: 10px;
-  background-color: #ecf0f1;
+  /* background-color: #ecf0f1; */
+  font-family: GmarketMedium;
 `;
 
 const Container = styled.div`
@@ -80,6 +82,7 @@ const MessageContents = styled.div`
   /* width: 100px; */
   display: flex;
   justify-content: left;
+  align-items: center;
   margin: 5px;
   padding: 5px;
   border-radius: 5px;
@@ -94,9 +97,31 @@ const Lower = styled.div`
   align-items: center;
 `;
 
-const InputArea = styled.input``;
+const InputArea = styled.input`
+  border-radius: 30px;
+  height: 10px;
+  width: 280px;
+  padding: 15px;
+  outline: none;
+  border: 1px solid #aaa;
+`;
 
-const Btn = styled.button``;
+const Btn = styled.button`
+  margin-left: 10px;
+  height: 10px;
+  width: 10px;
+  padding: 15px;
+  border-radius: 30px;
+  border: 1px solid #aaa;
+  background: none;
+  background-color: #aaa;
+  cursor: pointer;
+
+  &:hover {
+    transition: all 0.2s ease-in-out;
+    background-color: #fff;
+  }
+`;
 
 const ChatRoom = styled.div`
   height: calc(95vh - 58px);
@@ -143,7 +168,7 @@ const LastDate = styled.div`
 
 // 리스트 유저 닉네임
 const NickName = styled.div`
-  font-size: 16px;
+  font-size: 14px;
   color: #828282;
   font-weight: 500;
 `;
@@ -200,20 +225,22 @@ const MyContainer = styled.div`
 
 function ChatPage() {
   const [currentMessage, setcurrentMessage] = useState('');
+  // input에 onchange될때마다 바뀌게 되어있음
   const [messageList, setMessageList] = useState([
     {
       id: 1,
-      // chatroomId: '',
-      // username: '',
-      // writerId: '',
+      chatroomId: 1,
+      username: '',
+      writerId: '',
       message: '',
-      // time: '',
+      time: '',
     },
   ]);
   const [isMyNickName, setIsMyNickName] = useState('');
-
-  // 유저정보 get 요청하기
   const userPk = localStorage.getItem('userPk');
+
+  //! ===============================================================
+  // 유저정보 get 요청하기 //! 이부분 get요청 말고 상태에서 닉네임 가져오는걸로 바꿀것
   axios({
     url: `http://localhost:4000/users/:${userPk}`,
     method: 'get',
@@ -221,48 +248,66 @@ function ChatPage() {
   }).then((res) => {
     setIsMyNickName(res.data.userInfo.nickname);
   });
+  //! ===============================================================
 
-  const socket = io(`${process.env.REACT_APP_BASE_URL}`, {
+  // 사용자 지정 namespace로 접속한다.
+  const socket = io(`${process.env.REACT_APP_BASE_URL}/chat`, {
     transports: ['websocket'],
     withCredentials: true,
   });
 
+  // 메시지 하나가 가지고있을 정보 = 렌더링시에 채팅내용들을 맵핑해주는 useEffect
   useEffect(() => {
-    const messages = messageList.map((chatting) => ({
+    const messages = messageList.map((chatting: any) => ({
       id: 1,
-      // chatroomId: chatting.chatroomId,
-      // username: chatting.username,
-      // writerId: chatting.writerId,
+      chatroomId: 1,
+      username: chatting.username,
+      writerId: chatting.writerId,
       message: chatting.message,
-      // time: chatting.time,
+      time: chatting.time,
     }));
     setMessageList([...messages]);
-    socket.emit('join_room', 1);
+    socket.emit('join_room', {
+      room: 1,
+      author: 'username',
+      userId: 'userInfo',
+    });
+    console.log(messageList);
+    // socket.emit('join_room', 1);
   }, []);
-  // 메시지 전송 메서드
-  const sendMessage = async () => {
+
+  //! 1번 식
+  // 메시지 전송 메서드 => 전송버튼 누를 시 동작하는 함수
+  const sendMessage = () => {
     if (currentMessage !== '') {
-      // const minutes = new Date(Date.now()).getMinutes();
+      const minutes = new Date(Date.now()).getMinutes();
       const messageData = {
-        id: 1,
+        chatroomId: 1,
+        userPk: localStorage.getItem('userPk'),
         message: currentMessage,
-        // time: `${new Date(Date.now()).getHours()}:${minutes}`, //createdAt에서 시분만 나누기
+        time: `${new Date(Date.now()).getHours()}:${minutes}`,
       };
-      await socket.emit('message', messageData);
-      setMessageList((list) => [...list, messageData]);
+      socket.emit('message', messageData);
+      setMessageList((list: any) => [...list, messageData]);
+      console.log(messageData);
       setcurrentMessage('');
     }
   };
-
   useEffect(() => {
-    socket.on('receive_message', (data) => {
-      setMessageList((list) => [...list, data]);
+    socket.on('receive_message', (res: any) => {
+      // console.log(res);
+      // console.log(messageList);
+      setMessageList((list: any) => [...list, res]);
     });
   }, []);
 
   const time = `${new Date(Date.now()).getHours()}:${new Date(Date.now()).getMinutes()}`;
 
   const localAvatar = localStorage.getItem('avatar');
+
+  // 1. 메시지는 두가지로 나눔 내가보낸거, 남이보낸거
+  // 2.
+
   return (
     <Body>
       <Container>
@@ -270,7 +315,7 @@ function ChatPage() {
           <MyContainer>
             <MyAvatar
               src={
-                localAvatar === 'null'
+                localAvatar === 'null' || localAvatar === null || localAvatar === undefined || localAvatar === ''
                   ? `https://cdn.pixabay.com/photo/2015/10/05/22/37/blank-profile-picture-973460_1280.png`
                   : `http://localhost:4000/uploads/${localAvatar}`
               }
@@ -279,88 +324,26 @@ function ChatPage() {
           </MyContainer>
           <ChatRoom>
             <ChatRoomNo>
-              <AvatarImg />
+              <AvatarImg src={puppy1} />
               <Users>
-                <NickName>이름은열두글자가국룰이지</NickName>
+                <NickName>퍼피톡 채널1</NickName>
                 <LastDate>{time}</LastDate>
               </Users>
             </ChatRoomNo>
-            <ChatRoomNo>
-              <AvatarImg />
+
+            {/* <ChatRoomNo>
+              <AvatarImg src={puppy2} />
               <Users>
-                <NickName>아닐걸?</NickName>
+                <NickName>퍼피룸2</NickName>
                 <LastDate>{time}</LastDate>
               </Users>
-            </ChatRoomNo>
-            <ChatRoomNo>
-              <AvatarImg />
-              <Users>
-                <NickName>그럼짧은닉네임은?</NickName>
-                <LastDate>{time}</LastDate>
-              </Users>
-            </ChatRoomNo>
-            <ChatRoomNo>
-              <AvatarImg />
-              <Users>
-                <NickName>몰?루</NickName>
-                <LastDate>{time}</LastDate>
-              </Users>
-            </ChatRoomNo>
-            <ChatRoomNo>
-              <AvatarImg />
-              <Users>
-                <NickName>이름은열두글자가국룰이지</NickName>
-                <LastDate>{time}</LastDate>
-              </Users>
-            </ChatRoomNo>
-            <ChatRoomNo>
-              <AvatarImg />
-              <Users>
-                <NickName>알아서하는거지</NickName>
-                <LastDate>{time}</LastDate>
-              </Users>
-            </ChatRoomNo>
-            <ChatRoomNo>
-              <AvatarImg />
-              <Users>
-                <NickName>나는그놈이부러운거야</NickName>
-                <LastDate>{time}</LastDate>
-              </Users>
-            </ChatRoomNo>
-            <ChatRoomNo>
-              <AvatarImg />
-              <Users>
-                <NickName>승질나는거야</NickName>
-                <LastDate>{time}</LastDate>
-              </Users>
-            </ChatRoomNo>
-            <ChatRoomNo>
-              <AvatarImg />
-              <Users>
-                <NickName>전혀부럽지가않어</NickName>
-                <LastDate>{time}</LastDate>
-              </Users>
-            </ChatRoomNo>
-            <ChatRoomNo>
-              <AvatarImg />
-              <Users>
-                <NickName>이랬다가저랬다가</NickName>
-                <LastDate>{time}</LastDate>
-              </Users>
-            </ChatRoomNo>
-            <ChatRoomNo>
-              <AvatarImg />
-              <Users>
-                <NickName>왔다감</NickName>
-                <LastDate>{time}</LastDate>
-              </Users>
-            </ChatRoomNo>
+            </ChatRoomNo> */}
           </ChatRoom>
         </LeftSide>
         <RightSide>
           <PickUser>
-            <PickUserAvatar />
-            <PickUserNickName>아닐걸?</PickUserNickName>
+            <PickUserAvatar src={puppy1} />
+            <PickUserNickName>퍼피룸1</PickUserNickName>
           </PickUser>
           <ViewArea>
             {messageList.reverse().map((messageContent, index) => (
@@ -386,9 +369,7 @@ function ChatPage() {
                 event.key === 'Enter' && sendMessage();
               }}
             />
-            <Btn onClick={sendMessage} type="button">
-              send
-            </Btn>
+            <Btn onClick={sendMessage} type="button" />
           </Lower>
         </RightSide>
       </Container>

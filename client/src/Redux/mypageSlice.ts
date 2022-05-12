@@ -14,11 +14,8 @@ const mypageSlice = createSlice({
   reducers: {
     OPEN_MODAL: (state, action) => {
       const open = state;
-      open.isModalOpen = true;
-    },
-    CLOSE_MODAL: (state, action) => {
-      const close = state;
-      close.isModalOpen = false;
+      open.isModalOpen = action.payload;
+      console.log(action);
     },
     DELETE_USER_MODAL_OPEN: (state, action) => {
       const open = state;
@@ -31,7 +28,7 @@ const mypageSlice = createSlice({
   },
 });
 
-export const { OPEN_MODAL, CLOSE_MODAL, DELETE_USER_MODAL_CLOSE, DELETE_USER_MODAL_OPEN } = mypageSlice.actions;
+export const { OPEN_MODAL, DELETE_USER_MODAL_CLOSE, DELETE_USER_MODAL_OPEN } = mypageSlice.actions;
 // u need to export all your actions so that u can call them in your application
 
 export default mypageSlice.reducer;
