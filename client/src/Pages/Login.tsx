@@ -62,27 +62,39 @@ export default function Login() {
         `${process.env.REACT_APP_BASE_URL}/auth/login`,
         { email, password },
         {
-          headers: { 'Content-Type': 'application/json', loginType: localStorage.getItem('loginType') },
+          headers: { 'Content-Type': 'application/json' },
           withCredentials: true,
         },
       )
       .then((res) => {
+        axios.defaults.headers.common['Authorization'] = `Bearer ${res.data.accessToken}`;
+
+        //const refreshToken =
         if (res.data.accessToken) {
-          const userId = localStorage.setItem('user', JSON.stringify(res.data.id)); //! 유저 정보를 로컬 스토리지에 저장
+          setInterval(() => {
+            axios({
+              method: 'post',
+              url: `http://localhost:4000/auth/token-refresh`,
+              headers: { loginType: res.data.loginType },
+              withCredentials: true,
+            }).then((res) => {
+              console.log(res);
+              axios.defaults.headers.common['Authorization'] = `Bearer ${res.data.accessToken}`;
+            });
+            console.log('8초 주기');
+          }, Math.floor(1000 * 8));
+
           console.log(res);
 
-          localStorage.setItem('user', JSON.stringify(res.data)); //! 유저 정보를 로컬 스토리지에 저장
           dispatch(setUserPk({ userPk: res.data.id }));
           dispatch(setLoginType({ loginType: res.data.loginType }));
-          localStorage.setItem('token', res.data.accessToken); // 토큰 로컬에 저장
-          localStorage.setItem('loginType', 'email');
-          localStorage.setItem('userPk', res.data.id);
+          // localStorage.setItem('token', res.data.accessToken); // 토큰 로컬에 저장
 
           axios({
             // 요청이 잘 오고있다.
             url: `${process.env.REACT_APP_BASE_URL}/users/:${res.data.id}`,
             method: 'get',
-            headers: { Authorization: `Bearer ${localStorage.getItem('token')}` },
+            headers: { loginType: res.data.loginType },
           }).then((res) => {
             const name = res.data.userInfo.nickname;
             console.log(res.data.userInfo.nickname);
@@ -91,7 +103,7 @@ export default function Login() {
         }
         if (res.data.message === 'email 로그인 성공') {
           console.log('서버가 준 토큰 ---> ', res.data.accesToken);
-          axios.defaults.headers.common['Authorization'] = `Bearer ${res.data.accessToken}`;
+          // axios.defaults.headers.common['Authorization'] = `Bearer ${res.data.accessToken}`;
           // console.log(localStorage.getItem('token'));
           dispatch(
             setIsLogin({

@@ -116,9 +116,9 @@ function Content() {
 
     axios
       .delete(`${process.env.REACT_APP_BASE_URL}${parameter}`, {
-        headers: {
-          Authorization: `Bearer ${localStorage.getItem('token')}`,
-        },
+        // headers: {
+        //   Authorization: `Bearer ${localStorage.getItem('token')}`,
+        // },
       })
       .then((res) => {
         console.log(res);
