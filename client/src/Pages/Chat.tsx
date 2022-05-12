@@ -1,11 +1,13 @@
 /* eslint-disable react/no-array-index-key */
 /* eslint-disable no-unused-expressions */
 import React, { useEffect, useState } from 'react';
+import { useSelector } from 'react-redux';
 import styled from 'styled-components';
 import io from 'socket.io-client';
 import axios from 'axios';
 import puppy1 from '../Assets/puppy1.jpeg';
 import puppy2 from '../Assets/puppy2.jpeg';
+import { setIsLogin, setUserPk, setLoginType, setKakaoNickname, setNickname } from '../Redux/authSlice';
 
 const Body = styled.div`
   margin: 0;
@@ -237,18 +239,17 @@ function ChatPage() {
     },
   ]);
   const [isMyNickName, setIsMyNickName] = useState('');
-  const userPk = localStorage.getItem('userPk');
+  const loginState = useSelector((state: any) => state);
 
-  //! ===============================================================
-  // 유저정보 get 요청하기 //! 이부분 get요청 말고 상태에서 닉네임 가져오는걸로 바꿀것
+  const { userPk, loginType } = loginState.auth;
+
   axios({
     url: `http://localhost:4000/users/:${userPk}`,
     method: 'get',
-    headers: { Authorization: `Bearer ${localStorage.getItem('token')}`, loginType: localStorage.getItem('loginType') },
+    headers: { loginType },
   }).then((res) => {
     setIsMyNickName(res.data.userInfo.nickname);
   });
-  //! ===============================================================
 
   // 사용자 지정 namespace로 접속한다.
   const socket = io(`${process.env.REACT_APP_BASE_URL}/chat`, {
