@@ -67,6 +67,7 @@ export default function Login() {
         },
       )
       .then((res) => {
+        console.log(res);
         axios.defaults.headers.common['Authorization'] = `Bearer ${res.data.accessToken}`;
 
         //const refreshToken =
