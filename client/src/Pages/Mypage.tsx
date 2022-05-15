@@ -184,14 +184,14 @@ function MyPage() {
     dispatch(DELETE_USER_MODAL_OPEN(true));
   };
 
-  if (userPk !== 0 && localStorage.getItem('loginType') === 'email') {
+  if (userPk !== 0 && loginState.auth.loginType === 'email') {
     useEffect(() => {
       axios({
         url: `${process.env.REACT_APP_BASE_URL}/users/:${userPk}`,
         method: 'get',
         headers: {
-          Authorization: `Bearer ${localStorage.getItem('token')}`,
-          loginType: localStorage.getItem('loginType'),
+          // Authorization: axios.defaults.headers.common.Authorization,
+          loginType: loginState.auth.loginType,
         },
       }).then((res) => {
         setIsNickname(res.data.userInfo.nickname);
@@ -202,11 +202,13 @@ function MyPage() {
     }, []);
   }
 
-  const kakaoNick: any = localStorage.getItem('user');
+  // const kakaoNick: any = localStorage.getItem('user');
 
+  console.log(loginState);
   useEffect(() => {
-    if (localStorage.getItem('loginType') === 'kakao') {
-      setIsNickname(kakaoNick);
+    // if (localStorage.getItem('loginType') === 'kakao') {
+    if (loginState.auth.loginType === 'kakao') {
+      setIsNickname(loginState.auth.kakaoNickname);
       setIsKakao(true);
     } else {
       setIsKakao(false);

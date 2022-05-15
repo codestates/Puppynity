@@ -22,13 +22,15 @@ const Body = styled.div`
 `;
 
 const ValidMsg = styled.div`
+  margin-top: 10px;
   font-size: 10px;
-  width: 300px;
   height: 70px;
   color: #ff7b8f;
   display: flex;
-  justify-content: flex-start;
-  padding-left: 132px;
+  justify-content: left;
+
+  padding-left: 110px;
+  padding-right: 10px;
 `;
 
 const ModalBox = styled.div`
@@ -285,9 +287,9 @@ function EmailAuthModal(props: any) {
       .post('http://localhost:4000/posts/upload', formData, {
         // formData
         headers: {
-          Authorization: `Bearer ${localStorage.getItem('token')}`,
+          // Authorization: `Bearer ${localStorage.getItem('token')}`,
           'content-type': 'multipart/form-data',
-          loginType: localStorage.getItem('loginType'),
+          loginType: loginState.auth.loginType,
         },
       })
       .then((res) => {
@@ -305,8 +307,8 @@ function EmailAuthModal(props: any) {
       url: `${process.env.REACT_APP_BASE_URL}/users/:${userPk}`,
       method: 'get',
       headers: {
-        Authorization: `Bearer ${localStorage.getItem('token')}`,
-        loginType: localStorage.getItem('loginType'),
+        // Authorization: `Bearer ${localStorage.getItem('token')}`,
+        loginType: loginState.auth.loginType,
       },
     }).then((res) => {
       console.log(typeof res.data.userInfo.avatarRef);
@@ -334,8 +336,8 @@ function EmailAuthModal(props: any) {
         url: `http://localhost:4000/users/:${userPk}`,
         method: 'patch',
         headers: {
-          Authorization: `Bearer ${localStorage.getItem('token')}`,
-          loginType: localStorage.getItem('loginType'),
+          // Authorization: `Bearer ${localStorage.getItem('token')}`,
+          loginType: loginState.auth.loginType,
         },
         data: { nickname: `${nickname}`, mobile: `${mobile}`, password: `${password}`, avatarRef: `${avatarRef}` },
       }).then((res) => {
@@ -347,8 +349,8 @@ function EmailAuthModal(props: any) {
         url: `http://localhost:4000/users/:${userPk}`,
         method: 'patch',
         headers: {
-          Authorization: `Bearer ${localStorage.getItem('token')}`,
-          loginType: localStorage.getItem('loginType'),
+          // Authorization: `Bearer ${localStorage.getItem('token')}`,
+          loginType: loginState.auth.loginType,
         },
         data: { nickname: `${nickname}`, mobile: `${mobile}`, password: `${password}`, avatarRef: `${isAvatarImg}` },
       }).then((res) => {
@@ -359,8 +361,8 @@ function EmailAuthModal(props: any) {
         url: `http://localhost:4000/users/:${userPk}`,
         method: 'patch',
         headers: {
-          Authorization: `Bearer ${localStorage.getItem('token')}`,
-          loginType: localStorage.getItem('loginType'),
+          // Authorization: `Bearer ${localStorage.getItem('token')}`,
+          loginType: loginState.auth.loginType,
         },
         data: { nickname: `${nickname}`, mobile: `${mobile}`, password: `${password}`, avatarRef: `${avatarRef}` },
       }).then((res) => {
@@ -422,12 +424,16 @@ function EmailAuthModal(props: any) {
           <Detail>전화번호 변경</Detail>
           <Input placeholder={isMobile} name="mobile" onChange={handleInput} onKeyUp={autoHypen} />
         </ModalBox>
+
         <ValidMsg>{mobileMsg}</ValidMsg>
+
         <ModalBox>
           <Detail>비밀번호 변경</Detail>
           <Input name="password" onChange={handleInput} />
         </ModalBox>
+
         <ValidMsg>{passwordMsg}</ValidMsg>
+
         <ModalBox>
           <Btn onClick={editUserInfo} disabled={!validEdit} validEdit={validEdit}>
             수정하기
