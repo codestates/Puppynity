@@ -3,6 +3,7 @@ import React, { useEffect, useState, useCallback, SetStateAction, useRef } from 
 import { useSelector } from 'react-redux';
 import { useNavigate, Link, useParams } from 'react-router-dom';
 import styled from 'styled-components';
+import Category from './Category';
 import IContentType from '../Redux/contentSlice';
 // import RootState, { selectAllContents } from '../Redux/contentSlice';
 
@@ -11,30 +12,28 @@ import IContentType from '../Redux/contentSlice';
 
 /* eslint-disable */
 const ContentContainer = styled.div`
-  width: 120px;
-  height: 120px;
+  width: 200px;
+  height: 300px;
   margin: 5px;
   padding: 10px;
   border: solid;
+  //display: flex;
+  flex-wrap: nowrap wrap wrap-reverse;
+  overflow-y: auto;
 `;
 
 const TitleContainer = styled.div`
-  width: 80px;
+  width: auto;
   height: 70px;
-  font-size: 10px;
+  font-size: 20px;
+  // position: relative;
 `;
 
-const ImageContainer = styled.img`
-  width: '90px';
-  height: '100px';
-  object-fit: fill;
-  cursor: pointer;
-`;
 const UserinfoContainer = styled.div`
-  width: 90px;
+  width: 150px;
   height: auto;
   font-size: 5px;
-  align-items: center;
+  // align-items: center;
   border-color: black;
   border: solid;
   margin: auto;
@@ -43,15 +42,15 @@ const UserinfoContainer = styled.div`
 //! 정태영: 무한스크롤 container,
 
 const Container = styled.div`
-  width: 100%;
-  max-width: 1000px;
+  max-width: 1200px;
   margin: 4rem auto;
-`;
-
-const PostItem = styled.div`
-  width: 100%;
-  height: 350px;
-  border: 2px solid black;
+  // position: absolute;
+  > .content-form {
+    display: flex;
+    margin: 1rem auto;
+    justify-content: center;
+    align-items: center;
+  }
 `;
 
 //! 정태영: 검색창 style
@@ -91,26 +90,27 @@ const SearchSection = styled.div`
     }
   }
 `;
-
-interface IContentType {
-  id: number;
-  title: string | undefined;
-  username: string | undefined;
-  picture?: string | undefined;
-  text: string | undefined;
-  category: string;
-  createdAt: string;
-}
-
-interface IDBContentType {
-  id: number;
-  userId: number;
-  title: string;
-  category: string;
-  imgRef?: string | Blob | undefined;
-  content: string;
-  createdAt: string;
-}
+// ========category========
+const CategoryList = styled.li`
+  display: inline;
+  font-size: 10px;
+`;
+const CategoryBtn = styled.button`
+  background-color: #f9de59;
+  width: 80px;
+  height: 50px;
+  font-size: 10px;
+  margin: 10px;
+  padding: 10px;
+  border: #f9de59;
+  border-radius: 5%;
+  color: white;
+  cursor: pointer;
+  :focus {
+    background-color: #a1dffb;
+  }
+`;
+// =======category ==========
 
 function ContentList(): JSX.Element {
   // const [contentList, setContentList] = useState<Array<string>>([...dummyContents]);
@@ -118,10 +118,10 @@ function ContentList(): JSX.Element {
   const navigate = useNavigate();
   const erorImg = 'https://upload.wikimedia.org/wikipedia/commons/thumb/f/f0/Error.svg/1200px-Error.svg.png';
   const contents = useSelector((state: any) => state.content); // redux에 저장된 상태를 참조한다.
-  // const [visiblePosts, setVisiblePosts] = useState(0); // for pagenation.
-  const [dbContents, setDbContents] = useState<any[]>([]); // used Union type!
-  // const [visibleContents, setVisibleContents] = useState()
-
+  const [dbContents, setDbContents] = useState<any[]>([]);
+  const [filteredContents, setFilteredContents] = useState<any[]>([]);
+  const [category, setCategory] = useState<string>();
+  const data: any[] = dbContents;
   //! 정태영: 검색 & 무한 스크롤 관련 훅
   const searchInput = useRef<HTMLInputElement>(null);
   //* 검색창 인풋 상태
@@ -136,6 +136,7 @@ function ContentList(): JSX.Element {
       .then((resp) => {
         setDbContents(resp.data.posts);
         setPage(2);
+        setCategory('all'); // default cateogry 지정
       })
       .catch(console.error);
   }, [searchKeyword]);
@@ -206,42 +207,72 @@ function ContentList(): JSX.Element {
   }; // 게시글 클릭 시 게시물의 디테일을 보여준다.
   // console.log('contents 상태 ------------>', dbContents);
 
-  console.log(dbContents);
+  const handleCategory = (e: React.MouseEvent<HTMLButtonElement>) => {
+    // 버튼 클릭 시 버튼의 value를 state에 담아준다.
+    console.log(e.currentTarget.value);
+    setCategory(e.currentTarget.value);
 
-  //! 상태관리를
+    setFilteredContents([...dbContents].filter((el) => el.category === category)); // working fine?
+    console.log(category);
+    console.log(filteredContents);
+
+    if (category === 'all') {
+      setFilteredContents(dbContents);
+      console.log('all contents?');
+    }
+    //! 현재 이중 필터링이 되고있다 어떻게 하면
+  };
 
   return (
     <Container>
+      <div className="category">
+        <CategoryList>
+          <CategoryBtn onClick={handleCategory} value="all" autoFocus>
+            전체 게시글
+          </CategoryBtn>
+          <CategoryBtn onClick={handleCategory} value="informational">
+            팁/노하우
+          </CategoryBtn>
+          <CategoryBtn onClick={handleCategory} value="Q&A">
+            질문
+          </CategoryBtn>
+          <CategoryBtn onClick={handleCategory} value="dailyLog">
+            일상공유&수다
+          </CategoryBtn>
+        </CategoryList>
+      </div>
       <SearchSection>
         <div className="search-wrapper">
           <div onClick={searchClickHandler}>🔍</div>
           <input placeholder="검색어를 입력하세요" type="text" onKeyPress={KeyPressHandler} ref={searchInput}></input>
         </div>
       </SearchSection>
-      <section className="content-form">
-        {/* <div onClick={redirectToContentDetail} className="realcontents"></div>
-        <div className="dummycontents">{renderedContnents}</div> */}
-        <div className="servercontents">
-          <div className="serverdata">
-            {dbContents.length === 0
-              ? '검색 결과가 없습니다.'
-              : dbContents.map((post) => (
-                  <div key={post.id} id={post.id} onClick={redirectToContentDetail}>
-                    <ContentContainer>
+      <div className="content-wrapper">
+        <div className="serverdata">
+          {filteredContents.length === 0
+            ? '검색 결과가 없습니다.'
+            : filteredContents.map((post) => (
+                <div key={post.id} id={post.id} onClick={redirectToContentDetail}>
+                  <ContentContainer>
+                    <div className="img-box">
                       <img
                         src={post.imgRef ? `http://localhost:4000/uploads/${post.imgRef}` : erorImg}
                         alt="fromServer"
-                        height="100px"
-                        width="100px"
+                        height="200px"
+                        width="200px"
                       />
-                      <TitleContainer>{`[${post.category}] ` + post.title}</TitleContainer>
-                      <UserinfoContainer>{post.username + post.createdAt}</UserinfoContainer>
-                    </ContentContainer>
-                  </div>
-                ))}
-          </div>
+                      <span> {`[${post.category}]`}</span>
+                    </div>
+                    <br />
+
+                    <TitleContainer>{post.title}</TitleContainer>
+                    <br />
+                    <UserinfoContainer>{post.username + post.createdAt}</UserinfoContainer>
+                  </ContentContainer>
+                </div>
+              ))}
         </div>
-      </section>
+      </div>
     </Container>
   );
 }

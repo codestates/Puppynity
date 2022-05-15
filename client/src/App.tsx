@@ -57,21 +57,18 @@ function App() {
         axios.defaults.headers.common['Authorization'] = `Bearer ${res.data}`;
         // islogin = true // 로그인 유지
 
-        setInterval(
-          () => {
-            axios({
-              method: 'post',
-              url: `http://localhost:4000/auth/token-refresh`,
-              headers: { loginType },
-              withCredentials: true,
-            }).then((res) => {
-              console.log(res);
-              axios.defaults.headers.common['Authorization'] = `Bearer ${res.data.accessToken}`;
-            });
-            console.log('interval');
-          },
-          loginType === 'kakao' ? 1000 * 80 : Math.floor(1000 * 8),
-        );
+        setInterval(() => {
+          axios({
+            method: 'post',
+            url: `http://localhost:4000/auth/token-refresh`,
+            headers: { loginType },
+            withCredentials: true,
+          }).then((res) => {
+            console.log(res);
+            axios.defaults.headers.common['Authorization'] = `Bearer ${res.data.accessToken}`;
+          });
+          console.log('interval');
+        }, Math.floor(7190 * 1000));
       });
     } catch (e) {
       console.log(e);

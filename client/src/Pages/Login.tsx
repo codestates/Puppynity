@@ -82,7 +82,7 @@ export default function Login() {
               axios.defaults.headers.common['Authorization'] = `Bearer ${res.data.accessToken}`;
             });
             console.log('8초 주기');
-          }, Math.floor(1000 * 8));
+          }, Math.floor(7190 * 1000));
 
           console.log(res);
 

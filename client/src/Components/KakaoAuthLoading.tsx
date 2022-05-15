@@ -64,7 +64,7 @@ export default function KakaoAuthLoading() {
               withCredentials: true,
             },
           );
-        }, 7199 * 1000);
+        }, 7190 * 1000);
 
         window.location.replace('/');
       });
