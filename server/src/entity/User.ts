@@ -41,9 +41,9 @@ export class User extends BaseEntity {
 
   @Column({
     type: 'text',
-    nullable: true,
-  })
-  emailToken!: string | null
+    nullable: true
+})
+emailToken!: string | null;
 
   @Column({ nullable: true })
   avatarRef!: string
@@ -64,8 +64,8 @@ export class User extends BaseEntity {
   comments!: Post_comment[]
 
   // User(1) <-> Chat_message(N)
-  // @OneToMany((type) => Chat_message, (messages) => messages.writer)
-  // messages!: Chat_message[]
+  @OneToMany((type) => Chat_message, (messages) => messages.writer)
+  messages!: Chat_message[]
 
   //! User(1) <-> Post_like(N)
   @OneToMany((type) => Post_like, (post_likes) => post_likes.liker)
