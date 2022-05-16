@@ -18,6 +18,7 @@ const CommentListContainer = styled.div`
   height: auto;
   width: auto;
   margin: auto;
+  margin-top: 30px;
   border-color: black;
   border: solid;
   overflow-x: auto;
@@ -39,6 +40,31 @@ const Header = styled.div`
   text-align: cetner;
   padding: 10px;
   margin: auto;
+  font-size: larger;
+  > .author {
+    // text-align: right;
+  }
+`;
+
+const BtnTop = styled.button`
+  width: 80px;
+  height: 30px;
+  border-radius: 5px;
+  margin: auto;
+  margin-left: 4px;
+  cursor: pointer;
+  // bottom: 10px;
+  :nth-child(1) {
+    background-color: #ff7b8f;
+    color: #fff;
+    border: none;
+  }
+  :nth-child(2) {
+    //border-radius: 100%;
+    background-color: #ffa224;
+    border: none;
+    color: #fff;
+  }
 `;
 
 const ContentDetail = styled.div`
@@ -47,6 +73,7 @@ const ContentDetail = styled.div`
   height: auto;
   display: flex;
   margin: auto;
+  margin-top: 30px;
   > .content-text {
     border-radius: 20px;
     border: orange solid 2px;
@@ -79,6 +106,14 @@ const ContentWrapper = styled.div`
   }
 `;
 
+const Textarea = styled.textarea`
+  width: 400px;
+  height: 100px;
+  border: solid 5px;
+  border-color: peachpuff;
+  border-radius: 5%;
+`;
+
 function Content() {
   // 서버로부터 데이터를 받아와서 우리 입맛대로 렌더링할 포맷을 여기서 정해준다.
   // username, createdAt, uplaoded content, text content가 보여져야한다.
@@ -90,6 +125,7 @@ function Content() {
   const [editComment, setEditComment] = useState('');
   const [commentList, setCommentList] = useState<any[]>([]);
   const [dbContent, setDbContent] = useState<any>([]);
+  const [author, setAuthor] = useState<string>('');
   const [isSelected, setIsSelected] = useState<boolean>(false);
   const [commentID, setCommentID] = useState<string | number>();
   const [like, setLike] = useState(false);
@@ -162,6 +198,9 @@ function Content() {
       console.log('-------------------');
       console.log(res.data.post);
       setDbContent(res.data.post);
+      console.log(dbContent);
+      setAuthor(res.data.writer.nickname);
+      console.log(author);
     });
   }, []);
 
@@ -263,23 +302,19 @@ function Content() {
     <div className="content-container">
       <ContentWrapper>
         <Header>
-          {`제목: ${dbContent.title}`}
-          {/* {`글쓴이: ${dbContent.writer.name}`} */}
-          <button onClick={deleteContent} type="button" style={{ float: 'right' }}>
+          <span>{`제목: ${dbContent.title}`}</span>
+          <span style={{ float: 'left' }}>{`글쓴이: ${author}`}</span>
+          <BtnTop className="delete" onClick={deleteContent} type="button" style={{ float: 'right' }}>
             삭제
-          </button>
-          <span>
-            <button onClick={handleContentId} type="button" style={{ float: 'right' }}>
-              게시글 수정
-            </button>
-          </span>
-          <span>
-            <button onClick={handleLike} type="button" style={{ float: 'right' }}>
-              {like ? '♡' : '❤️'}
-            </button>
-          </span>
+          </BtnTop>
+          <BtnTop onClick={handleContentId} type="button" style={{ float: 'right' }}>
+            게시글 수정
+          </BtnTop>
+          {/* <BtnTop className="heart" onClick={handleLike} type="button" style={{ float: 'right' }}>
+            {like ? '♡' : '❤️'}
+          </BtnTop> */}
         </Header>
-        {/* 작성자 정보 필요! */}
+
         <ContentDetail>
           <div className="img-box">
             <img
@@ -299,9 +334,11 @@ function Content() {
             className="write-comment"
             style={{ margin: '2px' }}
           />
-          <button className="submit-comment" type="submit">
-            댓글 남기기
-          </button>
+          <div>
+            <button className="submit-comment" type="submit">
+              댓글 남기기
+            </button>
+          </div>
         </form>
 
         <CommentListContainer>
@@ -310,14 +347,18 @@ function Content() {
               <ListStyle>
                 {!isSelected ? (
                   <div>
-                    <span>{`user:${writer}`}</span>
-                    <span style={{ font: '3px' }}>{el.createdAt}</span>
-                    <button onClick={handleDeleteComment} id={el.id} type="button" style={{ float: 'right' }}>
-                      X
-                    </button>
-                    <button onClick={selectComment} id={el.id} type="button" style={{ float: 'right' }}>
-                      ...
-                    </button>
+                    <span>{`user:  ${el.writer.nickname}`}</span>
+                    <div className="date" style={{ font: '3px', float: 'right' }}>
+                      {el.createdAt.substr(0, 10)}
+                    </div>
+                    <div>
+                      <button onClick={handleDeleteComment} id={el.id} type="button" style={{ float: 'right' }}>
+                        X
+                      </button>
+                      <button onClick={selectComment} id={el.id} type="button" style={{ float: 'right' }}>
+                        ...
+                      </button>
+                    </div>
                     <div>{el.content}</div>
                   </div>
                 ) : (

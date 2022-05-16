@@ -275,9 +275,9 @@ function ContentList(): JSX.Element {
                       width="200px"
                     />
                     <span> {`[${post.category}]`}</span>
-                    <span id={post.id} onClick={handleLike}>
+                    {/* <span id={post.id} onClick={handleLike}>
                       {!like ? '♡' : '❤️'}
-                    </span>
+                    </span> */}
                   </div>
                   <TitleContainer>{post.title}</TitleContainer>
 

@@ -22,6 +22,7 @@
     "axios": "^0.21.4",
     "fontsource-titan-one": "^4.0.0",
     "jsonwebtoken": "^8.5.1",
+    "moment": "^2.29.3",
     "nodemon": "^2.0.16",
     "qs": "^6.10.3",
     "react": "^18.0.0",
