@@ -23,7 +23,7 @@ export const getMyPosts = async (req: Request, res: Response) => {
     // page
     let pageNum = Number(page) || 1
     // limit: 표시할 row 수
-    let take = Number(limit) || 9
+    let take = Number(limit) || 6
     // offset: 가져올 row의 시작 인덱스
     let skip = 0 + (pageNum - 1) * take
 

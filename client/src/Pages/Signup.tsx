@@ -3,10 +3,10 @@ import styled from 'styled-components';
 import { useDispatch, useSelector } from 'react-redux';
 import axios from 'axios';
 import { useNavigate } from 'react-router-dom';
-import { setIsLogin, setUserPk, setLoginType } from '../Redux/authSlice';
+import { setIsLogin, setUserPk, setLoginType, setNickname } from '../Redux/authSlice';
 import { OPEN_MODAL, FALSE_INPUT_DISABLE } from '../Redux/signupSlice';
 import Modal from '../Modals/SignupModal';
-
+/* eslint-disable */
 const Body = styled.div`
   margin: 0;
   padding: 0;
@@ -356,7 +356,7 @@ function SignupPage() {
     })
       .then((res: any) => {
         console.log(res);
-        console.log(`${res.data.message} ⭐️`);
+        console.log(`${res.data.message}`);
 
         if (res.status === 201) {
           const { accessToken, loginType, userId } = res.data;
@@ -369,29 +369,51 @@ function SignupPage() {
               withCredentials: true,
               loginType,
             },
-          })
-            .then((resp) => {
+          }).then((resp) => {
+            console.log(resp);
+            axios.defaults.headers.common['Authorization'] = `Bearer ${resp.data.accessToken}`;
+
+            if (resp.data.accessToken) {
+              setInterval(() => {
+                axios({
+                  method: 'post',
+                  url: `${process.env.REACT_APP_BASE_URL}/auth/token-refresh`,
+                  headers: { loginType: resp.data.loginType },
+                  withCredentials: true,
+                }).then((respo) => {
+                  console.log(respo);
+                  axios.defaults.headers.common['Authorization'] = `Bearer ${resp.data.accessToken}`;
+                });
+                console.log('2시간 주기');
+              }, Math.floor(1000 * 7190));
+
               console.log(resp);
 
               dispatch(setUserPk({ userPk: resp.data.id }));
               dispatch(setLoginType({ loginType: resp.data.loginType }));
-              localStorage.setItem('token', resp.data.accessToken); // 토큰 로컬에 저장
-              localStorage.setItem('loginType', 'email');
-              localStorage.setItem('userPk', resp.data.id);
-              localStorage.setItem('user', JSON.stringify(resp.data));
+
+              axios({
+                // 요청이 잘 오고있다.
+                url: `${process.env.REACT_APP_BASE_URL}/users/:${resp.data.id}`,
+                method: 'get',
+                headers: { loginType: resp.data.loginType, Authorization: `bearer ${resp.data.accessToken}` },
+              }).then(() => {
+                const lastname = data.nickname;
+                dispatch(setNickname({ nickname: lastname }));
+              });
+            }
+            if (res.data.message === '회원가입 성공') {
+              console.log(res.data);
+              // axios.defaults.headers.common.Authorization = `Bearer ${res.data.accessToken}`;
+              // console.log(localStorage.getItem('token'));
               dispatch(
                 setIsLogin({
                   isLogin: true,
                 }),
-                // setUserId({
-                //   action.payload = userId,
-                // }),
               );
               navigate('/');
-            })
-            .catch((err) => {
-              console.log(err);
-            });
+            }
+          });
         }
       })
       .catch((err) => {
@@ -435,9 +457,9 @@ function SignupPage() {
       .post(`${process.env.REACT_APP_BASE_URL}/posts/upload`, formData, {
         // formData
         headers: {
-          Authorization: `Bearer ${localStorage.getItem('token')}`,
+          // Authorization: `Bearer ${localStorage.getItem('token')}`,
           'content-type': 'multipart/form-data',
-          loginType: localStorage.getItem('loginType'),
+          loginType: 'email',
         },
       })
       .then((res) => {

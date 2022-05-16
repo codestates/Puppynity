@@ -88,7 +88,6 @@ export default function Login() {
 
           dispatch(setUserPk({ userPk: res.data.id }));
           dispatch(setLoginType({ loginType: res.data.loginType }));
-          // localStorage.setItem('token', res.data.accessToken); // 토큰 로컬에 저장
 
           axios({
             // 요청이 잘 오고있다.
