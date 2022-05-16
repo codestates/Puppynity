@@ -1,4 +1,5 @@
 import { Request, Response } from 'express'
+import { writer } from 'repl'
 import { ILike } from 'typeorm'
 
 import { Post } from '../../entity/Post'
@@ -29,7 +30,7 @@ export const getPostsByQuery = async (req: Request, res: Response) => {
     const filterdPosts = await Post.find({
       where: [{ title: ILike(`%${search}%`) }, { content: ILike(`%${search}%`) }],
       order: { createdAt: 'DESC' },
-      relations: ['writer'],
+      relations: ['writer', 'post_likes'],
       skip,
       take,
     })

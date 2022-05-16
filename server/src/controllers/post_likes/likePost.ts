@@ -22,16 +22,22 @@ export const likePost = async (req: Request, res: Response) => {
       return res.status(403).json({ message: '유저의 회원 정보가 없습니다' })
     }
 
-    const postDetail = await Post.findOne({ id: postId })
+    const postDetail = await Post.findOne({ where: { id: postId } })
 
     if (postDetail === undefined) {
       return res.status(404).json({ message: '좋아요 할 게시물이 존재하지 않습니다.' })
     }
 
+    const likedPost = await Post_like.findOne({ where: { post: postDetail, liker: userInfo } })
+
+    if (likedPost) {
+      return res.status(403).json({ message: '이미 좋아요 한 게시물입니다.' })
+    }
+
     const createdLike = await Post_like.create({ liker: userInfo, post: postDetail })
     const savedPost = await createdLike.save()
 
-    res.status(201).json({ messgage: '좋아요 성공' })
+    res.status(201).json({ savedPost, messgage: '좋아요 성공' })
   } catch (err) {
     console.log('좋아요 에러 -> ', err)
     res.status(500).send({ message: err })
