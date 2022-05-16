@@ -5,26 +5,113 @@ import { useNavigate } from 'react-router-dom';
 import styled from 'styled-components';
 import { deleteComment, getCommentList, writeComment, setIndex } from '../Redux/commentSlice';
 import { saveContentId } from '../Redux/contentSlice';
-import { setContentId } from '../Redux/authSlice';
+import { setCommentNum, setContentId } from '../Redux/authSlice';
 
 const CommentContainer = styled.div`
-  height: 150px;
-  width: 150px;
-  margin: auto;
+  height: 700px;
+  width: auto;
+  margin-top: 20px;
+  overflow-y: auto;
 `;
 
 const CommentListContainer = styled.div`
-  height: 200px;
-  width: 300px;
+  height: auto;
+  width: auto;
   margin: auto;
+  margin-top: 30px;
   border-color: black;
   border: solid;
+  overflow-x: auto;
 `;
 const ListStyle = styled.li`
-  height: 40px;
+  height: 50px;
   margin: auto;
-  border: solid 3px;
+  border-bottom: solid 3px;
   border-color: blue;
+  text-align: left;
+  list-style: none;
+  overflow-y: auto;
+`;
+
+const Header = styled.div`
+  height: 3vh;
+  width: auto;
+  border: orange solid 2px;
+  text-align: cetner;
+  padding: 10px;
+  margin: auto;
+  font-size: larger;
+  > .author {
+    // text-align: right;
+  }
+`;
+
+const BtnTop = styled.button`
+  width: 80px;
+  height: 30px;
+  border-radius: 5px;
+  margin: auto;
+  margin-left: 4px;
+  cursor: pointer;
+  // bottom: 10px;
+  :nth-child(1) {
+    background-color: #ff7b8f;
+    color: #fff;
+    border: none;
+  }
+  :nth-child(2) {
+    //border-radius: 100%;
+    background-color: #ffa224;
+    border: none;
+    color: #fff;
+  }
+`;
+
+const ContentDetail = styled.div`
+  // height: auto;
+  width: 100%;
+  height: auto;
+  display: flex;
+  margin: auto;
+  margin-top: 30px;
+  > .content-text {
+    border-radius: 20px;
+    border: orange solid 2px;
+    height: 50vh;
+    width: 50vh;
+    margin: auto;
+  }
+  > .img-box {
+    height: 50vh;
+    width: 50vh;
+    border: black none 1px;
+
+    margin: auto;
+
+    > .img {
+      /* min-height: 100%;
+      min-width: 100%; */
+      // object-fit: cover;
+      max-width: 100%;
+      max-height: 100%;
+      border-radius: 20px;
+    }
+  }
+`;
+
+const ContentWrapper = styled.div`
+  height: 70vh;
+  > .button {
+    float: right;
+  }
+`;
+
+const Textarea = styled.textarea`
+  width: 400px;
+  height: 100px;
+  border: solid 5px;
+  border-color: peachpuff;
+  border-radius: 5%;
 `;
 /* eslint-disable */
 function Content() {
@@ -38,12 +125,14 @@ function Content() {
   const [editComment, setEditComment] = useState('');
   const [commentList, setCommentList] = useState<any[]>([]);
   const [dbContent, setDbContent] = useState<any>([]);
+  const [author, setAuthor] = useState<string>('');
   const [isSelected, setIsSelected] = useState<boolean>(false);
   const [commentID, setCommentID] = useState<string | number>();
+  const [like, setLike] = useState(false);
 
   const parameter = window.location.pathname;
   const loginState = useSelector((state: any) => state);
-  const { userPk } = loginState.auth;
+  const { userPk, loginType, commentNum } = loginState.auth;
   const [writer, setWriter] = useState<string>('');
   const dispatch = useDispatch();
   const navigate = useNavigate();
@@ -85,6 +174,19 @@ function Content() {
       });
   };
 
+  const handleLike = (e: React.MouseEvent<HTMLButtonElement>) => {
+    console.log('좋아요 요청');
+    console.log(`${process.env.REACT_APP_BASE_URL}${parameter}/likes`);
+    axios
+      .post(`${process.env.REACT_APP_BASE_URL}${parameter}/likes`, {
+        headers: { loginType },
+      })
+      .then((res) => {
+        console.log(res);
+        setLike(true);
+      });
+  };
+
   // 상세 게시물 정보 조회
   React.useEffect(() => {
     axios.get(`${process.env.REACT_APP_BASE_URL}${parameter}`).then((res) => {
@@ -92,6 +194,9 @@ function Content() {
       console.log('-------------------');
       console.log(res.data.post);
       setDbContent(res.data.post);
+      console.log(dbContent);
+      setAuthor(res.data.writer.nickname);
+      console.log(author);
     });
   }, []);
 
@@ -103,18 +208,17 @@ function Content() {
       console.log(result);
       setCommentList(result[0]); // 성공적으로 담기고 있음.
       console.log(commentList);
+      dispatch(setCommentNum({ commentNum: result[1] }));
       // dispatch(getCommentList([res.data.comments])); // 리덕스에 현재 commentList를 담아준다.
     });
   }, []);
 
   const deleteContent = () => {
-    console.log('delete');
-
     axios
       .delete(`${process.env.REACT_APP_BASE_URL}${parameter}`, {
-        // headers: {
-        //   Authorization: `Bearer ${localStorage.getItem('token')}`,
-        // },
+        headers: {
+          loginType,
+        },
       })
       .then((res) => {
         console.log(res);
@@ -148,19 +252,32 @@ function Content() {
       window.location.reload(); // 삭제시 바로 리로드?
     });
   };
+  const getId = (e: React.MouseEvent<HTMLButtonElement>) => {
+    console.log(e.currentTarget.id);
+    setCommentID(e.currentTarget.id);
+  };
 
   const selectComment = (e: React.MouseEvent<HTMLElement>) => {
     // console.log(e.currentTarget.id);
     // const commentId = e.currentTarget.id;
-    setIsSelected(true);
+    setIsSelected(!isSelected);
     setCommentID(e.currentTarget.id);
   };
 
   const submitEditComment = () => {
     // setCommentList([...commentList].find((el) => el.id === commentId));
+
     //! axios request
     axios
-      .patch(`${process.env.REACT_APP_BASE_URL}${parameter}/comments/${commentID}`, { content: editComment })
+      .patch(
+        `${process.env.REACT_APP_BASE_URL}${parameter}/comments/${commentID}`,
+        { content: editComment },
+        // {
+        //   headers: {
+        //     loginType,
+        //   },
+        // },
+      )
       .then((res) => {
         console.log('댓글 수정 완료');
         console.log(res);
@@ -184,32 +301,31 @@ function Content() {
 
   return (
     <div className="content-container">
-      <div className="header">
-        <button onClick={deleteContent} type="button">
-          삭제
-        </button>
-        <span>
-          <button onClick={handleContentId} type="button">
+      <ContentWrapper>
+        <Header>
+          <span>{`제목: ${dbContent.title}`}</span>
+          <span style={{ float: 'left' }}>{`글쓴이: ${author}`}</span>
+          <BtnTop className="delete" onClick={deleteContent} type="button" style={{ float: 'right' }}>
+            삭제
+          </BtnTop>
+          <BtnTop onClick={handleContentId} type="button" style={{ float: 'right' }}>
             게시글 수정
-          </button>
-        </span>
-        <div className="title">
-          {`제목: ${dbContent.title}`}
-          {/* {`글쓴이: ${dbContent.writer.name}`} */}
-        </div>
+          </BtnTop>
+          {/* <BtnTop className="heart" onClick={handleLike} type="button" style={{ float: 'right' }}>
+            {like ? '♡' : '❤️'}
+          </BtnTop> */}
+        </Header>
 
-        <span>{`조회수: ${0}`}</span>
-      </div>
-
-      <img
-        alt="content-img"
-        src={dbContent.imgRef ? `${process.env.REACT_APP_BASE_URL}/uploads/${dbContent.imgRef}` : noimg}
-        width="200vh"
-        height="200vh"
-      />
-      <div className="content-text">{dbContent.content}</div>
-      <div onClick={bookmarkHandler}>[{isMakred ? '좋아요 취소' : '좋아요'}]</div>
-      <br />
+        <img
+          alt="content-img"
+          src={dbContent.imgRef ? `${process.env.REACT_APP_BASE_URL}/uploads/${dbContent.imgRef}` : noimg}
+          width="200vh"
+          height="200vh"
+        />
+        <div className="content-text">{dbContent.content}</div>
+        <div onClick={bookmarkHandler}>[{isMakred ? '좋아요 취소' : '좋아요'}]</div>
+        <br />
+      </ContentWrapper>
       <CommentContainer>
         <form onSubmit={submitComment}>
           <textarea
@@ -218,40 +334,70 @@ function Content() {
             className="write-comment"
             style={{ margin: '2px' }}
           />
-          <button className="submit-comment" type="submit">
-            댓글 남기기
-          </button>
+          <div>
+            <button className="submit-comment" type="submit">
+              댓글 남기기
+            </button>
+          </div>
         </form>
-      </CommentContainer>
-      <CommentListContainer>
-        {commentList.map((el: any) => (
-          <div key={el.id}>
-            <ListStyle>
-              <span style={{ font: '3px' }}>{el.createdAt}</span>
-              <span>{`user:${writer}`}</span>
-              <button onClick={handleDeleteComment} id={el.id} type="button" style={{ float: 'right' }}>
-                X
-              </button>
-              <button onClick={selectComment} id={el.id} type="button" style={{ float: 'right' }}>
-                ...
-              </button>
-              <div>{el.content}</div>
-            </ListStyle>
-            {isSelected ? (
+
+        <CommentListContainer>
+          {commentList.map((el: any) => (
+            <div key={el.id}>
+              <ListStyle>
+                {!isSelected ? (
+                  <div>
+                    <span>{`user:  ${el.writer.nickname}`}</span>
+                    <div className="date" style={{ font: '3px', float: 'right' }}>
+                      {el.createdAt.substr(0, 10)}
+                    </div>
+                    <div>
+                      <button onClick={handleDeleteComment} id={el.id} type="button" style={{ float: 'right' }}>
+                        X
+                      </button>
+                      <button onClick={selectComment} id={el.id} type="button" style={{ float: 'right' }}>
+                        ...
+                      </button>
+                    </div>
+                    <div>{el.content}</div>
+                  </div>
+                ) : (
+                  <form onSubmit={submitEditComment}>
+                    <div>
+                      <textarea
+                        onChange={handleEditCommentChange}
+                        style={{ height: 'auto', margin: 'auto' }}
+                        defaultValue={el.content}
+                      />
+                      <button type="submit" id={el.id} onClick={getId}>
+                        댓글 수정
+                      </button>
+                      <button type="button" onClick={selectComment}>
+                        취소
+                      </button>
+                    </div>
+                  </form>
+                )}
+              </ListStyle>
+              {/* {isSelected ? (
               <form onSubmit={submitEditComment}>
                 <div>
                   <textarea onChange={handleEditCommentChange}>{el.content}</textarea>
                   <button type="submit" id={el.id}>
                     댓글 수정
                   </button>
+                  <button type="button" onClick={selectComment}>
+                    취소
+                  </button>
                 </div>
               </form>
             ) : (
               ''
-            )}
-          </div>
-        ))}
-      </CommentListContainer>
+            )} */}
+            </div>
+          ))}
+        </CommentListContainer>
+      </CommentContainer>
     </div>
   );
 }

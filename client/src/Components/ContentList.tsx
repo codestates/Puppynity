@@ -32,15 +32,15 @@ const TitleContainer = styled.div`
 `;
 
 const UserinfoContainer = styled.div`
-  width: 150px;
+  width: auto;
   height: auto;
   font-size: 10px;
   // align-items: center;
-  border-color: black;
-  border: solid;
+  border: #a1dffb solid 2px;
   bottom: 20px;
   position: relative;
-  // margin-bottom: 20px;
+  text-align: left;
+  //margin-top: 20px;
   // display: flex;
 `;
 
@@ -120,6 +120,10 @@ const CategoryBtn = styled.button`
 `;
 // =======category ==========
 
+const LikeBtn = styled.button`
+  border-radius: 100%;
+`;
+
 function ContentList(): JSX.Element {
   // const [contentList, setContentList] = useState<Array<string>>([...dummyContents]);
   // type of img = HTMLImageElement or File.
@@ -135,6 +139,9 @@ function ContentList(): JSX.Element {
   //* 검색창 인풋 상태
   const [searchKeyword, setSearchKeyword] = useState('');
 
+  const [like, setLike] = useState<boolean>(false);
+  const loginState = useSelector((state: any) => state);
+  const { commentNum } = loginState.auth;
   // 요청할 페이지 번호 변수
   const [page, setPage] = useState(1);
 
@@ -252,13 +259,21 @@ function ContentList(): JSX.Element {
                     <img
                       src={post.imgRef ? `${process.env.REACT_APP_BASE_URL}/uploads/${post.imgRef}` : erorImg}
                       alt="fromServer"
+                      className="img"
                       height="200px"
                       width="200px"
                     />
                     <span> {`[${post.category}]`}</span>
+                    {/* <span id={post.id} onClick={handleLike}>
+                      {!like ? '♡' : '❤️'}
+                    </span> */}
                   </div>
                   <TitleContainer>{post.title}</TitleContainer>
-                  <UserinfoContainer>{post.writer.nickname + post.createdAt}</UserinfoContainer>
+
+                  <UserinfoContainer>
+                    <span>{'작성자: '}</span> <br />
+                    {'게시 날짜:' + post.createdAt}
+                  </UserinfoContainer>
                 </ContentContainer>
               </div>
             ))}

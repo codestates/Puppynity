@@ -145,12 +145,7 @@ function NavBar() {
     dispatch(setNickname({ nickname: '' }));
     dispatch(setUserPk({ userPk: 0 }));
     dispatch(setLoginType({ loginType: '' }));
-    // setIsNickname('');
-    // localStorage.setItem('user', '');
-    // localStorage.setItem('token', '');
-    // localStorage.setItem('loginType', '');
-    // localStorage.setItem('userPk', '');
-    localStorage.setItem('avatar', '');
+    //    localStorage.setItem('avatar', '');
   };
 
   return (

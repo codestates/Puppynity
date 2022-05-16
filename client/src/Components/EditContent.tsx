@@ -96,14 +96,16 @@ type Content = {
 function EditContent(): JSX.Element {
   const contentId = useSelector((state: any) => state.auth.contentId);
   console.log(contentId); // 잘 찍혀온다;
-  const [content, setContent] = React.useState<Content | undefined>(undefined);
-  const [fileUrl, setFileUrl] = useState<string>('');
+  const [content, setContent] = React.useState<any>([]);
+
   const [title, setTitle] = useState<string | undefined>(''); // 여기에 내려받은 기존 게시글 정보가 담겨있어야한다
   const [text, setText] = useState<string | undefined>('');
   const [imgRef, setImgRef] = useState<string>('');
   const [editImgRef, setEditImgRef] = useState<string>('');
   const [category, setCategory] = useState<string>('');
   const navigate = useNavigate();
+  const loginState = useSelector((state: any) => state);
+  const { userPk, loginType } = loginState.auth;
 
   React.useEffect(() => {
     axios.get(`${process.env.REACT_APP_BASE_URL}/posts/${contentId}`).then((res) => {
@@ -111,6 +113,7 @@ function EditContent(): JSX.Element {
       console.log('-------------------');
       console.log(res.data.post);
       setContent(res.data.post);
+      console.log(content);
       // console.log(content);
       // content === undefined
       //   ? undefined
@@ -122,7 +125,7 @@ function EditContent(): JSX.Element {
       setCategory(res.data.post.category);
     });
   }, []);
-
+  const [fileUrl, setFileUrl] = useState<string>(imgRef);
   //======== redux에 담아준 content id의 값으로 원하는 상세 게시물 불러오기 성공 ========
 
   const handleTitleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -168,7 +171,7 @@ function EditContent(): JSX.Element {
         headers: {
           // Authorization: `Bearer ${localStorage.getItem('token')}`, //undefined
           'content-type': 'multipart/form-data',
-          // loginType: localStorage.getItem('loginType'),
+          loginType,
         },
       })
       .then((res) => {
@@ -195,8 +198,8 @@ function EditContent(): JSX.Element {
         {
           // formData
           headers: {
-            Authorization: `Bearer ${localStorage.getItem('token')}`, //undefined
             'Content-Type': 'application/json',
+            loginType,
           },
           withCredentials: true,
         },
@@ -210,9 +213,8 @@ function EditContent(): JSX.Element {
     setText('');
     //setFile();
     formData.delete('img'); // formdata 초기화
-    // navigate('/community');
+    navigate('/community');
   };
-  // console.log(content.title);
 
   const canUpload = Boolean(title) && Boolean(text); // title과 게시물 내용이 있는경우 T를 반환해준다. 이걸로 버튼에 삼항연산자를 걸어준다.
 
@@ -220,20 +222,16 @@ function EditContent(): JSX.Element {
     <div>
       <h2> 게시물을 올려보세요! </h2>
       <form onSubmit={handleContentChange} encType="multipart/form-data">
-        {/* <InputStyle
-          onChange={handleTitleChange}
-          type="input"
-          className="title-input"
-          placeholder="제목을 입력해주세요"
-        ></InputStyle>
-        <br /> */}
         <label htmlFor="image"></label>
         <br />
         <InputStyle onChange={handleFileChange} accept="image/*" id="upload-img" type="file" multiple />
 
         <ImgContainer>
           <ImageFill
-            src={fileUrl || 'https://vernixgroup.com/wp-content/themes/consultix/images/no-image-found-360x250.png'}
+            src={
+              `${process.env.REACT_APP_BASE_URL}/uploads/${content.imgRef}` ||
+              'https://vernixgroup.com/wp-content/themes/consultix/images/no-image-found-360x250.png'
+            }
             alt="conditional"
           />
         </ImgContainer>
