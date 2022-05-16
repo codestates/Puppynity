@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import styled from 'styled-components';
+import axios from 'axios';
 import { all, chooseCategory } from '../Redux/categorySlice';
 
 const CategoryList = styled.li`
@@ -23,11 +24,14 @@ const CategoryBtn = styled.button`
   }
 `;
 
+//! 여기서 전체 게시물을 받아와서 리덕스로 넘겨서, contentList에서 핸들링 하게 해야하나..?
+
 export default function Category(): JSX.Element {
   const dispatch = useDispatch();
   const content = useSelector((state: any) => state.content);
   const [activeCategory, setActiveCategory] = useState('');
   const [isClicked, setIsClicked] = useState<boolean>(false);
+  const [filteredPosts, setFilteredPosts] = useState([]);
 
   const setCategory = (e: React.MouseEvent<HTMLButtonElement>) => {
     // setActiveCategory(e.currentTarget.value);
@@ -40,22 +44,8 @@ export default function Category(): JSX.Element {
     console.log(activeCategory);
   };
 
-  // useEffect(() => {
-  //   if (isClicked === true) setActiveCategory(e.currentTarget.value);
-  //   console.log(activeCategory);
-  // }, []);
-
   return (
     <div className="category">
-      {/* <div className="option-form">
-        <StyledSelect onChange={setCategory}>
-          {activeCategory || '전체 게시물'}
-          <option value="all"> 전체 게시글</option>
-          <option value="informational"> 팁/노하우 </option>
-          <option value="dailyLog"> 일상공유&수다 </option>
-          <option value="Q&A"> 질문 </option>
-        </StyledSelect>
-      </div> */}
       <CategoryList>
         <CategoryBtn onMouseDown={setCategory} value="all">
           전체 게시글
@@ -66,9 +56,7 @@ export default function Category(): JSX.Element {
         <CategoryBtn onMouseDown={setCategory} value="Q&A">
           질문
         </CategoryBtn>
-        <CategoryBtn onMouseDown={setCategory} value="">
-          댕댕이자랑
-        </CategoryBtn>
+
         <CategoryBtn onMouseDown={setCategory} value="dailyLog">
           일상공유&수다
         </CategoryBtn>
