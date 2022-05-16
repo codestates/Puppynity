@@ -47,32 +47,28 @@ function App() {
 
   //! 새로고침 시 액세스 토큰 재발급하는 로직
   useEffect(() => {
-    try {
-      axios({
-        method: 'post',
-        url: `${process.env.REACT_APP_BASE_URL}/auth/token-refresh`,
-        headers: { loginType },
-      }).then((res) => {
-        console.log(res.data.accessToken);
-        axios.defaults.headers.common['Authorization'] = `Bearer ${res.data.accessToken}`;
-        // islogin = true // 로그인 유지
+    axios({
+      method: 'post',
+      url: `${process.env.REACT_APP_BASE_URL}/auth/token-refresh`,
+      headers: { loginType },
+    }).then(async (res) => {
+      console.log(res.data.accessToken);
+      axios.defaults.headers.common['Authorization'] = `Bearer ${res.data.accessToken}`;
+      axios.defaults.headers.common['loginType'] = res.data.loginType;
+      // islogin = true // 로그인 유지
 
-        setInterval(() => {
-          axios({
-            method: 'post',
-            url: `${process.env.REACT_APP_BASE_URL}/auth/token-refresh`,
-            headers: { loginType },
-            withCredentials: true,
-          }).then((res) => {
-            console.log(res);
-            axios.defaults.headers.common['Authorization'] = `Bearer ${res.data.accessToken}`;
-          });
-          console.log('interval');
-        }, Math.floor(1000 * 7190));
-      });
-    } catch (e) {
-      console.log(e);
-    }
+      setInterval(async () => {
+        axios({
+          method: 'post',
+          url: `${process.env.REACT_APP_BASE_URL}/auth/token-refresh`,
+        }).then((res) => {
+          console.log(res);
+          axios.defaults.headers.common['Authorization'] = `Bearer ${res.data.accessToken}`;
+          axios.defaults.headers.common['loginType'] = res.data.loginType;
+        });
+        console.log('interval');
+      }, Math.floor(1000 * 7190));
+    });
   }, []);
 
   return (

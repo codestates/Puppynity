@@ -69,6 +69,7 @@ export default function Login() {
       .then((res) => {
         console.log(res);
         axios.defaults.headers.common['Authorization'] = `Bearer ${res.data.accessToken}`;
+        axios.defaults.headers.common['loginType'] = res.data.loginType;
 
         //const refreshToken =
         if (res.data.accessToken) {
@@ -76,8 +77,6 @@ export default function Login() {
             axios({
               method: 'post',
               url: `${process.env.REACT_APP_BASE_URL}/auth/token-refresh`,
-              headers: { loginType: res.data.loginType },
-              withCredentials: true,
             }).then((res) => {
               console.log(res);
               axios.defaults.headers.common['Authorization'] = `Bearer ${res.data.accessToken}`;
@@ -94,7 +93,6 @@ export default function Login() {
             // 요청이 잘 오고있다.
             url: `${process.env.REACT_APP_BASE_URL}/users/:${res.data.id}`,
             method: 'get',
-            headers: { loginType: res.data.loginType },
           }).then((res) => {
             const name = res.data.userInfo.nickname;
             console.log(res.data.userInfo.nickname);
