@@ -53,8 +53,8 @@ function App() {
         url: `http://localhost:4000/auth/token-refresh`,
         headers: { loginType },
       }).then((res) => {
-        console.log(res.data);
-        axios.defaults.headers.common['Authorization'] = `Bearer ${res.data}`;
+        console.log(res.data.accessToken);
+        axios.defaults.headers.common['Authorization'] = `Bearer ${res.data.accessToken}`;
         // islogin = true // 로그인 유지
 
         setInterval(() => {
@@ -68,7 +68,7 @@ function App() {
             axios.defaults.headers.common['Authorization'] = `Bearer ${res.data.accessToken}`;
           });
           console.log('interval');
-        }, Math.floor(1000 * 1000));
+        }, Math.floor(1000 * 7190));
       });
     } catch (e) {
       console.log(e);

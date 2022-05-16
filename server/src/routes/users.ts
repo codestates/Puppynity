@@ -9,6 +9,8 @@ import { getUserIinfo } from '../controllers/users/getUserInfo'
 import { updateUserInfo } from '../controllers/users/updateUserInfo'
 import { deleteUserInfo } from '../controllers/users/deleteUserInfo'
 import { checkDuplicateEmails } from '../controllers/users/checkDuplicateEmails'
+import { getMyPosts } from '../controllers/posts/getMyPosts'
+import { getMyBookmakrs } from '../controllers/posts/getMyBookmakrs'
 
 const usersRouter = express.Router()
 //! 이름, 닉네임, 모바일 valdation 강화 필요
@@ -119,4 +121,12 @@ usersRouter.post(
   validation,
   checkDuplicateEmails,
 )
+
+//* ---
+// 내가 쓴 글 불러오기
+usersRouter.get('/:userid/myposts', authentication, getMyPosts)
+
+// 좋아요한 글 불러오기
+usersRouter.get('/:userid/mybookmarks', authentication, getMyBookmakrs)
+
 module.exports = usersRouter

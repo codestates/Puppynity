@@ -17,6 +17,8 @@ import { updateComment } from '../controllers/post_comments/updateComment'
 import { deleteComment } from '../controllers/post_comments/deleteComment'
 import { getCommentsAndCount } from '../controllers/post_comments/getCommentsAndCount'
 import { uploadImg } from '../controllers/posts/uploadImg'
+import { likePost } from '../controllers/post_likes/likePost'
+import { unlikePost } from '../controllers/post_likes/unlikePost'
 
 const postsRouter = express.Router()
 
@@ -139,5 +141,12 @@ postsRouter.patch(
 )
 // 댓글 삭제
 postsRouter.delete('/:postId/comments/:commentId', authentication, deleteComment)
+
+//* ---
+// 좋아요 시전
+postsRouter.post('/:postId/likes', authentication, likePost)
+
+// 좋아요 취소
+postsRouter.delete('/:postId/likes', authentication, unlikePost)
 
 module.exports = postsRouter

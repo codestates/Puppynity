@@ -81,8 +81,8 @@ export default function Login() {
               console.log(res);
               axios.defaults.headers.common['Authorization'] = `Bearer ${res.data.accessToken}`;
             });
-            console.log('8초 주기');
-          }, Math.floor(1000 * 8));
+            console.log('2시간 주기');
+          }, Math.floor(1000 * 7190));
 
           console.log(res);
 

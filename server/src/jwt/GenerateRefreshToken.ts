@@ -9,8 +9,8 @@ export async function refreshTokenGenerator(id: number, email: string): Promise<
       userId: id,
       email: email,
       iat: Math.floor(Date.now() / 1000),
-      //   exp: Math.floor(Date.now() / 1000) + 60 * 60 * 24 * 30, // 한 달
-      exp: Math.floor(Date.now() / 1000) + 60 * 2, //! 테스트용 2분
+      exp: Math.floor(Date.now() / 1000) + 60 * 60 * 24 * 30, // 한 달
+      // exp: Math.floor(Date.now() / 1000) + 60 * 2, //! 테스트용 2분
     },
     process.env.REFRESH_SECRET,
   )
