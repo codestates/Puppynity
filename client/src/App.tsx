@@ -50,7 +50,7 @@ function App() {
     try {
       axios({
         method: 'post',
-        url: `http://${process.env.REACT_APP_BASE_URL}/auth/token-refresh`,
+        url: `${process.env.REACT_APP_BASE_URL}/auth/token-refresh`,
         headers: { loginType },
       }).then((res) => {
         console.log(res.data.accessToken);
@@ -60,7 +60,7 @@ function App() {
         setInterval(() => {
           axios({
             method: 'post',
-            url: `http://${process.env.REACT_APP_BASE_URL}/auth/token-refresh`,
+            url: `${process.env.REACT_APP_BASE_URL}/auth/token-refresh`,
             headers: { loginType },
             withCredentials: true,
           }).then((res) => {
