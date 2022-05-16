@@ -43,7 +43,7 @@ function Content() {
 
   const parameter = window.location.pathname;
   const loginState = useSelector((state: any) => state);
-  const { userPk } = loginState.auth;
+  const { userPk, nickname, kakaoNickname, loginType, isLogin } = loginState.auth;
   const [writer, setWriter] = useState<string>('');
   const dispatch = useDispatch();
   const navigate = useNavigate();
@@ -73,9 +73,9 @@ function Content() {
         { userId: userPk, content: comment },
         {
           headers: {
-            Authorization: `Bearer ${localStorage.getItem('token')}`,
+            // Authorization: `Bearer ${localStorage.getItem('token')}`,
             'Content-Type': 'application/json',
-            loginType: localStorage.getItem('loginType'),
+            loginType,
           },
         },
       )
@@ -204,10 +204,9 @@ function Content() {
           {`제목: ${dbContent.title}`}
           {/* {`글쓴이: ${dbContent.writer.name}`} */}
         </div>
-
-        <span>{`조회수: ${0}`}</span>
+        {/* <span>{`조회수: ${0}`}</span> */}
       </div>
-
+      {/* 작성자 정보 필요! */}
       <img
         alt="content-img"
         src={dbContent.imgRef ? `http://${process.env.REACT_APP_BASE_URL}/uploads/${dbContent.imgRef}` : noimg}

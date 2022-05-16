@@ -32,15 +32,15 @@ const TitleContainer = styled.div`
 `;
 
 const UserinfoContainer = styled.div`
-  width: 150px;
+  width: auto;
   height: auto;
   font-size: 10px;
   // align-items: center;
-  border-color: black;
-  border: solid;
-  bottom: 20px;
+  border: #a1dffb solid 2px;
+  bottom: 0px;
   position: relative;
-  // margin-bottom: 20px;
+  text-align: left;
+  //margin-top: 20px;
   // display: flex;
 `;
 
@@ -129,7 +129,6 @@ function ContentList(): JSX.Element {
   const [dbContents, setDbContents] = useState<any[]>([]);
   const [filteredContents, setFilteredContents] = useState<any[]>([]);
   const [category, setCategory] = useState<string>();
-  const data: any[] = dbContents;
   //! 정태영: 검색 & 무한 스크롤 관련 훅
   const searchInput = useRef<HTMLInputElement>(null);
   //* 검색창 인풋 상태
@@ -228,7 +227,7 @@ function ContentList(): JSX.Element {
       setFilteredContents(dbContents);
       console.log('all contents?');
     }
-    //! 현재 이중 필터링이 되고있다 어떻게 하면
+    //! 현재 이중 필터링이 되고있다...
   };
 
   return (
@@ -256,9 +255,9 @@ function ContentList(): JSX.Element {
         </div>
       </SearchSection>
       <div className="content-wrapper">
-        {filteredContents.length === 0
+        {dbContents.length === 0
           ? '검색 결과가 없습니다.'
-          : filteredContents.map((post) => (
+          : dbContents.map((post) => (
               <div key={post.id} id={post.id} onClick={redirectToContentDetail}>
                 <ContentContainer>
                   <div className="img-box">
@@ -271,7 +270,11 @@ function ContentList(): JSX.Element {
                     <span> {`[${post.category}]`}</span>
                   </div>
                   <TitleContainer>{post.title}</TitleContainer>
-                  <UserinfoContainer>{post.username + post.createdAt}</UserinfoContainer>
+
+                  <UserinfoContainer>
+                    <span>{'작성자: '}</span> <br />
+                    {'게시 날짜:' + post.createdAt}
+                  </UserinfoContainer>
                 </ContentContainer>
               </div>
             ))}
