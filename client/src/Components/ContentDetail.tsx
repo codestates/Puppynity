@@ -1,5 +1,5 @@
 import axios from 'axios';
-import React, { useEffect, useState, useCallback } from 'react';
+import React, { useEffect, useState, useCallback, useRef } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { useNavigate } from 'react-router-dom';
 import styled from 'styled-components';
@@ -140,6 +140,8 @@ function Content() {
   //! 정태영: 좋아요 상태값
   const [isMakred, setIsMarked] = useState(false);
 
+  const commentInput = useRef<HTMLTextAreaElement>(null);
+
   // const { status } = useSelector((state) => ({
   //   status: state.increaseView.status,
   // }));
@@ -159,32 +161,22 @@ function Content() {
 
   // console.log(dbContent.writer.nickname);
   const submitComment = () => {
-    axios
-      .post(
-        `${process.env.REACT_APP_BASE_URL}${parameter}/comments`, // localhost:4000/posts/39/comments
-        { userId: userPk, content: comment },
-      )
-      .then((res) => {
-        console.log(res.data);
-        console.log(res.data.comment.writer.nickname);
-        setWriter(res.data.comment.writer.nickname); // 댓글 쓴 사람 닉
-        // setComment(res.data.comment);
-        setCommentList([res.data.comment, ...commentList]);
-        // dispatch(writeComment(res.data.comment));
-      });
-  };
-
-  const handleLike = (e: React.MouseEvent<HTMLButtonElement>) => {
-    console.log('좋아요 요청');
-    console.log(`${process.env.REACT_APP_BASE_URL}${parameter}/likes`);
-    axios
-      .post(`${process.env.REACT_APP_BASE_URL}${parameter}/likes`, {
-        headers: { loginType },
-      })
-      .then((res) => {
-        console.log(res);
-        setLike(true);
-      });
+    axios({
+      method: 'post',
+      url: `${process.env.REACT_APP_BASE_URL}${parameter}/comments`,
+      data: { userId: userPk, content: comment },
+      headers: { loginType },
+    }).then((res) => {
+      console.log(res.data);
+      console.log(res.data.comment.writer.nickname);
+      setWriter(res.data.comment.writer.nickname); // 댓글 쓴 사람 닉
+      // setComment(res.data.comment);
+      setCommentList([res.data.comment, ...commentList]);
+      // dispatch(writeComment(res.data.comment));
+      if (commentInput.current?.value) {
+        commentInput.current?.value === '';
+      }
+    });
   };
 
   // 상세 게시물 정보 조회
@@ -195,7 +187,7 @@ function Content() {
       console.log(res.data.post);
       setDbContent(res.data.post);
       console.log(dbContent);
-      setAuthor(res.data.writer.nickname);
+      setAuthor(res.data.post.writer.nickname);
       console.log(author);
     });
   }, []);
@@ -237,19 +229,17 @@ function Content() {
   // =====================handling content =============================
 
   const handleDeleteComment = (e: React.MouseEvent<HTMLElement>) => {
-    // dispatch(deleteComment(e.currentTarget));
-    console.log(e.currentTarget.id); // ? 버튼 클릭 시 해당 게시물의 Id가 전달됨
-    const commentid = e.currentTarget.id;
-    // dispatch(deleteComment({ commentid }));
-    // commentList.filter((el) => el.id !== commentid);
-    // commentList.filter((item) => item.id !== Number(commentid));
-    setCommentList([...commentList].filter((item) => item.id !== commentid));
+    const commentId = e.currentTarget.id;
 
     //! axios.delete() 요청
-    axios.delete(`${process.env.REACT_APP_BASE_URL}${parameter}/comments/${commentid}`, {}).then((res) => {
-      console.log(res.data);
-      // setCommentList([])
-      window.location.reload(); // 삭제시 바로 리로드?
+    axios({
+      method: 'delete',
+      url: `${process.env.REACT_APP_BASE_URL}${parameter}/comments/${commentId}`,
+      data: { userId: userPk },
+      headers: { loginType },
+    }).then((res) => {
+      console.log(commentList);
+      setCommentList(commentList.filter((comment) => comment.id !== commentId));
     });
   };
   const getId = (e: React.MouseEvent<HTMLButtonElement>) => {
@@ -286,15 +276,23 @@ function Content() {
 
   //! 정태영: 좋아요 핸들러
   const bookmarkHandler = async () => {
-    if (isMakred) {
-      const bookMarkResp = axios.delete(`${process.env.REACT_APP_BASE_URL}${parameter}/likes`);
-      setIsMarked(false);
-      console.log(bookMarkResp);
-    } else {
-      const bookMarkResp = axios.post(`${process.env.REACT_APP_BASE_URL}${parameter}/likes`);
-      setIsMarked(true);
-      console.log(bookMarkResp);
-    }
+    const bookMarkResp = await axios({
+      method: 'post',
+      url: `${process.env.REACT_APP_BASE_URL}${parameter}/likes`,
+      headers: { loginType },
+    });
+    console.log(bookMarkResp);
+    setIsMarked(true);
+  };
+
+  const cancleBookmark = async () => {
+    const bookMarkResp = await axios({
+      method: 'delete',
+      url: `${process.env.REACT_APP_BASE_URL}${parameter}/likes`,
+      headers: { loginType },
+    });
+    console.log(bookMarkResp);
+    setIsMarked(false);
   };
 
   // =========================== handling comments ================================
@@ -323,23 +321,23 @@ function Content() {
           height="200vh"
         />
         <div className="content-text">{dbContent.content}</div>
-        <div onClick={bookmarkHandler}>[{isMakred ? '좋아요 취소' : '좋아요'}]</div>
+        <button onClick={bookmarkHandler}>좋아요</button>
+        <button onClick={cancleBookmark}>좋아요 취소</button>
         <br />
       </ContentWrapper>
       <CommentContainer>
-        <form onSubmit={submitComment}>
-          <textarea
-            onChange={handleCommentChange}
-            placeholder="please enter your comment"
-            className="write-comment"
-            style={{ margin: '2px' }}
-          />
-          <div>
-            <button className="submit-comment" type="submit">
-              댓글 남기기
-            </button>
-          </div>
-        </form>
+        <textarea
+          onChange={handleCommentChange}
+          placeholder="please enter your comment"
+          className="write-comment"
+          style={{ margin: '2px' }}
+          ref={commentInput}
+        />
+        <div>
+          <button className="submit-comment" onClick={submitComment}>
+            댓글 남기기
+          </button>
+        </div>
 
         <CommentListContainer>
           {commentList.map((el: any) => (
@@ -379,21 +377,6 @@ function Content() {
                   </form>
                 )}
               </ListStyle>
-              {/* {isSelected ? (
-              <form onSubmit={submitEditComment}>
-                <div>
-                  <textarea onChange={handleEditCommentChange}>{el.content}</textarea>
-                  <button type="submit" id={el.id}>
-                    댓글 수정
-                  </button>
-                  <button type="button" onClick={selectComment}>
-                    취소
-                  </button>
-                </div>
-              </form>
-            ) : (
-              ''
-            )} */}
             </div>
           ))}
         </CommentListContainer>
