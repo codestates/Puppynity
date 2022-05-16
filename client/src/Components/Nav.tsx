@@ -134,7 +134,7 @@ function NavBar() {
   const logout = async () => {
     await axios({
       method: 'post',
-      url: 'http://localhost:4000/auth/logout',
+      url: `http://${process.env.REACT_APP_BASE_URL}/auth/logout`,
       headers: { 'Content-Type': 'application/json', loginType: localStorage.getItem('loginType') },
       withCredentials: true,
     }).then((resp) => {
