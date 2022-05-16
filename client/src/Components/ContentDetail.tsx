@@ -113,7 +113,7 @@ const Textarea = styled.textarea`
   border-color: peachpuff;
   border-radius: 5%;
 `;
-
+/* eslint-disable */
 function Content() {
   // 서버로부터 데이터를 받아와서 우리 입맛대로 렌더링할 포맷을 여기서 정해준다.
   // username, createdAt, uplaoded content, text content가 보여져야한다.
@@ -136,6 +136,9 @@ function Content() {
   const [writer, setWriter] = useState<string>('');
   const dispatch = useDispatch();
   const navigate = useNavigate();
+
+  //! 정태영: 좋아요 상태값
+  const [isMakred, setIsMarked] = useState(false);
 
   // const { status } = useSelector((state) => ({
   //   status: state.increaseView.status,
@@ -160,13 +163,6 @@ function Content() {
       .post(
         `${process.env.REACT_APP_BASE_URL}${parameter}/comments`, // localhost:4000/posts/39/comments
         { userId: userPk, content: comment },
-        {
-          headers: {
-            // Authorization: `Bearer ${localStorage.getItem('token')}`,
-            'Content-Type': 'application/json',
-            loginType,
-          },
-        },
       )
       .then((res) => {
         console.log(res.data);
@@ -250,19 +246,11 @@ function Content() {
     setCommentList([...commentList].filter((item) => item.id !== commentid));
 
     //! axios.delete() 요청
-    axios
-      .delete(`${process.env.REACT_APP_BASE_URL}${parameter}/comments/${commentid}`, {
-        // localhost:4000/posts1/comments/comment-id
-        headers: {
-          Authorization: `Bearer ${localStorage.getItem('token')}`,
-          loginType,
-        },
-      })
-      .then((res) => {
-        console.log(res.data);
-        // setCommentList([])
-        window.location.reload(); // 삭제시 바로 리로드?
-      });
+    axios.delete(`${process.env.REACT_APP_BASE_URL}${parameter}/comments/${commentid}`, {}).then((res) => {
+      console.log(res.data);
+      // setCommentList([])
+      window.location.reload(); // 삭제시 바로 리로드?
+    });
   };
   const getId = (e: React.MouseEvent<HTMLButtonElement>) => {
     console.log(e.currentTarget.id);
@@ -284,16 +272,29 @@ function Content() {
       .patch(
         `${process.env.REACT_APP_BASE_URL}${parameter}/comments/${commentID}`,
         { content: editComment },
-        {
-          headers: {
-            loginType,
-          },
-        },
+        // {
+        //   headers: {
+        //     loginType,
+        //   },
+        // },
       )
       .then((res) => {
         console.log('댓글 수정 완료');
         console.log(res);
       });
+  };
+
+  //! 정태영: 좋아요 핸들러
+  const bookmarkHandler = async () => {
+    if (isMakred) {
+      const bookMarkResp = axios.delete(`${process.env.REACT_APP_BASE_URL}${parameter}/likes`);
+      setIsMarked(false);
+      console.log(bookMarkResp);
+    } else {
+      const bookMarkResp = axios.post(`${process.env.REACT_APP_BASE_URL}${parameter}/likes`);
+      setIsMarked(true);
+      console.log(bookMarkResp);
+    }
   };
 
   // =========================== handling comments ================================
@@ -315,16 +316,15 @@ function Content() {
           </BtnTop> */}
         </Header>
 
-        <ContentDetail>
-          <div className="img-box">
-            <img
-              alt="content-img"
-              className="img"
-              src={dbContent.imgRef ? `${process.env.REACT_APP_BASE_URL}/uploads/${dbContent.imgRef}` : noimg}
-            />
-          </div>
-          <div className="content-text">{dbContent.content}</div>
-        </ContentDetail>
+        <img
+          alt="content-img"
+          src={dbContent.imgRef ? `${process.env.REACT_APP_BASE_URL}/uploads/${dbContent.imgRef}` : noimg}
+          width="200vh"
+          height="200vh"
+        />
+        <div className="content-text">{dbContent.content}</div>
+        <div onClick={bookmarkHandler}>[{isMakred ? '좋아요 취소' : '좋아요'}]</div>
+        <br />
       </ContentWrapper>
       <CommentContainer>
         <form onSubmit={submitComment}>

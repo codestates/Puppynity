@@ -222,6 +222,7 @@ function MyPage() {
   const [isKakao, setIsKakao] = useState(false);
   const [avatarImg, setAvatarImg] = useState('');
   const [myContentsList, setMyContentsList] = useState<any[]>([]);
+  const [myBookmarks, setMybookmarks] = useState<any[]>([]);
   // ==========================여기까지 상태===========================
 
   const dispatch = useDispatch();
@@ -264,11 +265,26 @@ function MyPage() {
     }
   }, [isNickname]);
 
+  // 내가 좋아요 한 글 불러오기
+
+  useEffect(() => {
+    axios({
+      url: `${process.env.REACT_APP_BASE_URL}/users/${userPk}/mybookmarks?limit=6`,
+      method: 'get',
+      headers: {
+        loginType: loginState.auth.loginType,
+      },
+    }).then((res) => {
+      console.log(res.data.posts);
+      setMybookmarks(res.data.posts);
+    });
+  }, []);
+
   // 내가 쓴 게시글 불러오기
 
   useEffect(() => {
     axios({
-      url: `${process.env.REACT_APP_BASE_URL}/users/${userPk}/myposts`,
+      url: `${process.env.REACT_APP_BASE_URL}/users/${userPk}/myposts?limit=6`,
       method: 'get',
       headers: {
         loginType: loginState.auth.loginType,
@@ -322,7 +338,16 @@ function MyPage() {
 
         <ChildBox>
           <Detail>내가 찜한 게시물</Detail>
-          <Like to="/">찜게1</Like>
+          {myBookmarks.length === 0
+            ? '좋아요 한 게시물이 없습니다.'
+            : myBookmarks.map((post, index) => (
+                <Write key={post.id} id={post.post.id} onClick={redirectToContentDetail}>
+                  <ContentsImg
+                    src={post.length === 0 ? null : `${process.env.REACT_APP_BASE_URL}/uploads/${post.post.imgRef}`}
+                  />
+                  <ContentsDetail>{post.post.title}</ContentsDetail>
+                </Write>
+              ))}
         </ChildBox>
 
         <ChildBox>
