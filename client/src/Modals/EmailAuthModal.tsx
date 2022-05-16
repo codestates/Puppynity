@@ -333,6 +333,7 @@ function EmailAuthModal(props: any) {
     console.log(typeof isAvatarImg);
     if (avatarRef !== null) {
       axios({
+
         url: `${process.env.REACT_APP_BASE_URL}/users/${userPk}`,
         method: 'patch',
         headers: {
@@ -346,6 +347,7 @@ function EmailAuthModal(props: any) {
       });
     } else if (isAvatarImg !== 'null') {
       axios({
+
         url: `${process.env.REACT_APP_BASE_URL}/users/${userPk}`,
         method: 'patch',
         headers: {
@@ -358,7 +360,9 @@ function EmailAuthModal(props: any) {
       });
     } else {
       axios({
+
         url: `${process.env.REACT_APP_BASE_URL}/users/${userPk}`,
+
         method: 'patch',
         headers: {
           // Authorization: `Bearer ${localStorage.getItem('token')}`,
