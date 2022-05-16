@@ -263,7 +263,7 @@ function ContentList(): JSX.Element {
                 <ContentContainer>
                   <div className="img-box">
                     <img
-                      src={post.imgRef ? `http://${process.env.REACT_APP_BASE_URL}/uploads/${post.imgRef}` : erorImg}
+                      src={post.imgRef ? `${process.env.REACT_APP_BASE_URL}/uploads/${post.imgRef}` : erorImg}
                       alt="fromServer"
                       height="200px"
                       width="200px"
