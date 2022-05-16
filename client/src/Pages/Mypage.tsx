@@ -2,6 +2,7 @@ import React, { Dispatch, SetStateAction, useEffect, useState, useRef } from 're
 import styled from 'styled-components';
 import { useDispatch, useSelector } from 'react-redux';
 import axios from 'axios';
+import { NavLink as Link, useNavigate } from 'react-router-dom';
 import { OPEN_MODAL, DELETE_USER_MODAL_OPEN } from '../Redux/mypageSlice';
 import Modal from '../Modals/EmailAuthModal';
 import Modal2 from '../Modals/DeleteUserModal';
@@ -145,13 +146,29 @@ const EditBtn = styled.button`
     color: #ffa224;
   }
 `;
+interface ILike {
+  to: any;
+}
 
-const Like = styled.div`
+const Like = styled(Link)<ILike>`
   padding: 18px;
   border: 2px solid #ecf0f1;
   margin: 15px;
   border-radius: 5px;
-  width: 75px;
+  width: 140px;
+  height: 30px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  text-decoration: none;
+  font-family: GmarketMedium;
+  color: #333;
+
+  &:hover {
+    transition: all 0.2s ease-in-out;
+    border: 2px solid #ffa224;
+    cursor: pointer;
+  }
 `;
 
 const Write = styled.div`
@@ -159,10 +176,40 @@ const Write = styled.div`
   border: 2px solid #ecf0f1;
   margin: 15px;
   border-radius: 5px;
-  width: 75px;
+  width: 140px;
+  height: 30px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  text-decoration: none;
+  font-family: GmarketMedium;
+  color: #333;
+
+  &:hover {
+    transition: all 0.2s ease-in-out;
+    border: 2px solid #ffa224;
+    cursor: pointer;
+  }
+`;
+
+const ContentsDetail = styled.div`
+  margin: 10px;
+  font-size: 12px;
+  width: 50px;
+  height: 30px;
 `;
 
 const NickDiv = styled.div``;
+
+interface IImg {
+  src: any;
+}
+const ContentsImg = styled.img<IImg>`
+  display: flex;
+  width: 30px;
+  height: 30px;
+  margin: 10px;
+`;
 // ==========================여기까지 스타일===========================
 
 function MyPage() {
@@ -174,6 +221,8 @@ function MyPage() {
   const [isNickname, setIsNickname] = useState('');
   const [isKakao, setIsKakao] = useState(false);
   const [avatarImg, setAvatarImg] = useState('');
+  const [myContentsList, setMyContentsList] = useState<any[]>([]);
+  const [myBookmarks, setMybookmarks] = useState<any[]>([]);
   // ==========================여기까지 상태===========================
 
   const dispatch = useDispatch();
@@ -184,16 +233,17 @@ function MyPage() {
     dispatch(DELETE_USER_MODAL_OPEN(true));
   };
 
-  if (userPk !== 0 && localStorage.getItem('loginType') === 'email') {
+  if (userPk !== 0 && loginState.auth.loginType === 'email') {
     useEffect(() => {
       axios({
         url: `${process.env.REACT_APP_BASE_URL}/users/:${userPk}`,
         method: 'get',
         headers: {
-          Authorization: `Bearer ${localStorage.getItem('token')}`,
-          loginType: localStorage.getItem('loginType'),
+          // Authorization: axios.defaults.headers.common.Authorization,
+          loginType: loginState.auth.loginType,
         },
       }).then((res) => {
+        console.log(res);
         setIsNickname(res.data.userInfo.nickname);
         setAvatarImg(res.data.userInfo.avatarRef);
         console.log(res.data.userInfo.avatarRef);
@@ -202,19 +252,62 @@ function MyPage() {
     }, []);
   }
 
-  const kakaoNick: any = localStorage.getItem('user');
+  // const kakaoNick: any = localStorage.getItem('user');
 
+  console.log(loginState);
   useEffect(() => {
-    if (localStorage.getItem('loginType') === 'kakao') {
-      setIsNickname(kakaoNick);
+    // if (localStorage.getItem('loginType') === 'kakao') {
+    if (loginState.auth.loginType === 'kakao') {
+      setIsNickname(loginState.auth.kakaoNickname);
       setIsKakao(true);
     } else {
       setIsKakao(false);
     }
   }, [isNickname]);
 
-  // 로컬에 프사 set
-  localStorage.setItem('avatar', avatarImg);
+  // 내가 좋아요 한 글 불러오기
+
+  useEffect(() => {
+    axios({
+      url: `${process.env.REACT_APP_BASE_URL}/users/${userPk}/mybookmarks?limit=6`,
+      method: 'get',
+      headers: {
+        loginType: loginState.auth.loginType,
+      },
+    }).then((res) => {
+      console.log(res.data.posts);
+      setMybookmarks(res.data.posts);
+    });
+  }, []);
+
+  // 내가 쓴 게시글 불러오기
+
+  useEffect(() => {
+    axios({
+      url: `${process.env.REACT_APP_BASE_URL}/users/${userPk}/myposts?limit=6`,
+      method: 'get',
+      headers: {
+        loginType: loginState.auth.loginType,
+      },
+    }).then((res) => {
+      console.log(`============게시글 불러오기===========`);
+      // console.log(res.data.posts[0].imgRef); // 0번째 이미지 ref
+      // console.log(res.data.posts[0].title); // 0번째 제목
+      // console.log(res.data.posts[0].content); // 0번째 내용
+      // console.log(res.data.posts[0].updatedAt); // 0번째 마지막 수정일
+      console.log(res.data.posts);
+      setMyContentsList(res.data.posts);
+    });
+  }, []);
+
+  const navigate = useNavigate();
+
+  const redirectToContentDetail = (e: React.MouseEvent<HTMLInputElement>) => {
+    // onClick event로 해당 게시물의 원래 주소(페이지)를 띄어준다.
+    const clickid = e.currentTarget.id;
+    console.log(clickid);
+    navigate(`/posts/${clickid}`);
+  };
 
   // ==========================여기까지 구현===========================
 
@@ -245,26 +338,30 @@ function MyPage() {
 
         <ChildBox>
           <Detail>내가 찜한 게시물</Detail>
-          <Like>찜게1</Like>
-          <Like>찜게2</Like>
-          <Like>찜게3</Like>
-          <Like>찜게4</Like>
-          <Like>찜게5</Like>
-          <Like>찜게6</Like>
-          <Like>찜게7</Like>
-          <Like>찜게8</Like>
+          {myBookmarks.length === 0
+            ? '좋아요 한 게시물이 없습니다.'
+            : myBookmarks.map((post, index) => (
+                <Write key={post.id} id={post.post.id} onClick={redirectToContentDetail}>
+                  <ContentsImg
+                    src={post.length === 0 ? null : `${process.env.REACT_APP_BASE_URL}/uploads/${post.post.imgRef}`}
+                  />
+                  <ContentsDetail>{post.post.title}</ContentsDetail>
+                </Write>
+              ))}
         </ChildBox>
 
         <ChildBox>
           <Detail>내가 작성한 게시물</Detail>
-          <Write>작성 1</Write>
-          <Write>작성 2</Write>
-          <Write>작성 3</Write>
-          <Write>작성 4</Write>
-          <Write>작성 5</Write>
-          <Write>작성 6</Write>
-          <Write>작성 7</Write>
-          <Write>작성 8</Write>
+          {myContentsList.length === 0
+            ? '아직 작성한 게시물이 없습니다.'
+            : myContentsList.map((posts, index) => (
+                <Write key={posts.id} id={posts.id} onClick={redirectToContentDetail}>
+                  <ContentsImg
+                    src={posts.length === 0 ? null : `${process.env.REACT_APP_BASE_URL}/uploads/${posts.imgRef}`}
+                  />
+                  <ContentsDetail>{posts.title}</ContentsDetail>
+                </Write>
+              ))}
         </ChildBox>
 
         <ChildBox>

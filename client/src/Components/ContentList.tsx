@@ -127,8 +127,8 @@ function ContentList(): JSX.Element {
   const erorImg = 'https://upload.wikimedia.org/wikipedia/commons/thumb/f/f0/Error.svg/1200px-Error.svg.png';
   const contents = useSelector((state: any) => state.content); // redux에 저장된 상태를 참조한다.
   const [dbContents, setDbContents] = useState<any[]>([]);
-  const [filteredContents, setFilteredContents] = useState<any[]>([]);
-  const [category, setCategory] = useState<string>();
+  const [filteredDatas, setFilteredDatas] = useState<any[]>([]);
+  const [category, setCategory] = useState('');
   const data: any[] = dbContents;
   //! 정태영: 검색 & 무한 스크롤 관련 훅
   const searchInput = useRef<HTMLInputElement>(null);
@@ -143,8 +143,8 @@ function ContentList(): JSX.Element {
       .get(`${process.env.REACT_APP_BASE_URL}/posts?search=${searchKeyword}&page=1&limit=9`)
       .then((resp) => {
         setDbContents(resp.data.posts);
+        setFilteredDatas(resp.data.posts);
         setPage(2);
-        setCategory('all'); // default cateogry 지정
       })
       .catch(console.error);
   }, [searchKeyword]);
@@ -161,14 +161,18 @@ function ContentList(): JSX.Element {
 
     // scrollTop과 innerHeight를 더한 값이 scrollHeight보다 크다면, 가장 아래에 도달했다는 의미이다.
     if (Math.round(scrollTop + innerHeight) >= scrollHeight) {
-      axios.get(`${process.env.REACT_APP_BASE_URL}/posts?search=${searchKeyword}&page=${page}&limit=9`).then((res) => {
-        const { posts } = res.data;
-        setDbContents([...dbContents, ...posts]);
-        // 페이지 state 변수의 값도 1씩 늘려줍니다.
-        setPage((prevPage: number) => prevPage + 1);
-      });
+      axios
+        .get(`${process.env.REACT_APP_BASE_URL}/posts?search=${searchKeyword}&page=${page}&limit=9`)
+        .then(async (resp) => {
+          const { posts } = resp.data;
+          await setDbContents([...dbContents, ...posts]);
+          const filtered = dbContents.filter((post) => post.category === category);
+          await setFilteredDatas([...filteredDatas, ...posts]);
+          // 페이지 state 변수의 값도 1씩 늘려줍니다.
+          await setPage((prevPage: number) => prevPage + 1);
+        });
     }
-  }, [searchKeyword, page, dbContents]);
+  }, [searchKeyword, page, dbContents, filteredDatas]);
 
   useEffect(() => {
     window.addEventListener('scroll', handleScroll, true);
@@ -182,11 +186,6 @@ function ContentList(): JSX.Element {
   //! --------------
 
   //! 정태영: 검색 핸들러
-
-  // // api 요청 핸들러
-  // const searchHandler = (searchKeyword: string) => {
-  //   console.log('검색 함수 실행');
-  // };
 
   // 클릭 이벤트 리스너
   const searchClickHandler = () => {
@@ -215,38 +214,26 @@ function ContentList(): JSX.Element {
   }; // 게시글 클릭 시 게시물의 디테일을 보여준다.
   // console.log('contents 상태 ------------>', dbContents);
 
-  const handleCategory = (e: React.MouseEvent<HTMLButtonElement>) => {
-    // 버튼 클릭 시 버튼의 value를 state에 담아준다.
-    console.log(e.currentTarget.value);
-    setCategory(e.currentTarget.value);
-
-    setFilteredContents([...dbContents].filter((el) => el.category === category)); // working fine?
-    console.log(category);
-    console.log(filteredContents);
-
-    if (category === 'all') {
-      setFilteredContents(dbContents);
-      console.log('all contents?');
+  const handleCategory = (key: string) => (e: React.MouseEvent<HTMLButtonElement>) => {
+    setCategory(key);
+    if (key === 'all') {
+      setFilteredDatas(dbContents);
+      return;
     }
-    //! 현재 이중 필터링이 되고있다 어떻게 하면
+    const filtered = dbContents.filter((post) => post.category === key);
+    setFilteredDatas(filtered);
   };
 
   return (
     <Container>
       <div className="category">
         <CategoryList>
-          <CategoryBtn onClick={handleCategory} value="all" autoFocus>
+          <CategoryBtn onClick={handleCategory('all')} autoFocus>
             전체 게시글
           </CategoryBtn>
-          <CategoryBtn onClick={handleCategory} value="informational">
-            팁/노하우
-          </CategoryBtn>
-          <CategoryBtn onClick={handleCategory} value="Q&A">
-            질문
-          </CategoryBtn>
-          <CategoryBtn onClick={handleCategory} value="dailyLog">
-            일상공유&수다
-          </CategoryBtn>
+          <CategoryBtn onClick={handleCategory('informational')}>팁/노하우</CategoryBtn>
+          <CategoryBtn onClick={handleCategory('Q&A')}>질문</CategoryBtn>
+          <CategoryBtn onClick={handleCategory('dailyLog')}>일상공유</CategoryBtn>
         </CategoryList>
       </div>
       <SearchSection>
@@ -256,9 +243,9 @@ function ContentList(): JSX.Element {
         </div>
       </SearchSection>
       <div className="content-wrapper">
-        {dbContents.length === 0
+        {filteredDatas.length === 0
           ? '검색 결과가 없습니다.'
-          : dbContents.map((post) => (
+          : filteredDatas.map((post) => (
               <div key={post.id} id={post.id} onClick={redirectToContentDetail}>
                 <ContentContainer>
                   <div className="img-box">
