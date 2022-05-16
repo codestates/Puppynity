@@ -57,14 +57,14 @@ export default function KakaoAuthLoading() {
 
         setTimeout(() => {
           axios.post(
-            `http://localhost:4000/auth/token-refresh`,
+            `${process.env.REACT_APP_BASE_URL}/auth/token-refresh`,
             { authorizationCode: code },
             {
               headers: { 'Content-Type': 'application/json', loginType: localStorage.getItem('loginType') },
               withCredentials: true,
             },
           );
-        }, 7199 * 1000);
+        }, 7190 * 1000);
 
         window.location.replace('/');
       });

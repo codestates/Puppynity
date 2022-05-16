@@ -17,7 +17,7 @@ export const getPostsByQuery = async (req: Request, res: Response) => {
 
     //검색 쿼리가 없을 경우
     if (!search) {
-      const paginatedPosts = await Post.find({ order: { createdAt: 'DESC' }, skip, take })
+      const paginatedPosts = await Post.find({ relations: ['writer'], order: { createdAt: 'DESC' }, skip, take })
 
       if (paginatedPosts === undefined) {
         return res.status(404).json({ message: '전체 게시물 수가 0입니다.' })
@@ -29,6 +29,7 @@ export const getPostsByQuery = async (req: Request, res: Response) => {
     const filterdPosts = await Post.find({
       where: [{ title: ILike(`%${search}%`) }, { content: ILike(`%${search}%`) }],
       order: { createdAt: 'DESC' },
+      relations: ['writer'],
       skip,
       take,
     })

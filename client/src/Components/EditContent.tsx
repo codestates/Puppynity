@@ -163,7 +163,7 @@ function EditContent(): JSX.Element {
 
     //! 정태영: 파일 첨부와 동시에 서버로 이미지 파일 전송
     axios
-      .post('http://localhost:4000/posts/upload', formData, {
+      .post(`${process.env.REACT_APP_BASE_URL}/posts/upload`, formData, {
         // formData
         headers: {
           // Authorization: `Bearer ${localStorage.getItem('token')}`, //undefined

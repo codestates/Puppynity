@@ -284,7 +284,7 @@ function EmailAuthModal(props: any) {
 
     //! 정태영: 파일 첨부와 동시에 서버로 이미지 파일 전송
     axios
-      .post('http://localhost:4000/posts/upload', formData, {
+      .post(`${process.env.REACT_APP_BASE_URL}/posts/upload`, formData, {
         // formData
         headers: {
           // Authorization: `Bearer ${localStorage.getItem('token')}`,
@@ -317,7 +317,7 @@ function EmailAuthModal(props: any) {
       setIsMobile(res.data.userInfo.mobile);
       setIsAvatarImg(res.data.userInfo.avatarRef);
       if (res.data.userInfo.avatarRef) {
-        setProfileImage(`http://localhost:4000/uploads/${res.data.userInfo.avatarRef}`);
+        setProfileImage(`${process.env.REACT_APP_BASE_URL}/uploads/${res.data.userInfo.avatarRef}`);
       }
       if (res.data.userInfo.avatarRef === 'null') {
         setProfileImage('https://cdn.pixabay.com/photo/2015/10/05/22/37/blank-profile-picture-973460_1280.png');
@@ -333,7 +333,7 @@ function EmailAuthModal(props: any) {
     console.log(typeof isAvatarImg);
     if (avatarRef !== null) {
       axios({
-        url: `http://localhost:4000/users/:${userPk}`,
+        url: `${process.env.REACT_APP_BASE_URL}/users/${userPk}`,
         method: 'patch',
         headers: {
           // Authorization: `Bearer ${localStorage.getItem('token')}`,
@@ -346,7 +346,7 @@ function EmailAuthModal(props: any) {
       });
     } else if (isAvatarImg !== 'null') {
       axios({
-        url: `http://localhost:4000/users/:${userPk}`,
+        url: `${process.env.REACT_APP_BASE_URL}/users/${userPk}`,
         method: 'patch',
         headers: {
           // Authorization: `Bearer ${localStorage.getItem('token')}`,
@@ -358,7 +358,7 @@ function EmailAuthModal(props: any) {
       });
     } else {
       axios({
-        url: `http://localhost:4000/users/:${userPk}`,
+        url: `${process.env.REACT_APP_BASE_URL}/users/${userPk}`,
         method: 'patch',
         headers: {
           // Authorization: `Bearer ${localStorage.getItem('token')}`,
@@ -371,7 +371,8 @@ function EmailAuthModal(props: any) {
     }
 
     closeModal();
-    window.location.replace('/mypage');
+    // window.location.replace('/mypage');
+
     // 기본프사 -> 기본프사 (o)
     // avatarRef = nullObj , isAvatarImg = 'null'
     // 기본프사 -> 새로 프사(o)

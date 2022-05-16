@@ -41,7 +41,6 @@ export default function Community() {
             게시글 작성!
           </Button>
         </h2>
-        <Category />
       </section>
       <ContentList />
     </div>

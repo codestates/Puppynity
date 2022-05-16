@@ -134,17 +134,15 @@ function NavBar() {
   const logout = async () => {
     await axios({
       method: 'post',
-      url: 'http://localhost:4000/auth/logout',
-      headers: { 'Content-Type': 'application/json', loginType: localStorage.getItem('loginType') },
+      url: `${process.env.REACT_APP_BASE_URL}/auth/logout`,
+      headers: { 'Content-Type': 'application/json', loginType },
       withCredentials: true,
     }).then((resp) => {
       console.log(resp);
     });
     dispatch(setIsLogin(false));
-
     dispatch(setKakaoNickname({ kakaoNickname: '' }));
     dispatch(setNickname({ nickname: '' }));
-
     dispatch(setUserPk({ userPk: 0 }));
     dispatch(setLoginType({ loginType: '' }));
     // setIsNickname('');

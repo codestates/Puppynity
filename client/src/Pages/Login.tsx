@@ -75,21 +75,20 @@ export default function Login() {
           setInterval(() => {
             axios({
               method: 'post',
-              url: `http://localhost:4000/auth/token-refresh`,
+              url: `${process.env.REACT_APP_BASE_URL}/auth/token-refresh`,
               headers: { loginType: res.data.loginType },
               withCredentials: true,
             }).then((res) => {
               console.log(res);
               axios.defaults.headers.common['Authorization'] = `Bearer ${res.data.accessToken}`;
             });
-            console.log('8초 주기');
-          }, Math.floor(1000 * 7199));
+            console.log('2시간 주기');
+          }, Math.floor(1000 * 7190));
 
           console.log(res);
 
           dispatch(setUserPk({ userPk: res.data.id }));
           dispatch(setLoginType({ loginType: res.data.loginType }));
-          // localStorage.setItem('token', res.data.accessToken); // 토큰 로컬에 저장
 
           axios({
             // 요청이 잘 오고있다.
