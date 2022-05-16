@@ -7,9 +7,9 @@ import io from 'socket.io-client';
 import dummyContents from './static/dummyContents';
 import Main from './Pages/Main';
 import Signup from './Pages/Signup';
-import Nav from './Components/Nav';
 import Login from './Pages/Login';
 import Footer from './Components/Footer';
+import Nav from './Components/Nav';
 import Community from './Pages/Community';
 import UploadContent from './Components/UploadContent';
 import Chat from './Pages/Chat';
@@ -50,7 +50,7 @@ function App() {
     try {
       axios({
         method: 'post',
-        url: `http://${process.env.REACT_APP_BASE_URL}/auth/token-refresh`,
+        url: `${process.env.REACT_APP_BASE_URL}/auth/token-refresh`,
         headers: { loginType },
       }).then((res) => {
         console.log(res.data.accessToken);
@@ -60,7 +60,7 @@ function App() {
         setInterval(() => {
           axios({
             method: 'post',
-            url: `http://${process.env.REACT_APP_BASE_URL}/auth/token-refresh`,
+            url: `${process.env.REACT_APP_BASE_URL}/auth/token-refresh`,
             headers: { loginType },
             withCredentials: true,
           }).then((res) => {

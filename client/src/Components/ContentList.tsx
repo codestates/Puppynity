@@ -37,7 +37,7 @@ const UserinfoContainer = styled.div`
   font-size: 10px;
   // align-items: center;
   border: #a1dffb solid 2px;
-  bottom: 0px;
+  bottom: 20px;
   position: relative;
   text-align: left;
   //margin-top: 20px;
@@ -120,6 +120,10 @@ const CategoryBtn = styled.button`
 `;
 // =======category ==========
 
+const LikeBtn = styled.button`
+  border-radius: 100%;
+`;
+
 function ContentList(): JSX.Element {
   // const [contentList, setContentList] = useState<Array<string>>([...dummyContents]);
   // type of img = HTMLImageElement or File.
@@ -134,6 +138,9 @@ function ContentList(): JSX.Element {
   //* 검색창 인풋 상태
   const [searchKeyword, setSearchKeyword] = useState('');
 
+  const [like, setLike] = useState<boolean>(false);
+  const loginState = useSelector((state: any) => state);
+  const { commentNum } = loginState.auth;
   // 요청할 페이지 번호 변수
   const [page, setPage] = useState(1);
 
@@ -182,11 +189,6 @@ function ContentList(): JSX.Element {
 
   //! 정태영: 검색 핸들러
 
-  // // api 요청 핸들러
-  // const searchHandler = (searchKeyword: string) => {
-  //   console.log('검색 함수 실행');
-  // };
-
   // 클릭 이벤트 리스너
   const searchClickHandler = () => {
     if (searchInput.current?.value) {
@@ -230,6 +232,10 @@ function ContentList(): JSX.Element {
     //! 현재 이중 필터링이 되고있다...
   };
 
+  const handleLike = () => {
+    setLike(!like);
+  };
+
   return (
     <Container>
       <div className="category">
@@ -262,12 +268,16 @@ function ContentList(): JSX.Element {
                 <ContentContainer>
                   <div className="img-box">
                     <img
-                      src={post.imgRef ? `http://localhost:4000/uploads/${post.imgRef}` : erorImg}
+                      src={post.imgRef ? `${process.env.REACT_APP_BASE_URL}/uploads/${post.imgRef}` : erorImg}
                       alt="fromServer"
+                      className="img"
                       height="200px"
                       width="200px"
                     />
                     <span> {`[${post.category}]`}</span>
+                    <span id={post.id} onClick={handleLike}>
+                      {!like ? '♡' : '❤️'}
+                    </span>
                   </div>
                   <TitleContainer>{post.title}</TitleContainer>
 

@@ -58,6 +58,7 @@ const initialState = {
   // },
   nickname: '',
   kakaoNickname: '',
+  commentNum: 0,
 };
 
 export const authSlice = createSlice({
@@ -89,6 +90,9 @@ export const authSlice = createSlice({
       state.kakaoNickname = action.payload.kakaoNickname;
       console.log(state.kakaoNickname); // 성공!
     },
+    setCommentNum: (state, action) => {
+      state.commentNum = action.payload.commentNum;
+    },
     // login: (state, action) => {
     //   state.userinfo = action.payload;
     //   console.log('local state에 로그인정보가 잘 들어오나?');
@@ -110,4 +114,5 @@ export const authSlice = createSlice({
 
 export default authSlice.reducer;
 
-export const { setIsLogin, setUserPk, setLoginType, setContentId, setNickname, setKakaoNickname } = authSlice.actions;
+export const { setIsLogin, setUserPk, setLoginType, setContentId, setNickname, setKakaoNickname, setCommentNum } =
+  authSlice.actions;
