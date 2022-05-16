@@ -11,8 +11,8 @@ import IContentType from '../Redux/contentSlice';
 
 /* eslint-disable */
 const ContentContainer = styled.div`
-  width: 120px;
-  height: 120px;
+  width: 15rem;
+  height: 15rem;
   margin: 5px;
   padding: 10px;
   border: solid;
@@ -46,6 +46,11 @@ const Container = styled.div`
   width: 100%;
   max-width: 1000px;
   margin: 4rem auto;
+  > .content-form {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+  }
 `;
 
 const PostItem = styled.div`
