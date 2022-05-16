@@ -17,26 +17,31 @@ const ContentContainer = styled.div`
   margin: 5px;
   padding: 10px;
   border: solid;
-  //display: flex;
-  flex-wrap: nowrap wrap wrap-reverse;
-  overflow-y: auto;
+  border-radius: 20px;
+  border-color: orange;
+  /* display: flex;
+  flex-wrap: wrap;
+  flex-direction: row; */
+  // overflow-y: auto;
 `;
 
 const TitleContainer = styled.div`
   width: auto;
   height: 70px;
   font-size: 20px;
-  // position: relative;
 `;
 
 const UserinfoContainer = styled.div`
   width: 150px;
   height: auto;
-  font-size: 5px;
+  font-size: 10px;
   // align-items: center;
   border-color: black;
   border: solid;
-  margin: auto;
+  bottom: 20px;
+  position: relative;
+  // margin-bottom: 20px;
+  // display: flex;
 `;
 
 //! 정태영: 무한스크롤 container,
@@ -44,9 +49,12 @@ const UserinfoContainer = styled.div`
 const Container = styled.div`
   max-width: 1200px;
   margin: 4rem auto;
+  /* flex-wrap: wrap;
+  display: flex; */
   // position: absolute;
-  > .content-form {
+  > .content-wrapper {
     display: flex;
+    flex-wrap: wrap;
     margin: 1rem auto;
     justify-content: center;
     align-items: center;
@@ -248,30 +256,25 @@ function ContentList(): JSX.Element {
         </div>
       </SearchSection>
       <div className="content-wrapper">
-        <div className="serverdata">
-          {filteredContents.length === 0
-            ? '검색 결과가 없습니다.'
-            : filteredContents.map((post) => (
-                <div key={post.id} id={post.id} onClick={redirectToContentDetail}>
-                  <ContentContainer>
-                    <div className="img-box">
-                      <img
-                        src={post.imgRef ? `http://localhost:4000/uploads/${post.imgRef}` : erorImg}
-                        alt="fromServer"
-                        height="200px"
-                        width="200px"
-                      />
-                      <span> {`[${post.category}]`}</span>
-                    </div>
-                    <br />
-
-                    <TitleContainer>{post.title}</TitleContainer>
-                    <br />
-                    <UserinfoContainer>{post.username + post.createdAt}</UserinfoContainer>
-                  </ContentContainer>
-                </div>
-              ))}
-        </div>
+        {filteredContents.length === 0
+          ? '검색 결과가 없습니다.'
+          : filteredContents.map((post) => (
+              <div key={post.id} id={post.id} onClick={redirectToContentDetail}>
+                <ContentContainer>
+                  <div className="img-box">
+                    <img
+                      src={post.imgRef ? `http://localhost:4000/uploads/${post.imgRef}` : erorImg}
+                      alt="fromServer"
+                      height="200px"
+                      width="200px"
+                    />
+                    <span> {`[${post.category}]`}</span>
+                  </div>
+                  <TitleContainer>{post.title}</TitleContainer>
+                  <UserinfoContainer>{post.username + post.createdAt}</UserinfoContainer>
+                </ContentContainer>
+              </div>
+            ))}
       </div>
     </Container>
   );
