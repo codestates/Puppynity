@@ -57,7 +57,7 @@ export default function KakaoAuthLoading() {
 
         setTimeout(() => {
           axios.post(
-            `http://localhost:4000/auth/token-refresh`,
+            `http://${process.env.REACT_APP_BASE_URL}/auth/token-refresh`,
             { authorizationCode: code },
             {
               headers: { 'Content-Type': 'application/json', loginType: localStorage.getItem('loginType') },

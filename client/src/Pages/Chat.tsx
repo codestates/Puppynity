@@ -257,7 +257,7 @@ function ChatPage() {
   console.log(userPk);
 
   axios({
-    url: `http://localhost:4000/users/:${userPk}`,
+    url: `http://${process.env.REACT_APP_BASE_URL}/users/:${userPk}`,
     method: 'get',
     headers: { loginType },
   })
@@ -341,7 +341,7 @@ function ChatPage() {
               src={
                 localAvatar === 'null' || localAvatar === null || localAvatar === undefined || localAvatar === ''
                   ? `https://cdn.pixabay.com/photo/2015/10/05/22/37/blank-profile-picture-973460_1280.png`
-                  : `http://localhost:4000/uploads/${localAvatar}`
+                  : `http://${process.env.REACT_APP_BASE_URL}/uploads/${localAvatar}`
               }
             />
             <MyNickName>{isMyNickName}</MyNickName>

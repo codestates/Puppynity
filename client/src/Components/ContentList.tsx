@@ -234,7 +234,7 @@ function ContentList(): JSX.Element {
                   <div key={post.id} id={post.id} onClick={redirectToContentDetail}>
                     <ContentContainer>
                       <img
-                        src={post.imgRef ? `http://localhost:4000/uploads/${post.imgRef}` : erorImg}
+                        src={post.imgRef ? `http://${process.env.REACT_APP_BASE_URL}/uploads/${post.imgRef}` : erorImg}
                         alt="fromServer"
                         height="100px"
                         width="100px"
