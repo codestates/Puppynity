@@ -222,6 +222,10 @@ function ContentList(): JSX.Element {
   // console.log('contents 상태 ------------>', dbContents);
 
   const handleCategory = (key: string) => (e: React.MouseEvent<HTMLButtonElement>) => {
+    setSearchKeyword('');
+    if (searchInput.current?.value) {
+      searchInput.current.value = '';
+    }
     setCategory(key);
     if (key === 'all') {
       setFilteredDatas(dbContents);
