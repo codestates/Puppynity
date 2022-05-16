@@ -1,11 +1,13 @@
 /* eslint-disable react/no-array-index-key */
 /* eslint-disable no-unused-expressions */
 import React, { useEffect, useState } from 'react';
+import { useSelector } from 'react-redux';
 import styled from 'styled-components';
 import io from 'socket.io-client';
 import axios from 'axios';
 import puppy1 from '../Assets/puppy1.jpeg';
 import puppy2 from '../Assets/puppy2.jpeg';
+import { setIsLogin, setUserPk, setLoginType, setKakaoNickname, setNickname } from '../Redux/authSlice';
 
 const Body = styled.div`
   margin: 0;
@@ -45,6 +47,28 @@ const RightSide = styled.div`
   width: 450px;
 `;
 
+// 채팅방 메시지 가장작은 단위
+const MyMessage = styled.div`
+  color: #fff;
+  background-color: #ffa224;
+  height: 20px;
+  margin: 5px;
+  padding: 5px 10px;
+  border-radius: 5px;
+  display: flex;
+  align-items: center;
+`;
+const SomeoneMessage = styled.div`
+  color: #000;
+  background-color: #ecf0f1;
+  height: 20px;
+  margin: 5px;
+  padding: 5px 10px;
+  border-radius: 5px;
+  display: flex;
+  align-items: center;
+`;
+
 const ViewArea = styled.div`
   background-color: #fff;
   width: 450px;
@@ -52,7 +76,7 @@ const ViewArea = styled.div`
   overflow-y: auto;
   display: flex;
   flex-direction: column-reverse;
-  align-items: flex-end;
+  align-items: center;
 
   &::-webkit-scrollbar {
     width: 4px;
@@ -63,29 +87,20 @@ const ViewArea = styled.div`
   }
 `;
 
-const Message = styled.div`
-  border: solid 1px #aaa;
+interface IMessage {
+  someone: boolean;
+}
+
+const Message = styled.div<IMessage>`
+  /* border: solid 1px #aaa; */
   width: 400px;
+  display: flex;
+  justify-content: ${(props) => (props.someone === true ? 'flex-end' : 'flex-start')};
   /* height: 58px; */
 `;
 
-const MessageInfo = styled.div`
-  color: lightcoral;
-  display: flex;
-  justify-content: right;
-`;
-
-const MessageContents = styled.div`
-  color: #fff;
-  background-color: #ffa224;
-  height: 20px;
-  /* width: 100px; */
-  display: flex;
-  justify-content: left;
-  align-items: center;
+const SomeoneNickname = styled.div`
   margin: 5px;
-  padding: 5px;
-  border-radius: 5px;
 `;
 
 const Lower = styled.div`
@@ -173,9 +188,6 @@ const NickName = styled.div`
   font-weight: 500;
 `;
 
-// 채팅방 메시지 가장작은 단위
-const MessageLast = styled.div``;
-
 // 선택된 유저
 const PickUser = styled.div`
   border-bottom: 1px solid #aaa;
@@ -223,32 +235,39 @@ const MyContainer = styled.div`
 `;
 // ==========================여기까지 스타일===========================
 
+export interface IMessageList {
+  id: number;
+  chatroomId: number;
+  username: string | null;
+  writerId: string | null;
+  message: string | null;
+  time: string | null;
+}
+
 function ChatPage() {
   const [currentMessage, setcurrentMessage] = useState('');
   // input에 onchange될때마다 바뀌게 되어있음
-  const [messageList, setMessageList] = useState([
-    {
-      id: 1,
-      chatroomId: 1,
-      username: '',
-      writerId: '',
-      message: '',
-      time: '',
-    },
-  ]);
+  const [messageList, setMessageList] = React.useState<IMessageList[]>([]);
   const [isMyNickName, setIsMyNickName] = useState('');
-  const userPk = localStorage.getItem('userPk');
+  const loginState = useSelector((state: any) => state);
+  console.log(loginState);
 
-  //! ===============================================================
-  // 유저정보 get 요청하기 //! 이부분 get요청 말고 상태에서 닉네임 가져오는걸로 바꿀것
+  const { userPk, loginType, nickname } = loginState.auth;
+  console.log(loginType);
+  console.log(userPk);
+
   axios({
-    url: `http://localhost:4000/users/:${userPk}`,
+    url: `http://${process.env.REACT_APP_BASE_URL}/users/:${userPk}`,
     method: 'get',
-    headers: { Authorization: `Bearer ${localStorage.getItem('token')}`, loginType: localStorage.getItem('loginType') },
-  }).then((res) => {
-    setIsMyNickName(res.data.userInfo.nickname);
-  });
-  //! ===============================================================
+    headers: { loginType },
+  })
+    .then((res) => {
+      console.log(res);
+      setIsMyNickName(res.data.userInfo.nickname);
+    })
+    .catch((err) => {
+      console.log(err);
+    });
 
   // 사용자 지정 namespace로 접속한다.
   const socket = io(`${process.env.REACT_APP_BASE_URL}/chat`, {
@@ -259,9 +278,9 @@ function ChatPage() {
   // 메시지 하나가 가지고있을 정보 = 렌더링시에 채팅내용들을 맵핑해주는 useEffect
   useEffect(() => {
     const messages = messageList.map((chatting: any) => ({
-      id: 1,
+      id: userPk,
       chatroomId: 1,
-      username: chatting.username,
+      username: nickname,
       writerId: chatting.writerId,
       message: chatting.message,
       time: chatting.time,
@@ -269,10 +288,10 @@ function ChatPage() {
     setMessageList([...messages]);
     socket.emit('join_room', {
       room: 1,
-      author: 'username',
-      userId: 'userInfo',
+      nickname,
+      userPk,
     });
-    console.log(messageList);
+    console.log(messages);
     // socket.emit('join_room', 1);
   }, []);
 
@@ -283,30 +302,35 @@ function ChatPage() {
       const minutes = new Date(Date.now()).getMinutes();
       const messageData = {
         chatroomId: 1,
-        userPk: localStorage.getItem('userPk'),
+        userId: userPk,
+        username: nickname,
         message: currentMessage,
         time: `${new Date(Date.now()).getHours()}:${minutes}`,
       };
       socket.emit('message', messageData);
-      setMessageList((list: any) => [...list, messageData]);
+      // setMessageList((list: any) => [...list, messageData]);
       console.log(messageData);
       setcurrentMessage('');
     }
   };
   useEffect(() => {
     socket.on('receive_message', (res: any) => {
-      // console.log(res);
-      // console.log(messageList);
-      setMessageList((list: any) => [...list, res]);
+      console.log(res);
+      const resData = {
+        id: 1,
+        chatroomId: 1,
+        username: res.username,
+        writerId: res.userId,
+        message: res.message,
+        time: res.time,
+      };
+      setMessageList((list: any) => [resData, ...list]);
     });
   }, []);
 
   const time = `${new Date(Date.now()).getHours()}:${new Date(Date.now()).getMinutes()}`;
 
   const localAvatar = localStorage.getItem('avatar');
-
-  // 1. 메시지는 두가지로 나눔 내가보낸거, 남이보낸거
-  // 2.
 
   return (
     <Body>
@@ -317,7 +341,7 @@ function ChatPage() {
               src={
                 localAvatar === 'null' || localAvatar === null || localAvatar === undefined || localAvatar === ''
                   ? `https://cdn.pixabay.com/photo/2015/10/05/22/37/blank-profile-picture-973460_1280.png`
-                  : `http://localhost:4000/uploads/${localAvatar}`
+                  : `http://${process.env.REACT_APP_BASE_URL}/uploads/${localAvatar}`
               }
             />
             <MyNickName>{isMyNickName}</MyNickName>
@@ -346,13 +370,17 @@ function ChatPage() {
             <PickUserNickName>퍼피룸1</PickUserNickName>
           </PickUser>
           <ViewArea>
-            {messageList.reverse().map((messageContent, index) => (
-              <Message key={index} className="message">
-                <MessageInfo className="message-info">
-                  <MessageContents className="message-content">
-                    {messageContent.message ? <MessageLast>{messageContent.message}</MessageLast> : null}
-                  </MessageContents>
-                </MessageInfo>
+            {messageList.map((messageContent, index) => (
+              <Message key={index} className="message" someone={messageContent.writerId === userPk}>
+                {messageContent.message && messageContent.writerId !== userPk ? (
+                  <SomeoneNickname>{messageContent.username}</SomeoneNickname>
+                ) : null}
+                {messageContent.message && messageContent.writerId === userPk ? (
+                  <MyMessage>{messageContent.message}</MyMessage>
+                ) : null}
+                {messageContent.message && messageContent.writerId !== userPk ? (
+                  <SomeoneMessage>{messageContent.message}</SomeoneMessage>
+                ) : null}
               </Message>
             ))}
           </ViewArea>

@@ -67,6 +67,7 @@ export default function Login() {
         },
       )
       .then((res) => {
+        console.log(res);
         axios.defaults.headers.common['Authorization'] = `Bearer ${res.data.accessToken}`;
 
         //const refreshToken =
@@ -74,15 +75,15 @@ export default function Login() {
           setInterval(() => {
             axios({
               method: 'post',
-              url: `http://localhost:4000/auth/token-refresh`,
+              url: `http://${process.env.REACT_APP_BASE_URL}/auth/token-refresh`,
               headers: { loginType: res.data.loginType },
               withCredentials: true,
             }).then((res) => {
               console.log(res);
               axios.defaults.headers.common['Authorization'] = `Bearer ${res.data.accessToken}`;
             });
-            console.log('8초 주기');
-          }, Math.floor(7190 * 1000));
+            console.log('2시간 주기');
+          }, Math.floor(1000 * 7190));
 
           console.log(res);
 

@@ -125,16 +125,16 @@ const NavLogo = styled(Link)`
 function NavBar() {
   const loginStatus = useSelector((state: any) => state.auth.isLogin);
   const loginState = useSelector((state: any) => state);
-  const { name } = useSelector((state: any) => state.auth.nickname);
+  // const { name } = useSelector((state: any) => state.auth.nickname);
   const { userPk, nickname, kakaoNickname, loginType, isLogin } = loginState.auth;
   const dispatch = useDispatch();
-  const [isNickname, setIsNickname] = useState('');
+  // const [isNickname, setIsNickname] = useState('');
   //! 필요한거:  닉네임, 로그인 상태
 
   const logout = async () => {
     await axios({
       method: 'post',
-      url: 'http://localhost:4000/auth/logout',
+      url: `http://${process.env.REACT_APP_BASE_URL}/auth/logout`,
       headers: { 'Content-Type': 'application/json', loginType: localStorage.getItem('loginType') },
       withCredentials: true,
     }).then((resp) => {
@@ -147,7 +147,7 @@ function NavBar() {
 
     dispatch(setUserPk({ userPk: 0 }));
     dispatch(setLoginType({ loginType: '' }));
-    setIsNickname('');
+    // setIsNickname('');
     // localStorage.setItem('user', '');
     // localStorage.setItem('token', '');
     // localStorage.setItem('loginType', '');

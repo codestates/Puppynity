@@ -69,7 +69,7 @@ function Content() {
   const submitComment = () => {
     axios
       .post(
-        `http://localhost:4000${parameter}/comments`, // localhost:4000/posts/39/comments
+        `http://${process.env.REACT_APP_BASE_URL}${parameter}/comments`, // localhost:4000/posts/39/comments
         { userId: userPk, content: comment },
         {
           headers: {
@@ -91,7 +91,7 @@ function Content() {
 
   // 상세 게시물 정보 조회
   React.useEffect(() => {
-    axios.get(`http://localhost:4000${parameter}`).then((res) => {
+    axios.get(`http://${process.env.REACT_APP_BASE_URL}${parameter}`).then((res) => {
       console.log(res.data);
       console.log('-------------------');
       console.log(res.data.post);
@@ -101,7 +101,7 @@ function Content() {
 
   // 해당 게시물의 댓글들 조회
   React.useEffect(() => {
-    axios.get(`http://localhost:4000${parameter}/comments`).then((res) => {
+    axios.get(`http://${process.env.REACT_APP_BASE_URL}${parameter}/comments`).then((res) => {
       console.log(res.data.comments);
       const result = [...res.data.comments];
       console.log(result);
@@ -210,7 +210,7 @@ function Content() {
 
       <img
         alt="content-img"
-        src={dbContent.imgRef ? `http://localhost:4000/uploads/${dbContent.imgRef}` : noimg}
+        src={dbContent.imgRef ? `http://${process.env.REACT_APP_BASE_URL}/uploads/${dbContent.imgRef}` : noimg}
         width="200vh"
         height="200vh"
       />

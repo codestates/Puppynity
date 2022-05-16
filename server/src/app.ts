@@ -87,26 +87,34 @@ const io = new Server(server, {
 
 const chat = io.of('/chat').on('connection', function (socket: Socket) {
   socket.on('join_room', (data) => {
+    console.log(data)
     socket.join(data.room)
 
     console.log(
-      `-----------------------------------------------------
-      User with ID: ${socket.id} joined room: ${data.room}
------------------------------------------------------`,
+      `------채팅방 접근시 서버에서받는정보-------
+      User with ID: ${socket.id} 
+      joined room: ${data.room} 
+      userPk : ${data.userPk}
+      username : ${data.nickname}
+----------------------------------------`,
     )
   })
 
-  socket.on('message', function (data) {
+  socket.on('message', async (data) => {
     console.log('message from client: ', data)
+    chat.emit('receive_message', data)
+    const chatMessage = await Chat_message.create({
+      id: data.id, //! 테이블에 자동 생성
+      userId: data.userId,
+      username: data.username,
+      message: data.message,
+      // createdAt: data.time, //! 테이블에 자동생성되는중인듯!
+    })
+    console.log(`DB에 들어갈 메시지의 정보 =================`)
+    console.log(chatMessage)
+    console.log(`=====================================`)
 
-    const name = data.name
-    const room = data.chatroomId
-
-    socket.join(room)
-
-    socket
-      .to(room)
-      .emit('receive_message', { message: `${data.message}`, userPk: `${data.userPk}`, time: `${data.time}` })
+    await chatMessage.save()
   })
 
   socket.on('disconnect', (el) => {
