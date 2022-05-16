@@ -256,14 +256,14 @@ function ContentList(): JSX.Element {
         </div>
       </SearchSection>
       <div className="content-wrapper">
-        {filteredContents.length === 0
+        {dbContents.length === 0
           ? '검색 결과가 없습니다.'
-          : filteredContents.map((post) => (
+          : dbContents.map((post) => (
               <div key={post.id} id={post.id} onClick={redirectToContentDetail}>
                 <ContentContainer>
                   <div className="img-box">
                     <img
-                      src={post.imgRef ? `http://localhost:4000/uploads/${post.imgRef}` : erorImg}
+                      src={post.imgRef ? `http://${process.env.REACT_APP_BASE_URL}/uploads/${post.imgRef}` : erorImg}
                       alt="fromServer"
                       height="200px"
                       width="200px"
@@ -271,7 +271,7 @@ function ContentList(): JSX.Element {
                     <span> {`[${post.category}]`}</span>
                   </div>
                   <TitleContainer>{post.title}</TitleContainer>
-                  <UserinfoContainer>{post.username + post.createdAt}</UserinfoContainer>
+                  <UserinfoContainer>{post.writer.nickname + post.createdAt}</UserinfoContainer>
                 </ContentContainer>
               </div>
             ))}
