@@ -82,25 +82,22 @@ function DeleteUserModal(props: any) {
   console.log(localStorage);
   const dispatch = useDispatch();
   const navigate = useNavigate();
+  const loginState = useSelector((state: any) => state);
   const closeModal = () => {
     dispatch(DELETE_USER_MODAL_CLOSE(false));
   };
 
-  const userPk = localStorage.getItem('userPk');
-  const token = localStorage.getItem('token');
+  const pathId = loginState.auth.userPk;
+  const headerLoginType = loginState.auth.loginType;
 
   const handleDelete = () => {
     axios({
-      url: `${process.env.REACT_APP_BASE_URL}/users/${userPk}`,
+      url: `${process.env.REACT_APP_BASE_URL}/users/${pathId}`,
       method: 'delete',
-      headers: { Authorization: `Bearer ${token}`, loginType: localStorage.getItem('loginType') },
+      headers: { loginType: headerLoginType },
     }).then((res) => {
       console.log(res);
     });
-    localStorage.setItem('user', '');
-    localStorage.setItem('token', '');
-    localStorage.setItem('loginType', '');
-    localStorage.setItem('userPk', '');
     dispatch(setIsLogin(false));
     dispatch(setUserPk({ userPk: 0 }));
     dispatch(setLoginType({ loginType: '' }));
